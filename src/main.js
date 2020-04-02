@@ -250,17 +250,17 @@ const renderSectionElement = (container, className, type = `section`) => {
 };
 
 const renderSectionHeading = (container, text = ``, hidden = false) => {
-  const h2 = document.createElement(`h2`);
-  h2.classList.add(`films-list__title`);
+  const sectionHeading = document.createElement(`h2`);
+  sectionHeading.classList.add(`films-list__title`);
   if (hidden) {
-    h2.classList.add(`visually-hidden`);
+    sectionHeading.classList.add(`visually-hidden`);
   }
-  h2.textContent = text;
-  container.appendChild(h2);
+  sectionHeading.textContent = text;
+  container.appendChild(sectionHeading);
 };
 
-const renderFilmCards = (container, qty) => {
-  for (let i = 0; i < qty; i++) {
+const renderFilmCards = (container, cardsQuantity) => {
+  for (let i = 0; i < cardsQuantity; i++) {
     render(container, createFilmCardTemplate());
   }
 };
