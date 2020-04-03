@@ -241,7 +241,7 @@ const renderControls = (mainElement) => {
   render(mainElement, createItemsSortTemplate());
 };
 
-const renderSectionElement = (container, className, type = `section`) => {
+const createSectionElement = (container, className, type = `section`) => {
   const sectionElement = document.createElement(type);
   sectionElement.classList.add(className);
   container.appendChild(sectionElement);
@@ -266,9 +266,9 @@ const renderFilmCards = (container, cardsQuantity) => {
 };
 
 const renderExtraCategory = (container, heading = ``) => {
-  const filmsCategory = renderSectionElement(container, `films-list--extra`);
+  const filmsCategory = createSectionElement(container, `films-list--extra`);
   renderSectionHeading(filmsCategory, heading);
-  const filmsCategoryList = renderSectionElement(filmsCategory, `films-list__container`, `div`);
+  const filmsCategoryList = createSectionElement(filmsCategory, `films-list__container`, `div`);
   renderFilmCards(filmsCategoryList, CARDS_EXTRA_LIST_QTY);
 };
 
@@ -281,10 +281,10 @@ const renderContent = () => {
 
   renderControls(mainElement);
 
-  const filmsSection = renderSectionElement(mainElement, `films`);
-  const filmsListSection = renderSectionElement(filmsSection, `films-list`);
+  const filmsSection = createSectionElement(mainElement, `films`);
+  const filmsListSection = createSectionElement(filmsSection, `films-list`);
   renderSectionHeading(filmsListSection, `All movies. Upcoming`, true);
-  const filmsListContainer = renderSectionElement(filmsListSection, `films-list__container`, `div`);
+  const filmsListContainer = createSectionElement(filmsListSection, `films-list__container`, `div`);
   renderFilmCards(filmsListContainer, CARDS_MAIN_LIST_QTY);
   render(filmsListSection, createButtonMoreTemplate());
 
