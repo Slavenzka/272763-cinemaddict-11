@@ -7,6 +7,7 @@ import {createSectionElement} from './components/section-element';
 import {renderSectionHeading} from './components/section-heading';
 import {render} from './utils';
 import {renderFilmCards} from './components/film-cards-list';
+import {generateFilters} from './mock/filter';
 
 const CARDS_MAIN_LIST_QTY = 5;
 const EXTRA_CATEGORIES = [`Top rated`, `Most commented`];
@@ -18,7 +19,8 @@ const renderUserRank = () => {
 };
 
 const renderControls = (mainElement) => {
-  render(mainElement, createSiteNavTemplate());
+  const filters = generateFilters();
+  render(mainElement, createSiteNavTemplate(filters));
   render(mainElement, createItemsSortTemplate());
 };
 
