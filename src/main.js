@@ -51,4 +51,4 @@ const renderContent = () => {
 
 renderUserRank();
 renderContent();
-// renderModal(createFilmDetailsTemplate());
+renderModal(createFilmDetailsTemplate(filmsData[0]));

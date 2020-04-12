@@ -13,3 +13,5 @@ export const getRandomNumberInRange = (min, max, decimalPartLength) => {
     return (min + Math.random() * (max - min)).toFixed(1);
   }
 };
+
+export const addLeadingZero = (number) => number < 10 ? `0${number}` : `${number}`;
