@@ -15,6 +15,7 @@ import {
 import {generateFilms} from './mock/cards';
 import {renderExtraCategories} from './components/extra-category';
 import {renderFooterCount} from './components/footer-count';
+import {addPagination} from './components/add-pagination';
 
 const filmsData = generateFilms(TOTAL_CARDS_QTY);
 // calculation of total films quantity watched by user
@@ -39,6 +40,8 @@ const renderModal = (content) => {
 };
 
 const renderContent = () => {
+  let initialFilmsCounter = CARDS_MAIN_LIST_QTY;
+
   const mainElement = document.querySelector(`.main`);
 
   renderControls(mainElement);
@@ -48,9 +51,11 @@ const renderContent = () => {
   renderSectionHeading(filmsListSection, `All movies. Upcoming`, true);
   const filmsListContainer = createSectionElement(filmsListSection, `films-list__container`, `div`);
 
-  renderFilmCards(filmsListContainer, filmsData.slice(0, CARDS_MAIN_LIST_QTY));
+  renderFilmCards(filmsListContainer, filmsData.slice(0, initialFilmsCounter));
 
   render(filmsListSection, createButtonMoreTemplate());
+  const loadMoreButton = filmsListSection.querySelector(`.films-list__show-more`);
+  addPagination(loadMoreButton, filmsData, initialFilmsCounter);
 
   renderExtraCategories(filmsSection, filmsData);
 };
