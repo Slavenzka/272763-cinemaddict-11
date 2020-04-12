@@ -8,10 +8,15 @@ import {renderSectionHeading} from './components/section-heading';
 import {render} from './utils';
 import {renderFilmCards} from './components/film-cards-list';
 import {generateFilters} from './mock/filter';
+import {
+  CARDS_EXTRA_LIST_QTY,
+  CARDS_MAIN_LIST_QTY,
+  EXTRA_CATEGORIES,
+  TOTAL_CARDS_QTY,
+} from './const';
+import {generateFilm, generateFilms} from './mock/cards';
 
-const CARDS_MAIN_LIST_QTY = 5;
-const EXTRA_CATEGORIES = [`Top rated`, `Most commented`];
-const CARDS_EXTRA_LIST_QTY = 2;
+const filmsData = generateFilms(TOTAL_CARDS_QTY);
 
 const renderUserRank = () => {
   const headerElement = document.querySelector(`.header`);
@@ -24,11 +29,12 @@ const renderControls = (mainElement) => {
   render(mainElement, createItemsSortTemplate());
 };
 
-const renderExtraCategory = (container, heading = ``) => {
+const renderExtraCategory = (container, categoryName = ``) => {
   const filmsCategory = createSectionElement(container, `films-list--extra`);
-  renderSectionHeading(filmsCategory, heading);
+  renderSectionHeading(filmsCategory, categoryName);
   const filmsCategoryList = createSectionElement(filmsCategory, `films-list__container`, `div`);
-  renderFilmCards(filmsCategoryList, CARDS_EXTRA_LIST_QTY);
+
+  // renderFilmCards(filmsCategoryList, CARDS_EXTRA_LIST_QTY);
 };
 
 const renderModal = (content) => {
@@ -44,7 +50,7 @@ const renderContent = () => {
   const filmsListSection = createSectionElement(filmsSection, `films-list`);
   renderSectionHeading(filmsListSection, `All movies. Upcoming`, true);
   const filmsListContainer = createSectionElement(filmsListSection, `films-list__container`, `div`);
-  renderFilmCards(filmsListContainer, CARDS_MAIN_LIST_QTY);
+  renderFilmCards(filmsListContainer, filmsData.slice(0, CARDS_MAIN_LIST_QTY));
   render(filmsListSection, createButtonMoreTemplate());
 
   EXTRA_CATEGORIES.forEach((category) => {
@@ -54,4 +60,4 @@ const renderContent = () => {
 
 renderUserRank();
 renderContent();
-renderModal(createFilmDetailsTemplate());
+// renderModal(createFilmDetailsTemplate());
