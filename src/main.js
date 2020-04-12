@@ -14,6 +14,7 @@ import {
 } from './const';
 import {generateFilms} from './mock/cards';
 import {renderExtraCategories} from './components/extra-category';
+import {renderFooterCount} from './components/footer-count';
 
 const filmsData = generateFilms(TOTAL_CARDS_QTY);
 
@@ -51,4 +52,5 @@ const renderContent = () => {
 
 renderUserRank();
 renderContent();
+renderFooterCount(filmsData.length);
 renderModal(createFilmDetailsTemplate(filmsData[0]));
