@@ -17,10 +17,15 @@ import {renderExtraCategories} from './components/extra-category';
 import {renderFooterCount} from './components/footer-count';
 
 const filmsData = generateFilms(TOTAL_CARDS_QTY);
+// calculation of total films quantity watched by user
+const userWatchedMovies = filmsData.reduce((total, item) => {
+  total += item.isWatched ? 1 : 0;
+  return total;
+}, 0);
 
 const renderUserRank = () => {
   const headerElement = document.querySelector(`.header`);
-  render(headerElement, createUserRankTemplate());
+  render(headerElement, createUserRankTemplate(userWatchedMovies));
 };
 
 const renderControls = (mainElement) => {
