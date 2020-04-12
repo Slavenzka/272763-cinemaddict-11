@@ -8,7 +8,7 @@ import {
   TRIMMED_COMMENT_LENGTH,
 } from '../const';
 
-export const generateFilm = () => {
+const generateFilm = () => {
   const filmItem = Object.assign({}, getRandomArrayItem(FILMS));
   // get the descriptionLines
   const filmDescriptionLength = getRandomNumberInRange(MIN_COMMENTS_COUNT, MAX_COMMENTS_COUNT);
