@@ -16,21 +16,25 @@ import {generateFilms} from './mock/cards';
 import {renderExtraCategories} from './components/extra-category';
 import {renderFooterCount} from './components/footer-count';
 import {addPagination} from './components/add-pagination';
+import {updateProfile} from './components/update-profile';
 
 const filmsData = generateFilms(TOTAL_CARDS_QTY);
-// calculation of total films quantity watched by user
-const userWatchedMovies = filmsData.reduce((total, item) => {
-  total += item.isWatched ? 1 : 0;
-  return total;
-}, 0);
+
+const userProfile = {
+  watchlist: 0,
+  watched: 0,
+  favourites: 0
+};
+
+updateProfile(filmsData, userProfile);
 
 const renderUserRank = () => {
   const headerElement = document.querySelector(`.header`);
-  render(headerElement, createUserRankTemplate(userWatchedMovies));
+  render(headerElement, createUserRankTemplate(userProfile.watched));
 };
 
 const renderControls = (mainElement) => {
-  const filters = generateFilters();
+  const filters = generateFilters(userProfile.watchlist, userProfile.watched, userProfile.favourites);
   render(mainElement, createSiteNavTemplate(filters));
   render(mainElement, createItemsSortTemplate());
 };

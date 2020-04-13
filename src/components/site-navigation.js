@@ -1,4 +1,5 @@
-const createFilterMarkup = (name, type, isActive, count) => {
+const createFilterMarkup = (name, isActive, count) => {
+  const type = name.split(` `)[0].toLowerCase();
   const isItemActive = isActive ? `main-navigation__item--active` : ``;
   const itemCount = count && type !== `all` ? `<span class="main-navigation__item-count">${count}</span>` : ``;
 
@@ -10,7 +11,7 @@ const createFilterMarkup = (name, type, isActive, count) => {
 };
 
 export const createSiteNavTemplate = (filters) => {
-  const filtersMarkup = filters.map(({name, type, count}, index) => createFilterMarkup(name, type, index === 0, count)).join(`\n`);
+  const filtersMarkup = filters.map((item, index) => createFilterMarkup(Object.keys(item)[0], index === 0, Object.values(item)[0])).join(`\n`);
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
