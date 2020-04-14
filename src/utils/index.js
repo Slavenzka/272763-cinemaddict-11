@@ -15,3 +15,5 @@ export const getRandomNumberInRange = (min, max, decimalPartLength) => {
 };
 
 export const addLeadingZero = (number) => number < 10 ? `0${number}` : `${number}`;
+
+export const getRandomBoolean = () => Math.random() > 0.5;

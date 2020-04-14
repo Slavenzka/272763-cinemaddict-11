@@ -1,4 +1,9 @@
-import {getRandomNumberInRange, getRandomArrayItem, shuffleArray} from './../utils';
+import {
+  getRandomNumberInRange,
+  getRandomArrayItem,
+  shuffleArray,
+  getRandomBoolean,
+} from './../utils';
 import {
   COMMENTS,
   FILMS,
@@ -48,11 +53,11 @@ const generateFilm = () => {
   filmItem.genres = (new Array(getRandomNumberInRange(1, maxGenres)))
     .fill(``)
     .map((_, index) => randomGenres[index]);
-  filmItem.isInWatchlist = Math.random() > 0.5;
-  filmItem.isWatched = Math.random() > 0.5;
-  filmItem.isFavourite = Math.random() > 0.5;
+  filmItem.isInWatchlist = getRandomBoolean();
+  filmItem.isWatched = getRandomBoolean();
+  filmItem.isFavourite = getRandomBoolean();
   filmItem.date = generateRandomTimestamp();
-  filmItem.isAdult = Math.random() > 0.5;
+  filmItem.isAdult = getRandomBoolean();
   filmItem.country = getRandomArrayItem(COUNTRIES);
   // mocked runtime is estimated in minutes
   filmItem.runtime = getRandomNumberInRange(15, 120);
