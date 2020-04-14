@@ -1,4 +1,4 @@
-import {CARDS_LOAD_MORE_QTY} from './../const';
+import {BOARD_PRESETS} from './../const';
 import {render} from './../utils';
 import {createFilmCardTemplate} from './film-card';
 
@@ -7,7 +7,7 @@ export const addPagination = (button, totalFilms, filmsCount) => {
   let prevFilmsCount = filmsCount;
 
   const next = () => {
-    filmsCount += CARDS_LOAD_MORE_QTY;
+    filmsCount += BOARD_PRESETS.additionalCardsQuantity;
 
     totalFilms
       .slice(prevFilmsCount, filmsCount)

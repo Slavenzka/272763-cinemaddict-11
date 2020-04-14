@@ -2,16 +2,18 @@ import {getRandomNumberInRange, getRandomArrayItem, shuffleArray} from './../uti
 import {
   COMMENTS,
   FILMS,
-  MAX_RATING,
-  MIN_COMMENTS_COUNT,
-  TRIMMED_COMMENT_LENGTH,
   GENRES,
-  MAX_GENRES_COUNT,
   COUNTRIES,
   NAMES,
-  MAX_USER_COMMENTS,
   EMOJIS,
+  BOARD_PRESETS,
 } from '../const';
+
+const {
+  maxGenres,
+  comments,
+  maxRating
+} = BOARD_PRESETS;
 
 const generateRandomTimestamp = () => {
   const getUnixTimestamp = (year) => (year - 1970) * 1000 * 60 * 60 * 24 * 365.25;
@@ -31,19 +33,19 @@ const generateFilm = () => {
   // copy films object to be mock data container
   const filmItem = Object.assign({}, getRandomArrayItem(FILMS));
   // mock descriptions - both preview and full
-  const filmDescriptionLength = getRandomNumberInRange(MIN_COMMENTS_COUNT, MAX_USER_COMMENTS);
+  const filmDescriptionLength = getRandomNumberInRange(comments.minPhrasesQuantity, comments.maxPhrasesQuantity);
   let filmDescription = shuffleArray(COMMENTS).slice(0, filmDescriptionLength).join(` `);
   filmItem.description = filmDescription;
 
-  if (filmDescription.length > TRIMMED_COMMENT_LENGTH) {
-    filmDescription = filmDescription.slice(0, TRIMMED_COMMENT_LENGTH) + `&#8230;`;
+  if (filmDescription.length > comments.trimmedCommentLength) {
+    filmDescription = filmDescription.slice(0, comments.trimmedCommentLength) + `&#8230;`;
   }
 
   // mock self explaining properties
   filmItem.nameOriginal = `${filmItem.name}`;
   filmItem.descriptionPreview = filmDescription;
-  filmItem.rating = getRandomNumberInRange(0, MAX_RATING, 1);
-  filmItem.genres = (new Array(getRandomNumberInRange(1, MAX_GENRES_COUNT)))
+  filmItem.rating = getRandomNumberInRange(0, maxRating, 1);
+  filmItem.genres = (new Array(getRandomNumberInRange(1, maxGenres)))
     .fill(``)
     .map((_, index) => randomGenres[index]);
   filmItem.isInWatchlist = Math.random() > 0.5;
@@ -65,7 +67,7 @@ const generateFilm = () => {
   };
 
   // mock comments
-  filmItem.userComments = (new Array(getRandomNumberInRange(0, MAX_USER_COMMENTS)))
+  filmItem.userComments = (new Array(getRandomNumberInRange(0, comments.maxQuantity)))
     .fill(``)
     .map(() => ({
       text: COMMENTS.slice(0, getRandomNumberInRange(1, 3)).join(` `),

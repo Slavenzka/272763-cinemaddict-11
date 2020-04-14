@@ -1,12 +1,17 @@
-export const TOTAL_CARDS_QTY = 23;
-export const CARDS_MAIN_LIST_QTY = 5;
-export const CARDS_LOAD_MORE_QTY = 5;
-export const CARDS_EXTRA_LIST_QTY = 2;
-export const TRIMMED_COMMENT_LENGTH = 139;
-export const MAX_RATING = 10;
-export const MIN_COMMENTS_COUNT = 1;
-export const MAX_GENRES_COUNT = 3;
-export const MAX_USER_COMMENTS = 6;
+export const BOARD_PRESETS = {
+  totalCardsQuantity: 23,
+  initialRenderedCardsQuantity: 5,
+  additionalCardsQuantity: 5,
+  extraListCardsQuantity: 2,
+  maxRating: 10,
+  maxGenres: 3,
+  comments: {
+    minPhrasesQuantity: 1,
+    maxPhrasesQuantity: 6,
+    maxQuantity: 6,
+    trimmedCommentLength: 139,
+  },
+};
 export const USER_RANK_PRESETS = {
   novice: {
     min: 2,

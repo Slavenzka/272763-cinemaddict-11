@@ -9,8 +9,7 @@ import {render} from './utils';
 import {renderFilmCards} from './components/film-cards-list';
 import {generateFilters} from './mock/filter';
 import {
-  CARDS_MAIN_LIST_QTY,
-  TOTAL_CARDS_QTY,
+  BOARD_PRESETS,
 } from './const';
 import {generateFilms} from './mock/cards';
 import {renderExtraCategories} from './components/extra-category';
@@ -18,7 +17,11 @@ import {renderFooterCount} from './components/footer-count';
 import {addPagination} from './components/add-pagination';
 import {updateProfile} from './components/update-profile';
 
-const filmsData = generateFilms(TOTAL_CARDS_QTY);
+const {
+  totalCardsQuantity,
+  initialRenderedCardsQuantity
+} = BOARD_PRESETS;
+const filmsData = generateFilms(totalCardsQuantity);
 
 const userProfile = {
   watchlist: 0,
@@ -44,7 +47,7 @@ const renderModal = (content) => {
 };
 
 const renderContent = () => {
-  let initialFilmsCounter = CARDS_MAIN_LIST_QTY;
+  let initialFilmsCounter = initialRenderedCardsQuantity;
 
   const mainElement = document.querySelector(`.main`);
 
