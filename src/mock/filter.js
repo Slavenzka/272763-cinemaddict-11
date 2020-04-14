@@ -1,32 +1,26 @@
-const FILTER_NAMES = [
-  `All movies`, `Watchlist`, `History`, `Favourites`
+const FILTERS = [
+  {
+    filterName: `All movies`,
+  },
+  {
+    filterName: `Watchlist`,
+    filterCount: 0
+  },
+  {
+    filterName: `History`,
+    filterCount: 0
+  },
+  {
+    filterName: `Favourites`,
+    filterCount: 0
+  }
 ];
 
-// TODO apply arguments spread instead of switch
-export const generateFilters = (watchlist, history, favourites) => {
-  return FILTER_NAMES.map((filterName) => {
-    switch (filterName) {
-      case `All movies`:
-        return {
-          filterName
-        };
-      case `Watchlist`:
-        return {
-          filterName,
-          filterCount: watchlist
-        };
-      case `History`:
-        return {
-          filterName,
-          filterCount: history
-        };
-      case `Favourites`:
-        return {
-          filterName,
-          filterCount: favourites
-        };
-      default:
-        return null;
+export const generateFilters = (...args) => {
+  return FILTERS.map((filter, index) => {
+    if (index !== 0) {
+      filter.filterCount = args[index - 1];
     }
+    return filter;
   });
 };
