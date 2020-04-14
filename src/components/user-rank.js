@@ -1,11 +1,14 @@
+import {USER_RANK_PRESETS} from '../const';
+
 export const createUserRankTemplate = (watchedMoviesQuantity) => {
   let status = ``;
+  const {novice, fan, buff} = USER_RANK_PRESETS;
 
-  if (watchedMoviesQuantity > 1 && watchedMoviesQuantity <= 10) {
+  if (watchedMoviesQuantity >= novice.min && watchedMoviesQuantity <= novice.max) {
     status = `Novice`;
-  } else if (watchedMoviesQuantity > 11 && watchedMoviesQuantity <= 20) {
+  } else if (watchedMoviesQuantity >= fan.min && watchedMoviesQuantity <= fan.max) {
     status = `Fan`;
-  } else if (watchedMoviesQuantity > 21) {
+  } else if (watchedMoviesQuantity >= buff.min) {
     status = `Movie Buff`;
   }
   return (

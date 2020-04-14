@@ -7,6 +7,19 @@ export const MAX_RATING = 10;
 export const MIN_COMMENTS_COUNT = 1;
 export const MAX_GENRES_COUNT = 3;
 export const MAX_USER_COMMENTS = 6;
+export const USER_RANK_PRESETS = {
+  novice: {
+    min: 2,
+    max: 10
+  },
+  fan: {
+    min: 12,
+    max: 20
+  },
+  buff: {
+    min: 21
+  }
+};
 
 export const FILMS = [
   {
