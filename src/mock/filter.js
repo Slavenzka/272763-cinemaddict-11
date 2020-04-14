@@ -8,21 +8,25 @@ export const generateFilters = (watchlist, history, favourites) => {
     switch (filterName) {
       case `All movies`:
         return {
-          [filterName]: null
+          filterName
         };
       case `Watchlist`:
         return {
-          [filterName]: watchlist
+          filterName,
+          filterCount: watchlist
         };
       case `History`:
         return {
-          [filterName]: history
+          filterName,
+          filterCount: history
         };
       case `Favourites`:
         return {
-          [filterName]: favourites
+          filterName,
+          filterCount: favourites
         };
+      default:
+        return null;
     }
-    return null;
   });
 };

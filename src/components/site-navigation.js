@@ -10,7 +10,7 @@ const createFilterMarkup = (name, isActive, count) => {
 };
 
 export const createSiteNavTemplate = (filters) => {
-  const filtersMarkup = filters.map((item, index) => createFilterMarkup(Object.keys(item)[0], index === 0, Object.values(item)[0])).join(`\n`);
+  const filtersMarkup = filters.map((item, index) => createFilterMarkup(item.filterName, index === 0, item.filterCount)).join(`\n`);
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
