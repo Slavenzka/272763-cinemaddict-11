@@ -1,10 +1,10 @@
-const filterNames = [
+const FILTER_NAMES = [
   `All movies`, `Watchlist`, `History`, `Favourites`
 ];
 
 // TODO apply arguments spread instead of switch
 export const generateFilters = (watchlist, history, favourites) => {
-  return filterNames.map((filterName) => {
+  return FILTER_NAMES.map((filterName) => {
     switch (filterName) {
       case `All movies`:
         return {
