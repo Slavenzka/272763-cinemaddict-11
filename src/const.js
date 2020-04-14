@@ -2,7 +2,6 @@ export const TOTAL_CARDS_QTY = 23;
 export const CARDS_MAIN_LIST_QTY = 5;
 export const CARDS_LOAD_MORE_QTY = 5;
 export const CARDS_EXTRA_LIST_QTY = 2;
-export const EXTRA_CATEGORIES = [`Top rated`, `Most commented`];
 export const TRIMMED_COMMENT_LENGTH = 139;
 export const MAX_RATING = 10;
 export const MIN_COMMENTS_COUNT = 1;
