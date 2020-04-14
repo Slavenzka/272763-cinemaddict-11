@@ -25,7 +25,7 @@ const filmsData = generateFilms(totalCardsQuantity);
 
 const userProfile = {
   watchlist: 0,
-  watched: 0,
+  history: 0,
   favourites: 0
 };
 
@@ -33,11 +33,11 @@ updateProfile(filmsData, userProfile);
 
 const renderUserRank = () => {
   const headerElement = document.querySelector(`.header`);
-  render(headerElement, createUserRankTemplate(userProfile.watched));
+  render(headerElement, createUserRankTemplate(userProfile.history));
 };
 
 const renderControls = (mainElement) => {
-  const filters = generateFilters(userProfile.watchlist, userProfile.watched, userProfile.favourites);
+  const filters = generateFilters(userProfile);
   render(mainElement, createSiteNavTemplate(filters));
   render(mainElement, createItemsSortTemplate());
 };

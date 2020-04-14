@@ -3,24 +3,22 @@ const FILTERS = [
     filterName: `All movies`,
   },
   {
-    filterName: `Watchlist`,
+    filterName: `watchlist`,
     filterCount: 0
   },
   {
-    filterName: `History`,
+    filterName: `history`,
     filterCount: 0
   },
   {
-    filterName: `Favourites`,
+    filterName: `favourites`,
     filterCount: 0
   }
 ];
 
-export const generateFilters = (...args) => {
-  return FILTERS.map((filter, index) => {
-    if (index !== 0) {
-      filter.filterCount = args[index - 1];
-    }
+export const generateFilters = (userData) => {
+  return FILTERS.map((filter) => {
+    filter.filterCount = userData[filter.filterName];
     return filter;
   });
 };

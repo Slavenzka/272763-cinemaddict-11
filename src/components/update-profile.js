@@ -4,7 +4,7 @@ export const updateProfile = (filmsData, userProfile) => {
       userProfile.watchlist += 1;
     }
     if (film.isWatched) {
-      userProfile.watched += 1;
+      userProfile.history += 1;
     }
     if (film.isFavourite) {
       userProfile.favourites += 1;
