@@ -1,11 +1,16 @@
-import UserRankClass from './components/user-rank';
-import FooterCount from './components/footer-count';
-import SiteNavigation from './components/site-navigation';
-import Sort from './components/sort';
-import {createButtonMoreTemplate} from './components/button-more';
+import UserRankClassComponent from './components/user-rank';
+import FooterCountComponent from './components/footer-count';
+import SiteNavigationComponent from './components/site-navigation';
+import SortComponent from './components/sort';
+import ButtonMoreComponent from './components/button-more';
 import {createFilmDetailsTemplate} from './components/film-details';
-import {renderSectionHeading} from './components/section-heading';
-import {render, renderElement, updateProfile, createSectionElement} from './utils';
+import {
+  render,
+  renderElement,
+  updateProfile,
+  createSectionElement,
+  renderSectionHeading
+} from './utils';
 import {renderFilmCards} from './components/film-cards-list';
 import {generateFilters} from './mock/filter';
 import {
@@ -13,7 +18,6 @@ import {
 } from './const';
 import {generateFilms} from './mock/cards';
 import {renderExtraCategories} from './components/extra-category';
-import {addPagination} from './components/add-pagination';
 
 const {
   totalCardsQuantity,
@@ -31,23 +35,23 @@ updateProfile(filmsData, userProfile);
 
 const renderHeader = () => {
   const headerElement = document.querySelector(`.header`);
-  const userRank = new UserRankClass(userProfile.history);
+  const userRank = new UserRankClassComponent(userProfile.history);
   renderElement(headerElement, userRank.getElement());
 };
 
 const renderFooter = () => {
   const footerCounterContainer = document.querySelector(`.footer__statistics`);
-  const footerCounter = new FooterCount(filmsData.length);
+  const footerCounter = new FooterCountComponent(filmsData.length);
   renderElement(footerCounterContainer, footerCounter.getElement());
 };
 
 const renderControls = (mainElement) => {
   const filters = generateFilters(userProfile);
 
-  const siteNavigation = new SiteNavigation(filters);
+  const siteNavigation = new SiteNavigationComponent(filters);
   renderElement(mainElement, siteNavigation.getElement());
 
-  const siteSorting = new Sort();
+  const siteSorting = new SortComponent();
   renderElement(mainElement, siteSorting.getElement());
 };
 
@@ -66,13 +70,12 @@ const renderContent = () => {
   renderSectionHeading(filmsListSection, `All movies. Upcoming`, true);
   const filmsListContainer = createSectionElement(filmsListSection, `films-list__container`, `div`);
 
-  renderFilmCards(filmsListContainer, filmsData.slice(0, initialFilmsCounter));
+  renderFilmCards(filmsData.slice(0, initialFilmsCounter));
 
-  render(filmsListSection, createButtonMoreTemplate());
-  const loadMoreButton = filmsListSection.querySelector(`.films-list__show-more`);
-  addPagination(loadMoreButton, filmsData, initialFilmsCounter);
+  const buttonMore = new ButtonMoreComponent(filmsData, initialFilmsCounter);
+  renderElement(filmsListSection, buttonMore.getElement());
 
-  renderExtraCategories(filmsSection, filmsData);
+  // renderExtraCategories(filmsSection, filmsData);
 };
 
 renderHeader();
