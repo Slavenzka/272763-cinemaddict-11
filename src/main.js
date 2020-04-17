@@ -4,9 +4,8 @@ import SiteNavigation from './components/site-navigation';
 import Sort from './components/sort';
 import {createButtonMoreTemplate} from './components/button-more';
 import {createFilmDetailsTemplate} from './components/film-details';
-import {createSectionElement} from './components/section-element';
 import {renderSectionHeading} from './components/section-heading';
-import {render, renderElement, updateProfile} from './utils';
+import {render, renderElement, updateProfile, createSectionElement} from './utils';
 import {renderFilmCards} from './components/film-cards-list';
 import {generateFilters} from './mock/filter';
 import {
@@ -57,9 +56,8 @@ const renderModal = (content) => {
 };
 
 const renderContent = () => {
-  let initialFilmsCounter = initialRenderedCardsQuantity;
-
   const mainElement = document.querySelector(`.main`);
+  let initialFilmsCounter = initialRenderedCardsQuantity;
 
   renderControls(mainElement);
 
