@@ -22,6 +22,20 @@ export const getRandomBoolean = () => Math.random() > 0.5;
 
 export const capitalizeFirstLetter = (string) => string.slice(0, 1).toUpperCase() + string.slice(1);
 
+export const updateProfile = (filmsData, userProfile) => {
+  filmsData.forEach((film) => {
+    if (film.isInWatchlist) {
+      userProfile.watchlist += 1;
+    }
+    if (film.isWatched) {
+      userProfile.history += 1;
+    }
+    if (film.isFavourite) {
+      userProfile.favourites += 1;
+    }
+  });
+};
+
 export const getNodeFromTemplate = (template) => {
   const node = document.createElement(`div`);
   node.innerHTML = template;

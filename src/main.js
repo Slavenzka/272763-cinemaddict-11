@@ -5,7 +5,7 @@ import {createButtonMoreTemplate} from './components/button-more';
 import {createFilmDetailsTemplate} from './components/film-details';
 import {createSectionElement} from './components/section-element';
 import {renderSectionHeading} from './components/section-heading';
-import {render, renderElement} from './utils';
+import {render, renderElement, updateProfile} from './utils';
 import {renderFilmCards} from './components/film-cards-list';
 import {generateFilters} from './mock/filter';
 import {
@@ -15,7 +15,6 @@ import {generateFilms} from './mock/cards';
 import {renderExtraCategories} from './components/extra-category';
 import {renderFooterCount} from './components/footer-count';
 import {addPagination} from './components/add-pagination';
-import {updateProfile} from './components/update-profile';
 
 const {
   totalCardsQuantity,
@@ -71,4 +70,4 @@ const renderContent = () => {
 renderHeader();
 renderContent();
 renderFooterCount(filmsData.length);
-renderModal(createFilmDetailsTemplate(filmsData[0]));
+// renderModal(createFilmDetailsTemplate(filmsData[0]));
