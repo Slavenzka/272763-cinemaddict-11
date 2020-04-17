@@ -3,21 +3,19 @@ import FooterCountComponent from './components/footer-count';
 import SiteNavigationComponent from './components/site-navigation';
 import SortComponent from './components/sort';
 import ButtonMoreComponent from './components/button-more';
+import ExtraCategories from './components/extra-categories';
 import {createFilmDetailsTemplate} from './components/film-details';
+import {renderFilmCards} from './components/film-cards-list';
 import {
   render,
   renderElement,
   updateProfile,
-  createSectionElement,
+  renderSectionElement,
   renderSectionHeading
 } from './utils';
-import {renderFilmCards} from './components/film-cards-list';
+import {BOARD_PRESETS} from './const';
 import {generateFilters} from './mock/filter';
-import {
-  BOARD_PRESETS,
-} from './const';
 import {generateFilms} from './mock/cards';
-import {renderExtraCategories} from './components/extra-category';
 
 const {
   totalCardsQuantity,
@@ -65,17 +63,18 @@ const renderContent = () => {
 
   renderControls(mainElement);
 
-  const filmsSection = createSectionElement(mainElement, `films`);
-  const filmsListSection = createSectionElement(filmsSection, `films-list`);
+  const filmsSection = renderSectionElement(mainElement, `films`);
+  const filmsListSection = renderSectionElement(filmsSection, `films-list`);
   renderSectionHeading(filmsListSection, `All movies. Upcoming`, true);
-  const filmsListContainer = createSectionElement(filmsListSection, `films-list__container`, `div`);
+  renderSectionElement(filmsListSection, `films-list__container`, `div`);
 
   renderFilmCards(filmsData.slice(0, initialFilmsCounter));
 
   const buttonMore = new ButtonMoreComponent(filmsData, initialFilmsCounter);
   renderElement(filmsListSection, buttonMore.getElement());
 
-  // renderExtraCategories(filmsSection, filmsData);
+  const extraCategories = new ExtraCategories(filmsSection, filmsData);
+  extraCategories.renderExtraCategories();
 };
 
 renderHeader();

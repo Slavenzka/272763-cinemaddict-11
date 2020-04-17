@@ -36,7 +36,7 @@ export const updateProfile = (filmsData, userProfile) => {
   });
 };
 
-export const createSectionElement = (container, className, type = `section`) => {
+export const renderSectionElement = (container, className, type = `section`) => {
   const sectionElement = document.createElement(type);
   sectionElement.classList.add(className);
   container.appendChild(sectionElement);
