@@ -1,4 +1,5 @@
 import UserRankClass from './components/user-rank';
+import FooterCount from './components/footer-count';
 import {createSiteNavTemplate} from './components/site-navigation';
 import {createItemsSortTemplate} from './components/sort';
 import {createButtonMoreTemplate} from './components/button-more';
@@ -13,7 +14,6 @@ import {
 } from './const';
 import {generateFilms} from './mock/cards';
 import {renderExtraCategories} from './components/extra-category';
-import {renderFooterCount} from './components/footer-count';
 import {addPagination} from './components/add-pagination';
 
 const {
@@ -34,6 +34,12 @@ const renderHeader = () => {
   const headerElement = document.querySelector(`.header`);
   const userRank = new UserRankClass(userProfile.history);
   renderElement(headerElement, userRank.getElement());
+};
+
+const renderFooter = () => {
+  const footerCounterContainer = document.querySelector(`.footer__statistics`);
+  const footerCounter = new FooterCount(filmsData.length);
+  renderElement(footerCounterContainer, footerCounter.getElement());
 };
 
 const renderControls = (mainElement) => {
@@ -68,6 +74,6 @@ const renderContent = () => {
 };
 
 renderHeader();
+renderFooter();
 renderContent();
-renderFooterCount(filmsData.length);
 // renderModal(createFilmDetailsTemplate(filmsData[0]));
