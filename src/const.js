@@ -18,7 +18,7 @@ export const USER_RANK_PRESETS = {
     max: 10
   },
   fan: {
-    min: 12,
+    min: 11,
     max: 20
   },
   buff: {
@@ -119,3 +119,8 @@ export const MONTHS = [
   `November`,
   `December`
 ];
+
+export const RENDER_POSITION = {
+  BEFOREEND: `beforeend`,
+  AFTERBEGIN: `afterbegin`
+};

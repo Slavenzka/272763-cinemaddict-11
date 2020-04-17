@@ -1,7 +1,29 @@
-export const renderFooterCount = (totalMoviesQuantity) => {
-  const footerCounterContainer = document.querySelector(`.footer__statistics`);
+import {getNodeFromTemplate} from '../utils';
 
-  const counter = document.createElement(`p`);
-  counter.textContent = `${totalMoviesQuantity} movies inside`;
-  footerCounterContainer.appendChild(counter);
+const createFooterCountTemplate = (totalMoviesQuantity) => {
+  return totalMoviesQuantity > 0
+    ? (`<p>${totalMoviesQuantity} movies inside</p>`)
+    : ``;
 };
+
+export default class FooterCount {
+  constructor(totalMoviesQuantity) {
+    this._totalQuantity = totalMoviesQuantity;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFooterCountTemplate(this._totalQuantity);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = getNodeFromTemplate(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
