@@ -7,26 +7,39 @@ import {createSectionElement} from './components/section-element';
 import {renderSectionHeading} from './components/section-heading';
 import {render} from './utils';
 import {renderFilmCards} from './components/film-cards-list';
+import {generateFilters} from './mock/filter';
+import {
+  BOARD_PRESETS,
+} from './const';
+import {generateFilms} from './mock/cards';
+import {renderExtraCategories} from './components/extra-category';
+import {renderFooterCount} from './components/footer-count';
+import {addPagination} from './components/add-pagination';
+import {updateProfile} from './components/update-profile';
 
-const CARDS_MAIN_LIST_QTY = 5;
-const EXTRA_CATEGORIES = [`Top rated`, `Most commented`];
-const CARDS_EXTRA_LIST_QTY = 2;
+const {
+  totalCardsQuantity,
+  initialRenderedCardsQuantity
+} = BOARD_PRESETS;
+const filmsData = generateFilms(totalCardsQuantity);
+
+const userProfile = {
+  watchlist: 0,
+  history: 0,
+  favourites: 0
+};
+
+updateProfile(filmsData, userProfile);
 
 const renderUserRank = () => {
   const headerElement = document.querySelector(`.header`);
-  render(headerElement, createUserRankTemplate());
+  render(headerElement, createUserRankTemplate(userProfile.history));
 };
 
 const renderControls = (mainElement) => {
-  render(mainElement, createSiteNavTemplate());
+  const filters = generateFilters(userProfile);
+  render(mainElement, createSiteNavTemplate(filters));
   render(mainElement, createItemsSortTemplate());
-};
-
-const renderExtraCategory = (container, heading = ``) => {
-  const filmsCategory = createSectionElement(container, `films-list--extra`);
-  renderSectionHeading(filmsCategory, heading);
-  const filmsCategoryList = createSectionElement(filmsCategory, `films-list__container`, `div`);
-  renderFilmCards(filmsCategoryList, CARDS_EXTRA_LIST_QTY);
 };
 
 const renderModal = (content) => {
@@ -34,6 +47,8 @@ const renderModal = (content) => {
 };
 
 const renderContent = () => {
+  let initialFilmsCounter = initialRenderedCardsQuantity;
+
   const mainElement = document.querySelector(`.main`);
 
   renderControls(mainElement);
@@ -42,14 +57,17 @@ const renderContent = () => {
   const filmsListSection = createSectionElement(filmsSection, `films-list`);
   renderSectionHeading(filmsListSection, `All movies. Upcoming`, true);
   const filmsListContainer = createSectionElement(filmsListSection, `films-list__container`, `div`);
-  renderFilmCards(filmsListContainer, CARDS_MAIN_LIST_QTY);
-  render(filmsListSection, createButtonMoreTemplate());
 
-  EXTRA_CATEGORIES.forEach((category) => {
-    renderExtraCategory(filmsSection, category);
-  });
+  renderFilmCards(filmsListContainer, filmsData.slice(0, initialFilmsCounter));
+
+  render(filmsListSection, createButtonMoreTemplate());
+  const loadMoreButton = filmsListSection.querySelector(`.films-list__show-more`);
+  addPagination(loadMoreButton, filmsData, initialFilmsCounter);
+
+  renderExtraCategories(filmsSection, filmsData);
 };
 
 renderUserRank();
 renderContent();
-renderModal(createFilmDetailsTemplate());
+renderFooterCount(filmsData.length);
+renderModal(createFilmDetailsTemplate(filmsData[0]));
