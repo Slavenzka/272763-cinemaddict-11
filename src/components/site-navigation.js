@@ -1,4 +1,4 @@
-import {capitalizeFirstLetter} from '../utils';
+import {capitalizeFirstLetter, getNodeFromTemplate} from '../utils';
 
 const createFilterMarkup = (name, isActive, count) => {
   const type = name.split(` `)[0].toLowerCase();
@@ -11,7 +11,7 @@ const createFilterMarkup = (name, isActive, count) => {
   );
 };
 
-export const createSiteNavTemplate = (filters) => {
+const createSiteNavTemplate = (filters) => {
   const filtersMarkup = filters.map((item, index) => createFilterMarkup(item.filterName, index === 0, item.filterCount)).join(`\n`);
   return (
     `<nav class="main-navigation">
@@ -22,3 +22,25 @@ export const createSiteNavTemplate = (filters) => {
     </nav>`
   );
 };
+
+export default class SiteNavigation {
+  constructor(filters) {
+    this._filters = filters;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteNavTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = getNodeFromTemplate(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

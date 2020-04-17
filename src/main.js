@@ -1,7 +1,7 @@
 import UserRankClass from './components/user-rank';
 import FooterCount from './components/footer-count';
-import {createSiteNavTemplate} from './components/site-navigation';
-import {createItemsSortTemplate} from './components/sort';
+import SiteNavigation from './components/site-navigation';
+import Sort from './components/sort';
 import {createButtonMoreTemplate} from './components/button-more';
 import {createFilmDetailsTemplate} from './components/film-details';
 import {createSectionElement} from './components/section-element';
@@ -44,8 +44,12 @@ const renderFooter = () => {
 
 const renderControls = (mainElement) => {
   const filters = generateFilters(userProfile);
-  render(mainElement, createSiteNavTemplate(filters));
-  render(mainElement, createItemsSortTemplate());
+
+  const siteNavigation = new SiteNavigation(filters);
+  renderElement(mainElement, siteNavigation.getElement());
+
+  const siteSorting = new Sort();
+  renderElement(mainElement, siteSorting.getElement());
 };
 
 const renderModal = (content) => {
