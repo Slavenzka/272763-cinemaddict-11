@@ -20,7 +20,7 @@ export default class ButtonMore {
   getElement() {
     if (!this._element) {
       this._element = getNodeFromTemplate(this.getTemplate());
-      this.addEventListener();
+      this.handleButtonClick();
     }
     return this._element;
   }
@@ -29,13 +29,13 @@ export default class ButtonMore {
     this._element = null;
   }
 
-  addEventListener() {
+  handleButtonClick() {
     let prevFilmsCount = this._filmsCount;
 
     const next = () => {
       this._filmsCount += BOARD_PRESETS.additionalCardsQuantity;
 
-      const filmsAdditionalCards = this._filmsData.slice(prevFilmsCount, this._filmsCount)
+      const filmsAdditionalCards = this._filmsData.slice(prevFilmsCount, this._filmsCount);
       renderFilmCards(filmsAdditionalCards);
 
       prevFilmsCount = this._filmsCount;

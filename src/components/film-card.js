@@ -1,4 +1,5 @@
 import {addLeadingZero, getNodeFromTemplate} from '../utils';
+import FilmDetails from './film-details';
 
 const createFilmCardTemplate = ({
   name,
@@ -50,11 +51,28 @@ export default class FilmCard {
   getElement() {
     if (!this._element) {
       this._element = getNodeFromTemplate(this.getTemplate());
+      this.handleClickCard();
     }
     return this._element;
   }
 
   removeElement() {
     this._element = null;
+  }
+
+  handleClickCard() {
+    const modalTriggers = [];
+    const filmPoster = this._element.querySelector(`.film-card__poster`);
+    const filmTitle = this._element.querySelector(`.film-card__title`);
+    const filmComments = this._element.querySelector(`.film-card__comments`);
+    modalTriggers.push(filmPoster, filmTitle, filmComments);
+
+    const renderModal = () => {
+      const filmDetails = new FilmDetails(this._filmCard);
+      const mainContainer = document.querySelector(`.main`);
+      mainContainer.appendChild(filmDetails.getElement());
+    };
+
+    modalTriggers.forEach((item) => item.addEventListener(`click`, renderModal));
   }
 }

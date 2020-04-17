@@ -4,10 +4,8 @@ import SiteNavigationComponent from './components/site-navigation';
 import SortComponent from './components/sort';
 import ButtonMoreComponent from './components/button-more';
 import ExtraCategories from './components/extra-categories';
-import {createFilmDetailsTemplate} from './components/film-details';
 import {renderFilmCards} from './components/film-cards-list';
 import {
-  render,
   renderElement,
   updateProfile,
   renderSectionElement,
@@ -53,10 +51,6 @@ const renderControls = (mainElement) => {
   renderElement(mainElement, siteSorting.getElement());
 };
 
-const renderModal = (content) => {
-  render(document.body, content);
-};
-
 const renderContent = () => {
   const mainElement = document.querySelector(`.main`);
   let initialFilmsCounter = initialRenderedCardsQuantity;
@@ -80,4 +74,3 @@ const renderContent = () => {
 renderHeader();
 renderFooter();
 renderContent();
-// renderModal(createFilmDetailsTemplate(filmsData[0]));

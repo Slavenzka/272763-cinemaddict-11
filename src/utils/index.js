@@ -1,9 +1,5 @@
 import {RENDER_POSITION} from '../const';
 
-export const render = (container, content, position = `beforeend`) => {
-  container.insertAdjacentHTML(position, content);
-};
-
 export const getRandomArrayItem = (array) => array[Math.floor(Math.random() * array.length)];
 
 export const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
