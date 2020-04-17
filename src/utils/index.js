@@ -1,3 +1,5 @@
+import {RENDER_POSITION} from '../const';
+
 export const render = (container, content, position = `beforeend`) => {
   container.insertAdjacentHTML(position, content);
 };
@@ -19,3 +21,21 @@ export const addLeadingZero = (number) => number < 10 ? `0${number}` : `${number
 export const getRandomBoolean = () => Math.random() > 0.5;
 
 export const capitalizeFirstLetter = (string) => string.slice(0, 1).toUpperCase() + string.slice(1);
+
+export const getNodeFromTemplate = (template) => {
+  const node = document.createElement(`div`);
+  node.innerHTML = template;
+
+  return node.firstChild;
+};
+
+export const renderElement = (container, element, position = RENDER_POSITION.BEFOREEND) => {
+  switch (position) {
+    case `afterbegin`:
+      container.prepend(element);
+      break;
+    default:
+      container.append(element);
+      break;
+  }
+};

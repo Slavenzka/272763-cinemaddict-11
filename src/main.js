@@ -1,11 +1,11 @@
-import {createUserRankTemplate} from './components/user-rank';
+import UserRankClass from './components/user-rank';
 import {createSiteNavTemplate} from './components/site-navigation';
 import {createItemsSortTemplate} from './components/sort';
 import {createButtonMoreTemplate} from './components/button-more';
 import {createFilmDetailsTemplate} from './components/film-details';
 import {createSectionElement} from './components/section-element';
 import {renderSectionHeading} from './components/section-heading';
-import {render} from './utils';
+import {render, renderElement} from './utils';
 import {renderFilmCards} from './components/film-cards-list';
 import {generateFilters} from './mock/filter';
 import {
@@ -31,9 +31,10 @@ const userProfile = {
 
 updateProfile(filmsData, userProfile);
 
-const renderUserRank = () => {
+const renderHeader = () => {
   const headerElement = document.querySelector(`.header`);
-  render(headerElement, createUserRankTemplate(userProfile.history));
+  const userRank = new UserRankClass(userProfile.history);
+  renderElement(headerElement, userRank.getElement());
 };
 
 const renderControls = (mainElement) => {
@@ -67,7 +68,7 @@ const renderContent = () => {
   renderExtraCategories(filmsSection, filmsData);
 };
 
-renderUserRank();
+renderHeader();
 renderContent();
 renderFooterCount(filmsData.length);
 renderModal(createFilmDetailsTemplate(filmsData[0]));
