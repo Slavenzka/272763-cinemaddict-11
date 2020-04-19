@@ -1,7 +1,7 @@
 import {MONTHS} from '../const';
-import {addLeadingZero} from '../utils';
+import {addLeadingZero, getNodeFromTemplate} from '../utils';
 
-export const createFilmDetailsTemplate = ({
+const createFilmDetailsTemplate = ({
   name,
   nameOriginal,
   rating,
@@ -174,3 +174,46 @@ export const createFilmDetailsTemplate = ({
     </section>`
   );
 };
+
+export default class FilmDetails {
+  constructor(filmData) {
+    this._filmData = filmData;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._filmData);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = getNodeFromTemplate(this.getTemplate());
+      this.handleCloseModal();
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+  handleCloseModal() {
+    const closeButton = this._element.querySelector(`.film-details__close-btn`);
+
+    const closeModal = () => {
+      this._element.remove();
+      this.removeElement();
+      closeButton.removeEventListener(`click`, closeModal);
+      document.removeEventListener(`keydown`, closeModalOnEscPress);
+    };
+
+    const closeModalOnEscPress = (evt) => {
+      if (evt.key === `Escape` || evt.key === `Esc`) {
+        closeModal();
+      }
+    };
+
+    closeButton.addEventListener(`click`, closeModal);
+    document.addEventListener(`keydown`, closeModalOnEscPress);
+  }
+}

@@ -1,21 +1,19 @@
-import {createUserRankTemplate} from './components/user-rank';
-import {createSiteNavTemplate} from './components/site-navigation';
-import {createItemsSortTemplate} from './components/sort';
-import {createButtonMoreTemplate} from './components/button-more';
-import {createFilmDetailsTemplate} from './components/film-details';
-import {createSectionElement} from './components/section-element';
-import {renderSectionHeading} from './components/section-heading';
-import {render} from './utils';
+import UserRankClassComponent from './components/user-rank';
+import FooterCountComponent from './components/footer-count';
+import SiteNavigationComponent from './components/site-navigation';
+import SortComponent from './components/sort';
+import ButtonMoreComponent from './components/button-more';
+import ExtraCategories from './components/extra-categories';
 import {renderFilmCards} from './components/film-cards-list';
-import {generateFilters} from './mock/filter';
 import {
-  BOARD_PRESETS,
-} from './const';
+  renderElement,
+  updateProfile,
+  renderSectionElement,
+  renderSectionHeading
+} from './utils';
+import {BOARD_PRESETS} from './const';
+import {generateFilters} from './mock/filter';
 import {generateFilms} from './mock/cards';
-import {renderExtraCategories} from './components/extra-category';
-import {renderFooterCount} from './components/footer-count';
-import {addPagination} from './components/add-pagination';
-import {updateProfile} from './components/update-profile';
 
 const {
   totalCardsQuantity,
@@ -31,43 +29,48 @@ const userProfile = {
 
 updateProfile(filmsData, userProfile);
 
-const renderUserRank = () => {
+const renderHeader = () => {
   const headerElement = document.querySelector(`.header`);
-  render(headerElement, createUserRankTemplate(userProfile.history));
+  const userRank = new UserRankClassComponent(userProfile.history);
+  renderElement(headerElement, userRank.getElement());
+};
+
+const renderFooter = () => {
+  const footerCounterContainer = document.querySelector(`.footer__statistics`);
+  const footerCounter = new FooterCountComponent(filmsData.length);
+  renderElement(footerCounterContainer, footerCounter.getElement());
 };
 
 const renderControls = (mainElement) => {
   const filters = generateFilters(userProfile);
-  render(mainElement, createSiteNavTemplate(filters));
-  render(mainElement, createItemsSortTemplate());
-};
 
-const renderModal = (content) => {
-  render(document.body, content);
+  const siteNavigation = new SiteNavigationComponent(filters);
+  renderElement(mainElement, siteNavigation.getElement());
+
+  const siteSorting = new SortComponent();
+  renderElement(mainElement, siteSorting.getElement());
 };
 
 const renderContent = () => {
-  let initialFilmsCounter = initialRenderedCardsQuantity;
-
   const mainElement = document.querySelector(`.main`);
+  let initialFilmsCounter = initialRenderedCardsQuantity;
 
   renderControls(mainElement);
 
-  const filmsSection = createSectionElement(mainElement, `films`);
-  const filmsListSection = createSectionElement(filmsSection, `films-list`);
+  const filmsSection = renderSectionElement(mainElement, `films`);
+  const filmsListSection = renderSectionElement(filmsSection, `films-list`);
   renderSectionHeading(filmsListSection, `All movies. Upcoming`, true);
-  const filmsListContainer = createSectionElement(filmsListSection, `films-list__container`, `div`);
+  renderSectionElement(filmsListSection, `films-list__container`, `div`);
 
-  renderFilmCards(filmsListContainer, filmsData.slice(0, initialFilmsCounter));
+  renderFilmCards(filmsData.slice(0, initialFilmsCounter));
 
-  render(filmsListSection, createButtonMoreTemplate());
-  const loadMoreButton = filmsListSection.querySelector(`.films-list__show-more`);
-  addPagination(loadMoreButton, filmsData, initialFilmsCounter);
+  const buttonMore = new ButtonMoreComponent(filmsData, initialFilmsCounter);
+  renderElement(filmsListSection, buttonMore.getElement());
 
-  renderExtraCategories(filmsSection, filmsData);
+  const extraCategories = new ExtraCategories(filmsSection, filmsData);
+  extraCategories.renderExtraCategories();
 };
 
-renderUserRank();
+renderHeader();
+renderFooter();
 renderContent();
-renderFooterCount(filmsData.length);
-renderModal(createFilmDetailsTemplate(filmsData[0]));

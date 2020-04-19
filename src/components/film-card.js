@@ -1,6 +1,7 @@
-import {addLeadingZero} from '../utils';
+import {addLeadingZero, getNodeFromTemplate} from '../utils';
+import FilmDetails from './film-details';
 
-export const createFilmCardTemplate = ({
+const createFilmCardTemplate = ({
   name,
   rating,
   date,
@@ -36,3 +37,42 @@ export const createFilmCardTemplate = ({
     </article>`
   );
 };
+
+export default class FilmCard {
+  constructor(filmCard) {
+    this._filmCard = filmCard;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._filmCard);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = getNodeFromTemplate(this.getTemplate());
+      this.handleClickCard();
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+  handleClickCard() {
+    const modalTriggers = [];
+    const filmPoster = this._element.querySelector(`.film-card__poster`);
+    const filmTitle = this._element.querySelector(`.film-card__title`);
+    const filmComments = this._element.querySelector(`.film-card__comments`);
+    modalTriggers.push(filmPoster, filmTitle, filmComments);
+
+    const renderModal = () => {
+      const filmDetails = new FilmDetails(this._filmCard);
+      const mainContainer = document.querySelector(`.main`);
+      mainContainer.appendChild(filmDetails.getElement());
+    };
+
+    modalTriggers.forEach((item) => item.addEventListener(`click`, renderModal));
+  }
+}

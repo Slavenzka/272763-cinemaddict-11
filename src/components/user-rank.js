@@ -1,6 +1,7 @@
 import {USER_RANK_PRESETS} from '../const';
+import {getNodeFromTemplate} from '../utils';
 
-export const createUserRankTemplate = (watchedMoviesQuantity) => {
+const createUserRankTemplate = (watchedMoviesQuantity) => {
   let status = ``;
   const {novice, fan, buff} = USER_RANK_PRESETS;
 
@@ -18,3 +19,25 @@ export const createUserRankTemplate = (watchedMoviesQuantity) => {
     </section>`
   );
 };
+
+export default class UserRank {
+  constructor(watchedMoviesQuantity) {
+    this._watchedCounter = watchedMoviesQuantity;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createUserRankTemplate(this._watchedCounter);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = getNodeFromTemplate(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
