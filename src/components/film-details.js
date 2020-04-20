@@ -1,5 +1,6 @@
 import {MONTHS} from '../const';
-import {addLeadingZero, getNodeFromTemplate} from '../utils';
+import {addLeadingZero} from '../utils/common';
+import {getNodeFromTemplate} from '../utils/render';
 import AbstractComponent from './abstract-component';
 
 const createFilmDetailsTemplate = ({

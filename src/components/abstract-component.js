@@ -1,4 +1,4 @@
-import {getNodeFromTemplate} from '../utils';
+import {getNodeFromTemplate} from '../utils/render';
 
 export default class AbstractComponent {
   constructor() {

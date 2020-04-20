@@ -1,4 +1,4 @@
-import {getNodeFromTemplate} from '../utils';
+import {getNodeFromTemplate} from '../utils/render';
 import {BOARD_PRESETS} from '../const';
 import {renderFilmCards} from './film-cards-list';
 import AbstractComponent from './abstract-component';

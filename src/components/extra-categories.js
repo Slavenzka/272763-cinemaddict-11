@@ -1,4 +1,4 @@
-import {renderSectionElement, renderSectionHeading} from '../utils';
+import {renderSectionElement, renderSectionHeading} from '../utils/render';
 import {renderFilmCards} from '../components/film-cards-list';
 import {BOARD_PRESETS} from '../const';
 

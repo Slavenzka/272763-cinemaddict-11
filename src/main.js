@@ -7,10 +7,10 @@ import ExtraCategories from './components/extra-categories';
 import {renderFilmCards} from './components/film-cards-list';
 import {
   renderElement,
-  updateProfile,
   renderSectionElement,
   renderSectionHeading
-} from './utils';
+} from './utils/render';
+import {updateProfile} from './utils/common';
 import {BOARD_PRESETS} from './const';
 import {generateFilters} from './mock/filter';
 import {generateFilms} from './mock/cards';

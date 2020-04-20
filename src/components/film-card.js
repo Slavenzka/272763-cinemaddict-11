@@ -1,4 +1,5 @@
-import {addLeadingZero, getNodeFromTemplate} from '../utils';
+import {addLeadingZero} from '../utils/common';
+import {getNodeFromTemplate} from '../utils/render';
 import FilmDetails from './film-details';
 import AbstractComponent from './abstract-component';
 

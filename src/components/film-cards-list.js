@@ -1,4 +1,4 @@
-import {renderElement} from '../utils';
+import {renderElement} from '../utils/render';
 import FilmCardComponent from '../components/film-card';
 
 export const renderFilmCards = (cards, cardsContainer) => {
