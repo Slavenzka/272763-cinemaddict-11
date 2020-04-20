@@ -1,5 +1,6 @@
 import {MONTHS} from '../const';
 import {addLeadingZero, getNodeFromTemplate} from '../utils';
+import AbstractComponent from './abstract-component';
 
 const createFilmDetailsTemplate = ({
   name,
@@ -175,10 +176,10 @@ const createFilmDetailsTemplate = ({
   );
 };
 
-export default class FilmDetails {
+export default class FilmDetails extends AbstractComponent {
   constructor(filmData) {
+    super();
     this._filmData = filmData;
-    this._element = null;
   }
 
   getTemplate() {
@@ -191,10 +192,6 @@ export default class FilmDetails {
       this.handleCloseModal();
     }
     return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   handleCloseModal() {

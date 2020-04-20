@@ -1,16 +1,17 @@
 import {getNodeFromTemplate} from '../utils';
 import {BOARD_PRESETS} from '../const';
 import {renderFilmCards} from './film-cards-list';
+import AbstractComponent from './abstract-component';
 
 const createButtonMoreTemplate = () => (
   `<button class="films-list__show-more">Show more</button>`
 );
 
-export default class ButtonMore {
+export default class ButtonMore extends AbstractComponent {
   constructor(filmsData, filmsCount) {
+    super();
     this._filmsData = filmsData;
     this._filmsCount = filmsCount;
-    this._element = null;
   }
 
   getTemplate() {
@@ -23,10 +24,6 @@ export default class ButtonMore {
       this.handleButtonClick();
     }
     return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   handleButtonClick() {
