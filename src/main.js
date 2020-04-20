@@ -60,6 +60,12 @@ const renderContent = () => {
   const filmsSection = renderSectionElement(mainElement, `films`);
   const filmsListSection = renderSectionElement(filmsSection, `films-list`);
   renderSectionHeading(filmsListSection, `All movies. Upcoming`, true);
+
+  if (!filmsData || filmsData.length === 0) {
+    renderSectionHeading(filmsListSection, `There are no movies in our database`);
+    return;
+  }
+
   renderSectionElement(filmsListSection, `films-list__container`, `div`);
 
   renderFilmCards(filmsData.slice(0, initialFilmsCounter));
