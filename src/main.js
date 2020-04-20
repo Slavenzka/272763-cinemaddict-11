@@ -6,7 +6,7 @@ import ButtonMoreComponent from './components/button-more';
 import ExtraCategories from './components/extra-categories';
 import {renderFilmCards} from './components/film-cards-list';
 import {
-  renderElement,
+  render,
   renderSectionElement,
   renderSectionHeading
 } from './utils/render';
@@ -32,23 +32,23 @@ updateProfile(filmsData, userProfile);
 const renderHeader = () => {
   const headerElement = document.querySelector(`.header`);
   const userRank = new UserRankClassComponent(userProfile.history);
-  renderElement(headerElement, userRank.getElement());
+  render(headerElement, userRank);
 };
 
 const renderFooter = () => {
   const footerCounterContainer = document.querySelector(`.footer__statistics`);
   const footerCounter = new FooterCountComponent(filmsData.length);
-  renderElement(footerCounterContainer, footerCounter.getElement());
+  render(footerCounterContainer, footerCounter);
 };
 
 const renderControls = (mainElement) => {
   const filters = generateFilters(userProfile);
 
   const siteNavigation = new SiteNavigationComponent(filters);
-  renderElement(mainElement, siteNavigation.getElement());
+  render(mainElement, siteNavigation);
 
   const siteSorting = new SortComponent();
-  renderElement(mainElement, siteSorting.getElement());
+  render(mainElement, siteSorting);
 };
 
 const renderContent = () => {
@@ -71,7 +71,7 @@ const renderContent = () => {
   renderFilmCards(filmsData.slice(0, initialFilmsCounter));
 
   const buttonMore = new ButtonMoreComponent(filmsData, initialFilmsCounter);
-  renderElement(filmsListSection, buttonMore.getElement());
+  render(filmsListSection, buttonMore);
 
   const extraCategories = new ExtraCategories(filmsSection, filmsData);
   extraCategories.renderExtraCategories();

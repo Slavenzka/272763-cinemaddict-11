@@ -25,13 +25,25 @@ export const getNodeFromTemplate = (template) => {
   return node.firstChild;
 };
 
-export const renderElement = (container, element, position = RENDER_POSITION.BEFOREEND) => {
+export const render = (container, component, position = RENDER_POSITION.BEFOREEND) => {
   switch (position) {
     case `afterbegin`:
-      container.prepend(element);
+      container.prepend(component.getElement());
       break;
     default:
-      container.append(element);
+      container.append(component.getElement());
       break;
+  }
+};
+
+export const replace = (newComponent, oldComponent) => {
+  const newElement = newComponent.getElement();
+  const oldElement = oldComponent.getElement();
+  const parentElement = oldComponent.parentElement;
+
+  const isExistElements = !!(parent && newElement && oldElement);
+
+  if (isExistElements && parentElement.contains(oldElement)) {
+    parentElement.replaceChild(newElement, oldElement);
   }
 };
