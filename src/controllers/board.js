@@ -30,6 +30,36 @@ export const renderFilmCards = (cards, cardsContainer) => {
   cards.forEach((card) => renderCard(card, container));
 };
 
+const renderButtonMore = (container, counter, filmsData) => {
+  const buttonMoreClickHandler = (loadMoreButtonComponent) => {
+    let prevFilmsCount = counter;
+
+    const next = () => {
+      counter += BOARD_PRESETS.additionalCardsQuantity;
+
+      const filmsAdditionalCards = filmsData.slice(prevFilmsCount, counter);
+      renderFilmCards(filmsAdditionalCards);
+
+      prevFilmsCount = counter;
+    };
+
+    const checkAllElementsLoaded = () => {
+      if (counter >= filmsData.length) {
+        loadMoreButtonComponent.removeElement();
+      }
+    };
+
+    return () => {
+      next();
+      checkAllElementsLoaded();
+    };
+  };
+
+  const buttonMore = new ButtonMoreComponent();
+  render(container, buttonMore);
+  buttonMore.handleButtonClick(buttonMoreClickHandler(buttonMore));
+};
+
 const renderBoard = (filmsData, mainElement) => {
   let initialFilmsCounter = initialRenderedCardsQuantity;
 
@@ -45,11 +75,8 @@ const renderBoard = (filmsData, mainElement) => {
   }
 
   renderSectionElement(filmsListSection, `films-list__container`, `div`);
-
   renderFilmCards(filmsData.slice(0, initialFilmsCounter));
-
-  const buttonMore = new ButtonMoreComponent(filmsData, initialFilmsCounter);
-  render(filmsListSection, buttonMore);
+  renderButtonMore(filmsListSection, initialFilmsCounter, filmsData);
 
   const extraCategories = new ExtraCategories(filmsSection, filmsData);
   extraCategories.renderExtraCategories();
