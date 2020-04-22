@@ -1,6 +1,5 @@
 import {render, renderSectionElement, renderSectionHeading} from '../utils/render';
 import ButtonMoreComponent from '../components/button-more';
-import ExtraCategories from '../components/extra-categories';
 import {BOARD_PRESETS} from '../const';
 import {generateFilters} from '../mock/filter';
 import SiteNavigationComponent from '../components/site-navigation';
@@ -25,7 +24,7 @@ const renderCard = (cardData, container) => {
   render(container, filmCard);
 };
 
-export const renderFilmCards = (cards, cardsContainer) => {
+const renderFilmCards = (cards, cardsContainer) => {
   const container = cardsContainer || document.querySelector(`.films-list__container`);
   cards.forEach((card) => renderCard(card, container));
 };
@@ -60,6 +59,33 @@ const renderButtonMore = (container, counter, filmsData) => {
   buttonMore.handleButtonClick(buttonMoreClickHandler(buttonMore));
 };
 
+const renderExtraCategories = (container, totalCardsList) => {
+  const renderExtraCategory = (cardsList, categoryName = ``) => {
+    const filmsCategory = renderSectionElement(container, `films-list--extra`);
+    renderSectionHeading(filmsCategory, categoryName);
+    const filmsCategoryList = renderSectionElement(filmsCategory, `films-list__container`, `div`);
+
+    renderFilmCards(cardsList, filmsCategoryList);
+  };
+
+  const renderTopRatedFilms = () => {
+    const categoryData = [...totalCardsList]
+      .sort((a, b) => a.rating < b.rating)
+      .slice(0, BOARD_PRESETS.extraListCardsQuantity);
+    renderExtraCategory(categoryData, `Top rated`);
+  };
+
+  const renderTopCommentedFilms = () => {
+    const categoryData = [...totalCardsList]
+      .sort((a, b) => a.userComments.length < b.userComments.length)
+      .slice(0, BOARD_PRESETS.extraListCardsQuantity);
+    renderExtraCategory(categoryData, `Most commented`);
+  };
+
+  renderTopRatedFilms();
+  renderTopCommentedFilms();
+};
+
 const renderBoard = (filmsData, mainElement) => {
   let initialFilmsCounter = initialRenderedCardsQuantity;
 
@@ -77,9 +103,7 @@ const renderBoard = (filmsData, mainElement) => {
   renderSectionElement(filmsListSection, `films-list__container`, `div`);
   renderFilmCards(filmsData.slice(0, initialFilmsCounter));
   renderButtonMore(filmsListSection, initialFilmsCounter, filmsData);
-
-  const extraCategories = new ExtraCategories(filmsSection, filmsData);
-  extraCategories.renderExtraCategories();
+  renderExtraCategories(filmsSection, filmsData);
 };
 
 export default class BoardController {
