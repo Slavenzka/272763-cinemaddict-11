@@ -31,6 +31,6 @@ const mainElement = document.querySelector(`.main`);
 renderHeader();
 renderFooter();
 
-const board = new BoardController(mainElement);
+const board = new BoardController(mainElement, userProfile);
 board.render(filmsData);
 

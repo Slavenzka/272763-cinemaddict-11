@@ -4,20 +4,9 @@ import {BOARD_PRESETS} from '../const';
 import {generateFilters} from '../mock/filter';
 import SiteNavigationComponent from '../components/site-navigation';
 import SortComponent from '../components/sort';
-import {userProfile} from '../main';
 import FilmCardComponent from '../components/film-card';
 
 const {initialRenderedCardsQuantity} = BOARD_PRESETS;
-
-const renderControls = (mainElement) => {
-  const filters = generateFilters(userProfile);
-
-  const siteNavigation = new SiteNavigationComponent(filters);
-  render(mainElement, siteNavigation);
-
-  const siteSorting = new SortComponent();
-  render(mainElement, siteSorting);
-};
 
 const renderCard = (cardData, container) => {
   const filmCard = new FilmCardComponent(cardData);
@@ -57,6 +46,7 @@ const renderButtonMore = (container, counter, filmsData) => {
   const buttonMore = new ButtonMoreComponent();
   render(container, buttonMore);
   buttonMore.handleButtonClick(buttonMoreClickHandler(buttonMore));
+  return buttonMore;
 };
 
 const renderExtraCategories = (container, totalCardsList) => {
@@ -87,10 +77,6 @@ const renderExtraCategories = (container, totalCardsList) => {
 };
 
 const renderBoard = (filmsData, mainElement) => {
-  let initialFilmsCounter = initialRenderedCardsQuantity;
-
-  renderControls(mainElement);
-
   const filmsSection = renderSectionElement(mainElement, `films`);
   const filmsListSection = renderSectionElement(filmsSection, `films-list`);
   renderSectionHeading(filmsListSection, `All movies. Upcoming`, [`films-list__title`, `visually-hidden`]);
@@ -101,17 +87,50 @@ const renderBoard = (filmsData, mainElement) => {
   }
 
   renderSectionElement(filmsListSection, `films-list__container`, `div`);
-  renderFilmCards(filmsData.slice(0, initialFilmsCounter));
-  renderButtonMore(filmsListSection, initialFilmsCounter, filmsData);
-  renderExtraCategories(filmsSection, filmsData);
 };
 
 export default class BoardController {
-  constructor(container) {
+  constructor(container, userProfile) {
     this._container = container;
+    this._filters = generateFilters(userProfile);
+    this._navigationComponent = new SiteNavigationComponent(this._filters);
+    this._sortComponent = new SortComponent();
+    this._buttonMore = null;
   }
 
   render(cards) {
-    renderBoard(cards, this._container);
+    let filmCards = cards.slice();
+    let initialFilmsCounter = initialRenderedCardsQuantity;
+
+    const cardsSortHandler = (sortType) => {
+      switch (sortType) {
+        case `date`:
+          filmCards = filmCards.sort((a, b) => a.date < b.date);
+          break;
+        case `rating`:
+          filmCards = filmCards.sort((a, b) => a.rating < b.rating);
+          break;
+        default:
+          filmCards = cards.slice();
+      }
+
+      const filmsListContainer = this._container.querySelector(`.films-list__container`);
+      filmsListContainer.innerHTML = ``;
+      this._buttonMore.removeElement();
+
+      renderFilmCards(filmCards.slice(0, initialFilmsCounter));
+      this._buttonMore = renderButtonMore(filmsListSection, initialFilmsCounter, filmCards);
+    };
+
+    render(this._container, this._navigationComponent);
+    render(this._container, this._sortComponent);
+    this._sortComponent.setSortTypeChangeHandler(cardsSortHandler);
+    renderBoard(filmCards, this._container);
+    renderFilmCards(filmCards.slice(0, initialFilmsCounter));
+
+    const filmsListSection = this._container.querySelector(`.films-list`);
+    const filmsSection = this._container.querySelector(`.films`);
+    this._buttonMore = renderButtonMore(filmsListSection, initialFilmsCounter, filmCards);
+    renderExtraCategories(filmsSection, filmCards);
   }
 }
