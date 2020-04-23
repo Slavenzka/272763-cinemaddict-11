@@ -93,7 +93,7 @@ const renderBoard = (filmsData, mainElement) => {
 
   const filmsSection = renderSectionElement(mainElement, `films`);
   const filmsListSection = renderSectionElement(filmsSection, `films-list`);
-  renderSectionHeading(filmsListSection, `All movies. Upcoming`, true);
+  renderSectionHeading(filmsListSection, `All movies. Upcoming`, [`films-list__title`, `visually-hidden`]);
 
   if (!filmsData || filmsData.length === 0) {
     renderSectionHeading(filmsListSection, `There are no movies in our database`);

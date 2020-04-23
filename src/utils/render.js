@@ -8,12 +8,9 @@ export const renderSectionElement = (container, className, type = `section`) => 
   return container.querySelector(`.${className}:last-of-type`);
 };
 
-export const renderSectionHeading = (container, text = ``, hidden = false) => {
+export const renderSectionHeading = (container, text = ``, classNames = [`films-list__title`]) => {
   const sectionHeading = document.createElement(`h2`);
-  sectionHeading.classList.add(`films-list__title`);
-  if (hidden) {
-    sectionHeading.classList.add(`visually-hidden`);
-  }
+  sectionHeading.classList.add(...classNames);
   sectionHeading.textContent = text;
   container.appendChild(sectionHeading);
 };
