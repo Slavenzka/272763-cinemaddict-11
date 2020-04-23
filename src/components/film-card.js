@@ -1,5 +1,7 @@
-import {addLeadingZero, getNodeFromTemplate} from '../utils';
+import {addLeadingZero} from '../utils/common';
+import {getNodeFromTemplate} from '../utils/render';
 import FilmDetails from './film-details';
+import AbstractComponent from './abstract-component';
 
 const createFilmCardTemplate = ({
   name,
@@ -38,10 +40,10 @@ const createFilmCardTemplate = ({
   );
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractComponent {
   constructor(filmCard) {
+    super();
     this._filmCard = filmCard;
-    this._element = null;
   }
 
   getTemplate() {
@@ -54,10 +56,6 @@ export default class FilmCard {
       this.handleClickCard();
     }
     return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   handleClickCard() {

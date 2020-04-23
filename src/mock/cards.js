@@ -3,7 +3,7 @@ import {
   getRandomArrayItem,
   shuffleArray,
   getRandomBoolean,
-} from './../utils';
+} from '../utils/common';
 import {
   COMMENTS,
   FILMS,
