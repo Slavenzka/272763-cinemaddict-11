@@ -1,18 +1,11 @@
-import {getNodeFromTemplate} from '../utils';
-import {BOARD_PRESETS} from '../const';
-import {renderFilmCards} from './film-cards-list';
+import {getNodeFromTemplate} from '../utils/render';
+import AbstractComponent from './abstract-component';
 
 const createButtonMoreTemplate = () => (
   `<button class="films-list__show-more">Show more</button>`
 );
 
-export default class ButtonMore {
-  constructor(filmsData, filmsCount) {
-    this._filmsData = filmsData;
-    this._filmsCount = filmsCount;
-    this._element = null;
-  }
-
+export default class ButtonMore extends AbstractComponent {
   getTemplate() {
     return createButtonMoreTemplate();
   }
@@ -25,32 +18,7 @@ export default class ButtonMore {
     return this._element;
   }
 
-  removeElement() {
-    this._element = null;
-  }
-
-  handleButtonClick() {
-    let prevFilmsCount = this._filmsCount;
-
-    const next = () => {
-      this._filmsCount += BOARD_PRESETS.additionalCardsQuantity;
-
-      const filmsAdditionalCards = this._filmsData.slice(prevFilmsCount, this._filmsCount);
-      renderFilmCards(filmsAdditionalCards);
-
-      prevFilmsCount = this._filmsCount;
-    };
-
-    const checkAllElementsLoaded = () => {
-      if (this._filmsCount >= this._filmsData.length) {
-        this._element.remove();
-        this.removeElement();
-      }
-    };
-
-    this._element.addEventListener(`click`, () => {
-      next();
-      checkAllElementsLoaded();
-    });
+  handleButtonClick(handler) {
+    this._element.addEventListener(`click`, handler);
   }
 }

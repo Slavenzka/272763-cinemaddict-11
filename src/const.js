@@ -124,3 +124,9 @@ export const RENDER_POSITION = {
   BEFOREEND: `beforeend`,
   AFTERBEGIN: `afterbegin`
 };
+
+export const SORT_TYPE = {
+  DATE: `date`,
+  RATING: `rating`,
+  DEFAULT: `default`
+};

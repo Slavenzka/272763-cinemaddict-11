@@ -1,4 +1,5 @@
-import {capitalizeFirstLetter, getNodeFromTemplate} from '../utils';
+import {capitalizeFirstLetter} from '../utils/common';
+import AbstractComponent from './abstract-component';
 
 const createFilterMarkup = (name, isActive, count) => {
   const type = name.split(` `)[0].toLowerCase();
@@ -23,24 +24,13 @@ const createSiteNavTemplate = (filters) => {
   );
 };
 
-export default class SiteNavigation {
+export default class SiteNavigation extends AbstractComponent {
   constructor(filters) {
+    super();
     this._filters = filters;
-    this._element = null;
   }
 
   getTemplate() {
     return createSiteNavTemplate(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = getNodeFromTemplate(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

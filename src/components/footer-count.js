@@ -1,4 +1,4 @@
-import {getNodeFromTemplate} from '../utils';
+import AbstractComponent from './abstract-component';
 
 const createFooterCountTemplate = (totalMoviesQuantity) => {
   return totalMoviesQuantity > 0
@@ -6,24 +6,13 @@ const createFooterCountTemplate = (totalMoviesQuantity) => {
     : ``;
 };
 
-export default class FooterCount {
+export default class FooterCount extends AbstractComponent {
   constructor(totalMoviesQuantity) {
+    super();
     this._totalQuantity = totalMoviesQuantity;
-    this._element = null;
   }
 
   getTemplate() {
     return createFooterCountTemplate(this._totalQuantity);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = getNodeFromTemplate(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

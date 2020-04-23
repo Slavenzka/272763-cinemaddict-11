@@ -1,5 +1,5 @@
 import {USER_RANK_PRESETS} from '../const';
-import {getNodeFromTemplate} from '../utils';
+import AbstractComponent from './abstract-component';
 
 const createUserRankTemplate = (watchedMoviesQuantity) => {
   let status = ``;
@@ -20,24 +20,13 @@ const createUserRankTemplate = (watchedMoviesQuantity) => {
   );
 };
 
-export default class UserRank {
+export default class UserRank extends AbstractComponent {
   constructor(watchedMoviesQuantity) {
+    super();
     this._watchedCounter = watchedMoviesQuantity;
-    this._element = null;
   }
 
   getTemplate() {
     return createUserRankTemplate(this._watchedCounter);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = getNodeFromTemplate(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
