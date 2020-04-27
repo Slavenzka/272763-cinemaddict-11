@@ -1,6 +1,5 @@
 import {addLeadingZero} from '../utils/common';
 import {getNodeFromTemplate} from '../utils/render';
-import FilmDetails from './film-details';
 import AbstractComponent from './abstract-component';
 
 const createButtonTemplate = (type, flag) => {
@@ -65,25 +64,18 @@ export default class FilmCard extends AbstractComponent {
   getElement() {
     if (!this._element) {
       this._element = getNodeFromTemplate(this.getTemplate());
-      this.handleClickCard();
     }
     return this._element;
   }
 
-  handleClickCard() {
+  setCardHandler(handler) {
     const modalTriggers = [];
     const filmPoster = this._element.querySelector(`.film-card__poster`);
     const filmTitle = this._element.querySelector(`.film-card__title`);
     const filmComments = this._element.querySelector(`.film-card__comments`);
     modalTriggers.push(filmPoster, filmTitle, filmComments);
 
-    const renderModal = () => {
-      const filmDetails = new FilmDetails(this._filmCard);
-      const mainContainer = document.querySelector(`.main`);
-      mainContainer.appendChild(filmDetails.getElement());
-    };
-
-    modalTriggers.forEach((item) => item.addEventListener(`click`, renderModal));
+    modalTriggers.forEach((item) => item.addEventListener(`click`, handler));
   }
 
   setWatchlistButtonHandler(handler) {
