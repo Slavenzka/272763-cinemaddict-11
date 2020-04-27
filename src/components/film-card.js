@@ -3,6 +3,14 @@ import {getNodeFromTemplate} from '../utils/render';
 import FilmDetails from './film-details';
 import AbstractComponent from './abstract-component';
 
+const createButtonTemplate = (type, flag) => {
+  let label = type.split(`-`).join(` `);
+  label = label[0].toUpperCase() + label.slice(1);
+  return (
+    `<button class="film-card__controls-item button film-card__controls-item--${type} ${flag && `film-card__controls-item--active`}">${label}</button>`
+  );
+};
+
 const createFilmCardTemplate = ({
   name,
   rating,
@@ -19,6 +27,10 @@ const createFilmCardTemplate = ({
   const hours = Math.trunc(runtime / 60);
   const minutes = runtime - hours * 60 > 10 ? `${runtime - hours * 60}` : `0${runtime - hours * 60}`;
 
+  const watchlistButton = createButtonTemplate(`add-to-watchlist`, isInWatchlist);
+  const watchedButton = createButtonTemplate(`mark-as-watched`, isWatched);
+  const favoriteButton = createButtonTemplate(`favorite`, isFavourite);
+
   return (
     `<article class="film-card">
       <h3 class="film-card__title">${name}</h3>
@@ -32,9 +44,9 @@ const createFilmCardTemplate = ({
       <p class="film-card__description">${descriptionPreview}</p>
       <a class="film-card__comments">${userComments.length} comments</a>
       <form class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isInWatchlist && `film-card__controls-item--active`}">Add to watchlist</button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched  ${isWatched && `film-card__controls-item--active`}">Mark as watched</button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite ${isFavourite && `film-card__controls-item--active`}">Mark as favorite</button>
+        ${watchlistButton}
+        ${watchedButton}
+        ${favoriteButton}
       </form>
     </article>`
   );
@@ -72,5 +84,20 @@ export default class FilmCard extends AbstractComponent {
     };
 
     modalTriggers.forEach((item) => item.addEventListener(`click`, renderModal));
+  }
+
+  setWatchlistButtonHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`)
+      .addEventListener(`click`, handler);
+  }
+
+  setWatchedButtonHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`)
+      .addEventListener(`click`, handler);
+  }
+
+  setFavoriteButtonHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--favorite`)
+      .addEventListener(`click`, handler);
   }
 }

@@ -10,5 +10,17 @@ export default class CardController {
   render(card) {
     this.component = new FilmCardComponent(card);
     render(this._container, this.component);
+
+    this.component.setWatchlistButtonHandler(() => {
+
+    });
+
+    this.component.setWatchedButtonHandler(() => {
+
+    });
+
+    this.component.setFavoriteButtonHandler(() => {
+
+    });
   }
 }
