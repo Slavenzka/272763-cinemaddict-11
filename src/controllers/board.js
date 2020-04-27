@@ -79,6 +79,7 @@ const renderExtraCategories = (container, totalCardsList) => {
 export default class BoardController {
   constructor(container, userProfile) {
     this._container = container;
+    this._contentContainer = null;
     this._filmsContainer = null;
     this._cards = null;
     this._initialFilmsCount = initialRenderedCardsQuantity;
@@ -98,11 +99,11 @@ export default class BoardController {
     render(this._container, this._sortComponent);
     this._sortComponent.setSortTypeChangeHandler(this._cardsSortHandler);
 
-    const contentContainer = renderSectionElement(this._container, `films`);
+    this._contentContainer = renderSectionElement(this._container, `films`);
 
     this._filmsContainer = new FilmsComponent();
     const filmsContainerElement = this._filmsContainer.getElement();
-    render(contentContainer, this._filmsContainer);
+    render(this._contentContainer, this._filmsContainer);
 
     renderSectionHeading(filmsContainerElement, `All movies. Upcoming`, [`films-list__title`, `visually-hidden`]);
 
@@ -116,7 +117,7 @@ export default class BoardController {
     renderFilmCards(this._cards.slice(0, this._initialFilmsCount));
 
     this._buttonMore = renderButtonMore(filmsContainerElement, this._initialFilmsCount, this._cards);
-    renderExtraCategories(contentContainer, this._cards);
+    this._renderExtraCategories();
   }
 
   _cardsSortHandler(sortType) {
@@ -138,5 +139,32 @@ export default class BoardController {
 
     renderFilmCards(sortableCards.slice(0, this._initialFilmsCount));
     this._buttonMore = renderButtonMore(this._filmsContainer.getElement(), this._initialFilmsCount, sortableCards);
+  }
+
+  _renderExtraCategories() {
+    const renderExtraCategory = (categoryData, categoryName = ``) => {
+      const filmsCategory = renderSectionElement(this._contentContainer, `films-list--extra`);
+      renderSectionHeading(filmsCategory, categoryName);
+      const filmsCategoryList = renderSectionElement(filmsCategory, `films-list__container`, `div`);
+
+      renderFilmCards(categoryData, filmsCategoryList);
+    };
+
+    const renderTopRatedFilms = () => {
+      const categoryData = [...this._cards]
+        .sort((a, b) => a.rating < b.rating)
+        .slice(0, BOARD_PRESETS.extraListCardsQuantity);
+      renderExtraCategory(categoryData, `Top rated`);
+    };
+
+    const renderTopCommentedFilms = () => {
+      const categoryData = [...this._cards]
+        .sort((a, b) => a.userComments.length < b.userComments.length)
+        .slice(0, BOARD_PRESETS.extraListCardsQuantity);
+      renderExtraCategory(categoryData, `Most commented`);
+    };
+
+    renderTopRatedFilms();
+    renderTopCommentedFilms();
   }
 }
