@@ -28,7 +28,7 @@ const createFilmCardTemplate = ({
         <span class="film-card__duration">${hours > 0 ? `${hours}h` : ``} ${addLeadingZero(minutes)}m</span>
         <span class="film-card__genre">${genres[0]}</span>
       </p>
-      <img src="./images/posters/${poster}" alt=${name} class="film-card__poster">
+      <img src="./images/posters/${poster}" alt="${name}" class="film-card__poster">
       <p class="film-card__description">${descriptionPreview}</p>
       <a class="film-card__comments">${userComments.length} comments</a>
       <form class="film-card__controls">

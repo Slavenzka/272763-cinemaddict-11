@@ -1,13 +1,14 @@
 import FilmCardComponent from '../components/film-card';
 import {render} from '../utils/render';
 
-export default class MovieController {
+export default class CardController {
   constructor(container) {
     this._container = container;
+    this.component = null;
   }
 
   render(card) {
-    const filmCard = new FilmCardComponent(card);
-    render(this._container, filmCard);
+    this.component = new FilmCardComponent(card);
+    render(this._container, this.component);
   }
 }
