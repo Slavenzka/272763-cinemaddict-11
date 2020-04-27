@@ -1,4 +1,4 @@
-import {render, renderSectionElement, renderSectionHeading} from '../utils/render';
+import {render, remove, renderSectionElement, renderSectionHeading} from '../utils/render';
 import ButtonMoreComponent from '../components/button-more';
 import {BOARD_PRESETS} from '../const';
 import {generateFilters} from '../mock/filter';
@@ -18,8 +18,8 @@ const renderFilmCards = (cards, cardsContainer) => {
   });
 };
 
-const getSortedCards = (cards, sortType, to) => {
-  let sortableCards = cards.slice(0, to);
+const getSortedCards = (cards, sortType, to = cards.length - 1) => {
+  let sortableCards = cards.slice();
   switch (sortType) {
     case `date`:
       sortableCards = sortableCards.sort((a, b) => a.date < b.date);
@@ -28,41 +28,10 @@ const getSortedCards = (cards, sortType, to) => {
       sortableCards = sortableCards.sort((a, b) => a.rating < b.rating);
       break;
     default:
-      sortableCards = cards.slice(0, to);
+      sortableCards = cards;
   }
-  return sortableCards;
+  return sortableCards.slice(0, to);
 };
-
-// const renderButtonMore = (container, counter, filmsData) => {
-//   const buttonMoreClickHandler = (loadMoreButtonComponent) => {
-//     let prevFilmsCount = counter;
-//
-//     const next = () => {
-//       counter += BOARD_PRESETS.additionalCardsQuantity;
-//
-//       const filmsAdditionalCards = filmsData.slice(prevFilmsCount, counter);
-//       renderFilmCards(filmsAdditionalCards);
-//
-//       prevFilmsCount = counter;
-//     };
-//
-//     const checkAllElementsLoaded = () => {
-//       if (counter >= filmsData.length) {
-//         loadMoreButtonComponent.removeElement();
-//       }
-//     };
-//
-//     return () => {
-//       next();
-//       checkAllElementsLoaded();
-//     };
-//   };
-//
-//   const buttonMore = new ButtonMoreComponent();
-//   render(container, buttonMore);
-//   buttonMore.handleButtonClick(buttonMoreClickHandler(buttonMore));
-//   return buttonMore;
-// };
 
 export default class BoardController {
   constructor(container, userProfile) {
@@ -111,39 +80,37 @@ export default class BoardController {
   _cardsSortHandler(sortType) {
     const filmsListContainer = this._container.querySelector(`.films-list__container`);
     filmsListContainer.innerHTML = ``;
-    this._buttonMore.removeElement();
+    this._initialFilmsCount = initialRenderedCardsQuantity;
 
     renderFilmCards(getSortedCards(this._cards, sortType, this._initialFilmsCount));
-    this._addButtonMore();
   }
 
   _addButtonMore() {
-    // const buttonMoreClickHandler = () => {
-    //   let prevFilmsCount = this._initialFilmsCount;
-    //
-    //   const next = () => {
-    //     this._initialFilmsCount += BOARD_PRESETS.additionalCardsQuantity;
-    //
-    //     const filmsAdditionalCards = filmsData.slice(prevFilmsCount, this._initialFilmsCount);
-    //     renderFilmCards(filmsAdditionalCards);
-    //
-    //     prevFilmsCount = this._initialFilmsCount;
-    //   };
-    //
-    //   const checkAllElementsLoaded = () => {
-    //     if (this._initialFilmsCount >= filmsData.length) {
-    //       this._buttonMore.removeElement();
-    //     }
-    //   };
-    //
-    //   return () => {
-    //     next();
-    //     checkAllElementsLoaded();
-    //   };
-    // };
+    const buttonMoreClickHandler = () => {
+      const actualCardsState = getSortedCards(this._cards, this._sortComponent.getSortType());
+      let prevFilmsCount = this._initialFilmsCount;
+
+      const next = () => {
+        this._initialFilmsCount += BOARD_PRESETS.additionalCardsQuantity;
+
+        const filmsAdditionalCards = actualCardsState.slice(prevFilmsCount, this._initialFilmsCount);
+        renderFilmCards(filmsAdditionalCards);
+
+        prevFilmsCount = this._initialFilmsCount;
+      };
+
+      const checkAllElementsLoaded = () => {
+        if (this._initialFilmsCount >= this._cards.length) {
+          this._buttonMore.removeElement();
+        }
+      };
+
+      next();
+      checkAllElementsLoaded();
+    };
     this._buttonMore.getElement();
     render(this._contentContainer, this._buttonMore);
-    // this._buttonMore.addButtonMoreHandler(buttonMoreClickHandler());
+    this._buttonMore.addButtonMoreHandler(buttonMoreClickHandler);
   }
 
   _renderExtraCategories() {
