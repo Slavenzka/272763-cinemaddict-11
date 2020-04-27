@@ -18,63 +18,36 @@ const renderFilmCards = (cards, cardsContainer) => {
   });
 };
 
-const renderButtonMore = (container, counter, filmsData) => {
-  const buttonMoreClickHandler = (loadMoreButtonComponent) => {
-    let prevFilmsCount = counter;
-
-    const next = () => {
-      counter += BOARD_PRESETS.additionalCardsQuantity;
-
-      const filmsAdditionalCards = filmsData.slice(prevFilmsCount, counter);
-      renderFilmCards(filmsAdditionalCards);
-
-      prevFilmsCount = counter;
-    };
-
-    const checkAllElementsLoaded = () => {
-      if (counter >= filmsData.length) {
-        loadMoreButtonComponent.removeElement();
-      }
-    };
-
-    return () => {
-      next();
-      checkAllElementsLoaded();
-    };
-  };
-
-  const buttonMore = new ButtonMoreComponent();
-  render(container, buttonMore);
-  buttonMore.handleButtonClick(buttonMoreClickHandler(buttonMore));
-  return buttonMore;
-};
-
-const renderExtraCategories = (container, totalCardsList) => {
-  const renderExtraCategory = (cardsList, categoryName = ``) => {
-    const filmsCategory = renderSectionElement(container, `films-list--extra`);
-    renderSectionHeading(filmsCategory, categoryName);
-    const filmsCategoryList = renderSectionElement(filmsCategory, `films-list__container`, `div`);
-
-    renderFilmCards(cardsList, filmsCategoryList);
-  };
-
-  const renderTopRatedFilms = () => {
-    const categoryData = [...totalCardsList]
-      .sort((a, b) => a.rating < b.rating)
-      .slice(0, BOARD_PRESETS.extraListCardsQuantity);
-    renderExtraCategory(categoryData, `Top rated`);
-  };
-
-  const renderTopCommentedFilms = () => {
-    const categoryData = [...totalCardsList]
-      .sort((a, b) => a.userComments.length < b.userComments.length)
-      .slice(0, BOARD_PRESETS.extraListCardsQuantity);
-    renderExtraCategory(categoryData, `Most commented`);
-  };
-
-  renderTopRatedFilms();
-  renderTopCommentedFilms();
-};
+// const renderButtonMore = (container, counter, filmsData) => {
+//   const buttonMoreClickHandler = (loadMoreButtonComponent) => {
+//     let prevFilmsCount = counter;
+//
+//     const next = () => {
+//       counter += BOARD_PRESETS.additionalCardsQuantity;
+//
+//       const filmsAdditionalCards = filmsData.slice(prevFilmsCount, counter);
+//       renderFilmCards(filmsAdditionalCards);
+//
+//       prevFilmsCount = counter;
+//     };
+//
+//     const checkAllElementsLoaded = () => {
+//       if (counter >= filmsData.length) {
+//         loadMoreButtonComponent.removeElement();
+//       }
+//     };
+//
+//     return () => {
+//       next();
+//       checkAllElementsLoaded();
+//     };
+//   };
+//
+//   const buttonMore = new ButtonMoreComponent();
+//   render(container, buttonMore);
+//   buttonMore.handleButtonClick(buttonMoreClickHandler(buttonMore));
+//   return buttonMore;
+// };
 
 export default class BoardController {
   constructor(container, userProfile) {
@@ -86,7 +59,7 @@ export default class BoardController {
     this._filters = generateFilters(userProfile);
     this._navigationComponent = new SiteNavigationComponent(this._filters);
     this._sortComponent = new SortComponent();
-    this._buttonMore = null;
+    this._buttonMore = new ButtonMoreComponent();
 
     this._cardsSortHandler = this._cardsSortHandler.bind(this);
   }
@@ -116,7 +89,7 @@ export default class BoardController {
 
     renderFilmCards(this._cards.slice(0, this._initialFilmsCount));
 
-    this._buttonMore = renderButtonMore(filmsContainerElement, this._initialFilmsCount, this._cards);
+    this._buttonMore = this._addButtonMore();
     this._renderExtraCategories();
   }
 
@@ -138,7 +111,36 @@ export default class BoardController {
     this._buttonMore.removeElement();
 
     renderFilmCards(sortableCards.slice(0, this._initialFilmsCount));
-    this._buttonMore = renderButtonMore(this._filmsContainer.getElement(), this._initialFilmsCount, sortableCards);
+    this._addButtonMore();
+  }
+
+  _addButtonMore() {
+    // const buttonMoreClickHandler = () => {
+    //   let prevFilmsCount = this._initialFilmsCount;
+    //
+    //   const next = () => {
+    //     this._initialFilmsCount += BOARD_PRESETS.additionalCardsQuantity;
+    //
+    //     const filmsAdditionalCards = filmsData.slice(prevFilmsCount, this._initialFilmsCount);
+    //     renderFilmCards(filmsAdditionalCards);
+    //
+    //     prevFilmsCount = this._initialFilmsCount;
+    //   };
+    //
+    //   const checkAllElementsLoaded = () => {
+    //     if (this._initialFilmsCount >= filmsData.length) {
+    //       this._buttonMore.removeElement();
+    //     }
+    //   };
+    //
+    //   return () => {
+    //     next();
+    //     checkAllElementsLoaded();
+    //   };
+    // };
+    this._buttonMore.getElement();
+    render(this._contentContainer, this._buttonMore);
+    // this._buttonMore.addButtonMoreHandler(buttonMoreClickHandler());
   }
 
   _renderExtraCategories() {
