@@ -46,15 +46,14 @@ export default class BoardController {
     this._buttonMore = new ButtonMoreComponent();
 
     this._cardsSortHandler = this._cardsSortHandler.bind(this);
+    this._sortComponent.setSortTypeChangeHandler(this._cardsSortHandler);
   }
 
   render(cards) {
     this._cards = cards.slice();
 
     render(this._container, this._navigationComponent);
-
     render(this._container, this._sortComponent);
-    this._sortComponent.setSortTypeChangeHandler(this._cardsSortHandler);
 
     this._contentContainer = renderSectionElement(this._container, `films`);
 
