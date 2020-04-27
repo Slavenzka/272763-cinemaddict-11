@@ -11,7 +11,7 @@ const FILTERS = [
     filterCount: 0
   },
   {
-    filterName: `favourites`,
+    filterName: `favorites`,
     filterCount: 0
   }
 ];

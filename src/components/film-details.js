@@ -17,7 +17,7 @@ const createFilmDetailsTemplate = ({
   userComments,
   isInWatchlist,
   isWatched,
-  isFavourite,
+  isFavorite,
   isAdult
 }) => {
   const dateObject = new Date(date);
@@ -128,8 +128,8 @@ const createFilmDetailsTemplate = ({
             <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isWatched ? `checked` : ``}>
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavourite ? `checked` : ``}>
-            <label for="favorite" class="film-details__control-label film-details__control-label--favorite">${isFavourite ? `Added to favorites` : `Add to favorites`}</label>
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavorite ? `checked` : ``}>
+            <label for="favorite" class="film-details__control-label film-details__control-label--favorite">${isFavorite ? `Added to favorites` : `Add to favorites`}</label>
           </section>
         </div>
 

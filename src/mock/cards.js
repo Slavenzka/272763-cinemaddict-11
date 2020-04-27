@@ -55,7 +55,7 @@ const generateFilm = () => {
     .map((_, index) => randomGenres[index]);
   filmItem.isInWatchlist = getRandomBoolean();
   filmItem.isWatched = getRandomBoolean();
-  filmItem.isFavourite = getRandomBoolean();
+  filmItem.isFavorite = getRandomBoolean();
   filmItem.date = generateRandomTimestamp();
   filmItem.isAdult = getRandomBoolean();
   filmItem.country = getRandomArrayItem(COUNTRIES);

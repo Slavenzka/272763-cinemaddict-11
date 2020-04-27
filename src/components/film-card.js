@@ -21,14 +21,14 @@ const createFilmCardTemplate = ({
   runtime,
   isInWatchlist,
   isWatched,
-  isFavourite
+  isFavorite
 }) => {
   const hours = Math.trunc(runtime / 60);
   const minutes = runtime - hours * 60 > 10 ? `${runtime - hours * 60}` : `0${runtime - hours * 60}`;
 
   const watchlistButton = createButtonTemplate(`add-to-watchlist`, isInWatchlist);
   const watchedButton = createButtonTemplate(`mark-as-watched`, isWatched);
-  const favoriteButton = createButtonTemplate(`favorite`, isFavourite);
+  const favoriteButton = createButtonTemplate(`favorite`, isFavorite);
 
   return (
     `<article class="film-card">
