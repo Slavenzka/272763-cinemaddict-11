@@ -1,4 +1,4 @@
-import {render, remove, renderSectionElement, renderSectionHeading} from '../utils/render';
+import {render, renderSectionElement, renderSectionHeading} from '../utils/render';
 import ButtonMoreComponent from '../components/button-more';
 import {BOARD_PRESETS} from '../const';
 import {generateFilters} from '../mock/filter';
@@ -50,7 +50,7 @@ export default class BoardController {
   }
 
   render(cards) {
-    this._cards = cards.slice();
+    this._cards = cards;
 
     render(this._container, this._navigationComponent);
     render(this._container, this._sortComponent);
