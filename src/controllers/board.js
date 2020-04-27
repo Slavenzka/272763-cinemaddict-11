@@ -18,6 +18,21 @@ const renderFilmCards = (cards, cardsContainer) => {
   });
 };
 
+const getSortedCards = (cards, sortType, to) => {
+  let sortableCards = cards.slice(0, to);
+  switch (sortType) {
+    case `date`:
+      sortableCards = sortableCards.sort((a, b) => a.date < b.date);
+      break;
+    case `rating`:
+      sortableCards = sortableCards.sort((a, b) => a.rating < b.rating);
+      break;
+    default:
+      sortableCards = cards.slice(0, to);
+  }
+  return sortableCards;
+};
+
 // const renderButtonMore = (container, counter, filmsData) => {
 //   const buttonMoreClickHandler = (loadMoreButtonComponent) => {
 //     let prevFilmsCount = counter;
@@ -89,28 +104,16 @@ export default class BoardController {
 
     renderFilmCards(this._cards.slice(0, this._initialFilmsCount));
 
-    this._buttonMore = this._addButtonMore();
+    this._addButtonMore();
     this._renderExtraCategories();
   }
 
   _cardsSortHandler(sortType) {
-    let sortableCards = this._cards.slice();
-    switch (sortType) {
-      case `date`:
-        sortableCards = sortableCards.sort((a, b) => a.date < b.date);
-        break;
-      case `rating`:
-        sortableCards = sortableCards.sort((a, b) => a.rating < b.rating);
-        break;
-      default:
-        sortableCards = this._cards.slice();
-    }
-
     const filmsListContainer = this._container.querySelector(`.films-list__container`);
     filmsListContainer.innerHTML = ``;
     this._buttonMore.removeElement();
 
-    renderFilmCards(sortableCards.slice(0, this._initialFilmsCount));
+    renderFilmCards(getSortedCards(this._cards, sortType, this._initialFilmsCount));
     this._addButtonMore();
   }
 
