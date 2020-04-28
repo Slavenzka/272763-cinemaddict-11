@@ -1,7 +1,6 @@
-import {MONTHS} from '../const';
+import {KEY_CODES, MONTHS} from '../const';
 import {addLeadingZero} from '../utils/common';
-import {getNodeFromTemplate} from '../utils/render';
-import AbstractComponent from './abstract-component';
+import AbstractSmartComponent from './abstract-smart-component';
 
 const createFilmDetailsTemplate = ({
   name,
@@ -19,7 +18,8 @@ const createFilmDetailsTemplate = ({
   isWatched,
   isFavorite,
   isAdult
-}) => {
+}, options) => {
+  const {activeEmoji} = options;
   const dateObject = new Date(date);
   const day = dateObject.getDate() < 10 ? `0${dateObject.getDate()}` : `${dateObject.getDate()}`;
   const month = MONTHS[dateObject.getMonth()];
@@ -142,7 +142,7 @@ const createFilmDetailsTemplate = ({
             </ul>
 
             <div class="film-details__new-comment">
-              <div for="add-emoji" class="film-details__add-emoji-label"></div>
+              <div for="add-emoji" class="film-details__add-emoji-label">${activeEmoji ? activeEmoji.outerHTML : ``}</div>
 
               <label class="film-details__comment-label">
                 <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -177,41 +177,71 @@ const createFilmDetailsTemplate = ({
   );
 };
 
-export default class FilmDetails extends AbstractComponent {
+export default class FilmDetails extends AbstractSmartComponent {
   constructor(filmData) {
     super();
     this._filmData = filmData;
+    this._inputValue = ``;
+    this._activeEmoji = null;
+
+    this._closeButtonHandler = null;
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createFilmDetailsTemplate(this._filmData);
+    return createFilmDetailsTemplate(this._filmData, {
+      inputValue: this._inputValue,
+      activeEmoji: this._activeEmoji
+    });
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = getNodeFromTemplate(this.getTemplate());
-      this.handleCloseModal();
+  recoverListeners() {
+    this.setSubmitHandler();
+    this._subscribeOnEvents();
+    this.setCloseButtonHandler(this._closeButtonHandler);
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
+  setSubmitHandler() {
+    const form = this.getElement().querySelector(`form`);
+    document.addEventListener(`keydown`, (evt) => this._setPostCommentHandler(evt, form));
+  }
+
+  setCloseButtonHandler(handler) {
+    this._closeButtonHandler = handler;
+
+    this._element.querySelector(`.film-details__close-btn`)
+      .addEventListener(`click`, handler);
+  }
+
+  _setPostCommentHandler(evt) {
+    if (this._inputValue.length !== 0 && evt.ctrlKey && evt.keyCode === KEY_CODES.enter) {
+      evt.preventDefault();
+      // form.submit();
+      // form.reset();
+      this.rerender();
+      document.removeEventListener(`keydown`, this._setPostCommentHandler);
     }
-    return this._element;
   }
 
-  handleCloseModal() {
-    const closeButton = this._element.querySelector(`.film-details__close-btn`);
+  _subscribeOnEvents() {
+    const element = this.getElement();
+    const inputComment = element.querySelector(`.film-details__comment-input`);
+    const emojiList = element.querySelector(`.film-details__emoji-list`);
 
-    const closeModal = () => {
-      this._element.remove();
-      this.removeElement();
-      closeButton.removeEventListener(`click`, closeModal);
-      document.removeEventListener(`keydown`, closeModalOnEscPress);
-    };
+    inputComment.addEventListener(`input`, (evt) => {
+      this._inputValue = evt.target.value;
+      inputComment.value = this._inputValue;
+    });
 
-    const closeModalOnEscPress = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        closeModal();
+    emojiList.addEventListener(`click`, (evt) => {
+      if (evt.target.tagName === `IMG`) {
+        this._activeEmoji = evt.target;
+        this.rerender();
       }
-    };
-
-    closeButton.addEventListener(`click`, closeModal);
-    document.addEventListener(`keydown`, closeModalOnEscPress);
+    });
   }
 }

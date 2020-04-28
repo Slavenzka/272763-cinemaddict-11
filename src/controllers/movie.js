@@ -47,8 +47,27 @@ export default class CardController {
   }
 
   _renderModal(card) {
-    this._detailsComponent = new FilmDetails(card);
     const mainContainer = document.querySelector(`.main`);
+    this._detailsComponent = new FilmDetails(card);
     mainContainer.appendChild(this._detailsComponent.getElement());
+    this._detailsComponent.setSubmitHandler();
+    this._handleCloseModal();
+  }
+
+  _handleCloseModal() {
+    const closeModal = () => {
+      this._detailsComponent._element.remove();
+      this._detailsComponent.removeElement();
+      document.removeEventListener(`keydown`, closeModalOnEscPress);
+    };
+
+    const closeModalOnEscPress = (evt) => {
+      if (evt.key === `Escape` || evt.key === `Esc`) {
+        closeModal();
+      }
+    };
+
+    this._detailsComponent.setCloseButtonHandler(closeModal);
+    document.addEventListener(`keydown`, closeModalOnEscPress);
   }
 }

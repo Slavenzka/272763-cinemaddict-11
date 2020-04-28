@@ -1,6 +1,6 @@
 import AbstractComponent from './abstract-component';
 
-export default class AbstractSmartComponent extends AbstractComponent{
+export default class AbstractSmartComponent extends AbstractComponent {
   recoverListeners() {
     throw new Error(`Failed on attempt to call abstract method`);
   }

@@ -130,3 +130,9 @@ export const SORT_TYPE = {
   RATING: `rating`,
   DEFAULT: `default`
 };
+
+export const KEY_CODES = {
+  enter: 13,
+  control: 17,
+  escape: 27
+};
