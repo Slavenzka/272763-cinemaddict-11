@@ -184,7 +184,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._inputValue = ``;
     this._activeEmoji = null;
 
-    this._closeButtonHandler = null;
+    this._closeHandler = null;
     this._subscribeOnEvents();
   }
 
@@ -198,7 +198,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   recoverListeners() {
     this.setSubmitHandler();
     this._subscribeOnEvents();
-    this.setCloseButtonHandler(this._closeButtonHandler);
+    this.setCloseOnClickHandler(this._closeHandler);
   }
 
   rerender() {
@@ -210,11 +210,21 @@ export default class FilmDetails extends AbstractSmartComponent {
     document.addEventListener(`keydown`, (evt) => this._setPostCommentHandler(evt, form));
   }
 
-  setCloseButtonHandler(handler) {
-    this._closeButtonHandler = handler;
+  setCloseOnClickHandler(handler) {
+    this._closeHandler = handler;
 
     this._element.querySelector(`.film-details__close-btn`)
       .addEventListener(`click`, handler);
+  }
+
+  setCloseOnEscPressHandler() {
+    const handleEscPress = (evt) => {
+      if (this._element && evt.key === `Escape` || evt.key === `Esc`) {
+        this._closeHandler();
+        document.removeEventListener(`keydown`, handleEscPress);
+      }
+    };
+    document.addEventListener(`keydown`, handleEscPress);
   }
 
   _setPostCommentHandler(evt) {

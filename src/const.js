@@ -136,3 +136,8 @@ export const KEY_CODES = {
   control: 17,
   escape: 27
 };
+
+export const Mode = {
+  DEFAULT: `default`,
+  DETAILED: `detailed`
+};

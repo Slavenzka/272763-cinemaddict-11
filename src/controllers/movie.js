@@ -2,22 +2,26 @@ import FilmCardComponent from '../components/film-card';
 import {render} from '../utils/render';
 import FilmDetails from '../components/film-details';
 import {replace} from '../utils/render';
+import {Mode} from '../const';
 
 export default class CardController {
-  constructor(container, onDataChange) {
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this.component = null;
     this._detailsComponent = null;
     this._card = null;
     this._onDataChange = onDataChange;
+    this._onViewChange = onViewChange;
+    this._mode = Mode.DEFAULT;
+
+    this._closeModal = this._closeModal.bind(this);
   }
 
   render(card) {
     const oldCardComponent = this.component;
-
     this.component = new FilmCardComponent(card);
-
     this._card = card;
+
     if (oldCardComponent) {
       replace(this.component, oldCardComponent);
       this.component.setCardHandler(() => this._renderModal(this._card));
@@ -25,7 +29,6 @@ export default class CardController {
       render(this._container, this.component);
       this.component.setCardHandler(() => this._renderModal(this._card));
     }
-
 
     this.component.setWatchlistButtonHandler(() => {
       this._onDataChange(card, Object.assign({}, card, {
@@ -46,28 +49,28 @@ export default class CardController {
     });
   }
 
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._closeModal();
+    }
+  }
+
   _renderModal(card) {
+    this._onViewChange();
+    this._mode = Mode.DETAILED;
+
     const mainContainer = document.querySelector(`.main`);
     this._detailsComponent = new FilmDetails(card);
     mainContainer.appendChild(this._detailsComponent.getElement());
+
     this._detailsComponent.setSubmitHandler();
-    this._handleCloseModal();
+    this._detailsComponent.setCloseOnClickHandler(this._closeModal);
+    this._detailsComponent.setCloseOnEscPressHandler(this._closeModal);
   }
 
-  _handleCloseModal() {
-    const closeModal = () => {
-      this._detailsComponent._element.remove();
-      this._detailsComponent.removeElement();
-      document.removeEventListener(`keydown`, closeModalOnEscPress);
-    };
-
-    const closeModalOnEscPress = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        closeModal();
-      }
-    };
-
-    this._detailsComponent.setCloseButtonHandler(closeModal);
-    document.addEventListener(`keydown`, closeModalOnEscPress);
+  _closeModal() {
+    this._mode = Mode.DEFAULT;
+    this._detailsComponent._element.remove();
+    this._detailsComponent.removeElement();
   }
 }

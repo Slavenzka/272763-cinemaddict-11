@@ -6,14 +6,13 @@ import SiteNavigationComponent from '../components/site-navigation';
 import SortComponent from '../components/sort';
 import CardController from '../controllers/movie';
 import FilmsComponent from '../components/films';
-import {areObjectsWithEqualFields} from '../utils/common';
 
 const {initialRenderedCardsQuantity} = BOARD_PRESETS;
 
-const renderFilmCards = (cards, onDataChange, cardsContainer) => {
+const renderFilmCards = (cards, onDataChange, onViewChange, cardsContainer) => {
   const container = cardsContainer || document.querySelector(`.films-list__container`);
   return cards.map((card) => {
-    const filmCardController = new CardController(container, onDataChange);
+    const filmCardController = new CardController(container, onDataChange, onViewChange);
     filmCardController.render(card);
     return filmCardController;
   });
@@ -48,6 +47,7 @@ export default class BoardController {
     this._buttonMore = new ButtonMoreComponent();
 
     this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
 
     this._cardsSortHandler = this._cardsSortHandler.bind(this);
     this._sortComponent.setSortTypeChangeHandler(this._cardsSortHandler);
@@ -74,8 +74,8 @@ export default class BoardController {
 
     renderSectionElement(filmsContainerElement, `films-list__container`, `div`);
 
-    const newCardControllers = renderFilmCards(this._cards.slice(0, this._initialFilmsCount), this._onDataChange);
-    this._addControllersWithCheck(newCardControllers);
+    const newCardControllers = renderFilmCards(this._cards.slice(0, this._initialFilmsCount), this._onDataChange, this._onViewChange);
+    this._shownCardControllers = this._shownCardControllers.concat(newCardControllers);
 
     this._addButtonMore();
     this._renderExtraCategories();
@@ -86,7 +86,7 @@ export default class BoardController {
     filmsListContainer.innerHTML = ``;
     this._initialFilmsCount = initialRenderedCardsQuantity;
 
-    const newCardControllers = renderFilmCards(getSortedCards(this._cards, sortType, this._initialFilmsCount), this._onDataChange);
+    const newCardControllers = renderFilmCards(getSortedCards(this._cards, sortType, this._initialFilmsCount), this._onDataChange, this._onViewChange);
     this._shownCardControllers = [...newCardControllers];
   }
 
@@ -99,8 +99,8 @@ export default class BoardController {
         this._initialFilmsCount += BOARD_PRESETS.additionalCardsQuantity;
 
         const filmsAdditionalCards = actualCardsState.slice(prevFilmsCount, this._initialFilmsCount);
-        const newCardControllers = renderFilmCards(filmsAdditionalCards, this._onDataChange);
-        this._addControllersWithCheck(newCardControllers);
+        const newCardControllers = renderFilmCards(filmsAdditionalCards, this._onDataChange, this._onViewChange);
+        this._shownCardControllers = this._shownCardControllers.concat(newCardControllers);
 
         prevFilmsCount = this._initialFilmsCount;
       };
@@ -125,8 +125,8 @@ export default class BoardController {
       renderSectionHeading(filmsCategory, categoryName);
       const filmsCategoryList = renderSectionElement(filmsCategory, `films-list__container`, `div`);
 
-      const newCardControllers = renderFilmCards(categoryData, this._onDataChange, filmsCategoryList);
-      this._addControllersWithCheck(newCardControllers);
+      const newCardControllers = renderFilmCards(categoryData, this._onDataChange, this._onViewChange, filmsCategoryList);
+      this._shownCardControllers = this._shownCardControllers.concat(newCardControllers);
     };
 
     const renderTopRatedFilms = () => {
@@ -147,15 +147,6 @@ export default class BoardController {
     renderTopCommentedFilms();
   }
 
-  _addControllersWithCheck(newControllersArray) {
-    newControllersArray.forEach((newController) => {
-      const isNewControllerAlreadyExists = this._shownCardControllers.some((item) => areObjectsWithEqualFields(newController.component._filmCard, item.component._filmCard));
-      if (!isNewControllerAlreadyExists) {
-        this._shownCardControllers.push(newController);
-      }
-    });
-  }
-
   _onDataChange(oldData, newData) {
     const index = this._cards.findIndex((card) => card === oldData);
 
@@ -165,5 +156,9 @@ export default class BoardController {
 
     this._cards = [].concat(this._cards.slice(0, index), newData, this._cards.slice(index + 1));
     this._shownCardControllers[index].render(this._cards[index]);
+  }
+
+  _onViewChange() {
+    this._shownCardControllers.forEach((it) => it.setDefaultView());
   }
 }
