@@ -59,9 +59,9 @@ export default class MovieController {
     this._onViewChange();
     this._mode = Mode.DETAILED;
 
-    const mainContainer = document.querySelector(`.main`);
     this._detailsComponent = new FilmDetails(card);
-    mainContainer.appendChild(this._detailsComponent.getElement());
+    document.querySelector(`.main`)
+      .appendChild(this._detailsComponent.getElement());
 
     this._detailsComponent.setSubmitHandler();
     this._detailsComponent.setCloseOnClickHandler(this._closeModal);
