@@ -50,7 +50,10 @@ export default class BoardController {
     this._onViewChange = this._onViewChange.bind(this);
 
     this._cardsSortHandler = this._cardsSortHandler.bind(this);
-    this._sortComponent.setSortTypeChangeHandler(this._cardsSortHandler);
+    this._sortComponent.setSortTypeChangeHandler((sortType) => {
+      this._clearFilmsContainer();
+      this._cardsSortHandler(sortType);
+    });
   }
 
   render(cards) {
@@ -82,12 +85,15 @@ export default class BoardController {
   }
 
   _cardsSortHandler(sortType) {
-    const filmsListContainer = this._container.querySelector(`.films-list__container`);
-    filmsListContainer.innerHTML = ``;
     this._initialFilmsCount = initialRenderedCardsQuantity;
 
     const newCardControllers = renderFilmCards(getSortedCards(this._cards, sortType, this._initialFilmsCount), this._onDataChange, this._onViewChange);
     this._shownCardControllers = [...newCardControllers];
+  }
+
+  _clearFilmsContainer() {
+    const filmsListContainer = this._container.querySelector(`.films-list__container`);
+    filmsListContainer.innerHTML = ``;
   }
 
   _addButtonMore() {
