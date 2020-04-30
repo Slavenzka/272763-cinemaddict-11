@@ -1,4 +1,4 @@
-import {addLeadingZero} from '../utils/common';
+import {getDurationFromMinutes} from '../utils/common';
 import {getNodeFromTemplate} from '../utils/render';
 import AbstractComponent from './abstract-component';
 
@@ -23,8 +23,7 @@ const createFilmCardTemplate = ({
   isWatched,
   isFavorite
 }) => {
-  const hours = Math.trunc(runtime / 60);
-  const minutes = runtime - hours * 60 > 10 ? `${runtime - hours * 60}` : `0${runtime - hours * 60}`;
+  const formattedDuration = getDurationFromMinutes(runtime);
 
   const watchlistButton = createButtonTemplate(`add-to-watchlist`, isInWatchlist);
   const watchedButton = createButtonTemplate(`mark-as-watched`, isWatched);
@@ -36,7 +35,7 @@ const createFilmCardTemplate = ({
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${(new Date(date)).getFullYear()}</span>
-        <span class="film-card__duration">${hours > 0 ? `${hours}h` : ``} ${addLeadingZero(minutes)}m</span>
+        <span class="film-card__duration">${formattedDuration}</span>
         <span class="film-card__genre">${genres[0]}</span>
       </p>
       <img src="./images/posters/${poster}" alt="${name}" class="film-card__poster">

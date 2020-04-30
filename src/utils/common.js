@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const getRandomArrayItem = (array) => array[Math.floor(Math.random() * array.length)];
 
 export const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
@@ -34,3 +36,16 @@ export const areObjectsWithEqualFields = (objectTarget, objectToCompare) => {
   return equal;
 };
 
+export const getDurationFromMinutes = (durationInMinutes) => {
+  const hours = moment.duration(durationInMinutes, `minutes`).get(`hours`);
+  const minutes = moment.duration(durationInMinutes, `minutes`).get(`minutes`);
+  return `${hours > 0 ? `${hours}h ` : ``}${addLeadingZero(minutes)}m`;
+};
+
+export const getFullDate = (date) => {
+  return moment(date).format(`DD MMMM YYYY`);
+};
+
+export const getFullDateAndTime = (date) => {
+  return moment(date).format(`YYYY/MM/DD hh:mm`);
+};

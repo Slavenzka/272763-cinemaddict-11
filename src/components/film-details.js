@@ -1,5 +1,9 @@
-import {KEY_CODES, MONTHS} from '../const';
-import {addLeadingZero} from '../utils/common';
+import {KEY_CODES} from '../const';
+import {
+  getDurationFromMinutes,
+  getFullDate,
+  getFullDateAndTime,
+} from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
 
 const createFilmDetailsTemplate = ({
@@ -21,20 +25,11 @@ const createFilmDetailsTemplate = ({
 }, options) => {
   const {activeEmoji} = options;
   const dateObject = new Date(date);
-  const day = dateObject.getDate() < 10 ? `0${dateObject.getDate()}` : `${dateObject.getDate()}`;
-  const month = MONTHS[dateObject.getMonth()];
-  const year = dateObject.getFullYear();
-
-  const hours = Math.trunc(runtime / 60);
-  const minutes = runtime - hours * 60 > 10 ? `${runtime - hours * 60}` : `0${runtime - hours * 60}`;
+  const releaseDate = getFullDate(dateObject);
+  const formattedDuration = getDurationFromMinutes(runtime);
 
   const commentsList = userComments.map((comment) => {
-    const commentDate = new Date(comment.date);
-    const commentYear = commentDate.getFullYear();
-    const commentMonth = addLeadingZero(commentDate.getMonth() + 1);
-    const commentDay = addLeadingZero(commentDate.getDate());
-    const commentHours = addLeadingZero(commentDate.getHours());
-    const commentMinutes = addLeadingZero(commentDate.getMinutes());
+    const commentDate = getFullDateAndTime(comment.date);
     return (
       `
         <li class="film-details__comment">
@@ -45,7 +40,7 @@ const createFilmDetailsTemplate = ({
             <p class="film-details__comment-text">${comment.text}</p>
             <p class="film-details__comment-info">
               <span class="film-details__comment-author">${comment.name}</span>
-              <span class="film-details__comment-day">${commentYear}/${commentMonth}/${commentDay} ${commentHours}:${commentMinutes}</span>
+              <span class="film-details__comment-day">${commentDate}</span>
               <button class="film-details__comment-delete">Delete</button>
             </p>
           </div>
@@ -98,11 +93,11 @@ const createFilmDetailsTemplate = ({
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${day} ${month} ${year}</td>
+                  <td class="film-details__cell">${releaseDate}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${hours > 0 ? `${hours}h` : ``} ${minutes}m</td>
+                  <td class="film-details__cell">${formattedDuration}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
