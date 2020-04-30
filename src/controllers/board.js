@@ -87,8 +87,7 @@ export default class BoardController {
   _cardsSortHandler(sortType) {
     this._initialFilmsCount = initialRenderedCardsQuantity;
 
-    const newCardControllers = renderFilmCards(getSortedCards(this._cards, sortType, this._initialFilmsCount), this._onDataChange, this._onViewChange);
-    this._shownCardControllers = [...newCardControllers];
+    this._shownCardControllers = renderFilmCards(getSortedCards(this._cards, sortType, this._initialFilmsCount), this._onDataChange, this._onViewChange);
   }
 
   _clearFilmsContainer() {
