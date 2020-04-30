@@ -18,6 +18,20 @@ const renderFilmCards = (cards, onDataChange, onViewChange, cardsContainer) => {
   });
 };
 
+const renderTopRatedFilms = (cards, renderExtraCategory) => {
+  const categoryData = [...cards]
+    .sort((a, b) => a.rating < b.rating)
+    .slice(0, BOARD_PRESETS.extraListCardsQuantity);
+  renderExtraCategory(categoryData, `Top rated`);
+};
+
+const renderTopCommentedFilms = (cards, renderExtraCategory) => {
+  const categoryData = [...cards]
+    .sort((a, b) => a.userComments.length < b.userComments.length)
+    .slice(0, BOARD_PRESETS.extraListCardsQuantity);
+  renderExtraCategory(categoryData, `Most commented`);
+};
+
 const getSortedCards = (cards, sortType, to = cards.length - 1) => {
   let sortableCards = cards.slice();
   switch (sortType) {
@@ -134,22 +148,8 @@ export default class BoardController {
       this._shownCardControllers = this._shownCardControllers.concat(newCardControllers);
     };
 
-    const renderTopRatedFilms = () => {
-      const categoryData = [...this._cards]
-        .sort((a, b) => a.rating < b.rating)
-        .slice(0, BOARD_PRESETS.extraListCardsQuantity);
-      renderExtraCategory(categoryData, `Top rated`);
-    };
-
-    const renderTopCommentedFilms = () => {
-      const categoryData = [...this._cards]
-        .sort((a, b) => a.userComments.length < b.userComments.length)
-        .slice(0, BOARD_PRESETS.extraListCardsQuantity);
-      renderExtraCategory(categoryData, `Most commented`);
-    };
-
-    renderTopRatedFilms();
-    renderTopCommentedFilms();
+    renderTopRatedFilms(this._cards, renderExtraCategory);
+    renderTopCommentedFilms(this._cards, renderExtraCategory);
   }
 
   _onDataChange(oldData, newData) {
