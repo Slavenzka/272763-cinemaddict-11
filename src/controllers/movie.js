@@ -4,7 +4,7 @@ import FilmDetails from '../components/film-details';
 import {replace} from '../utils/render';
 import {Mode} from '../const';
 
-export default class CardController {
+export default class MovieController {
   constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this.component = null;
