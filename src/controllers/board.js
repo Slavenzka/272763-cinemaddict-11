@@ -1,6 +1,6 @@
 import {render, renderSectionElement, renderSectionHeading} from '../utils/render';
 import ButtonMoreComponent from '../components/button-more';
-import {BOARD_PRESETS} from '../const';
+import {BOARD_PRESETS, SORT_TYPE} from '../const';
 import {generateFilters} from '../mock/filter';
 import SiteNavigationComponent from '../components/site-navigation';
 import SortComponent from '../components/sort';
@@ -21,10 +21,10 @@ const renderFilmCards = (cards, onDataChange, onViewChange, cardsContainer) => {
 const getSortedCards = (cards, sortType, to = cards.length - 1) => {
   let sortableCards = cards.slice();
   switch (sortType) {
-    case `date`:
+    case SORT_TYPE.DATE:
       sortableCards = sortableCards.sort((a, b) => a.date < b.date);
       break;
-    case `rating`:
+    case SORT_TYPE.RATING:
       sortableCards = sortableCards.sort((a, b) => a.rating < b.rating);
       break;
     default:
