@@ -1,4 +1,3 @@
-import {getNodeFromTemplate} from '../utils/render';
 import AbstractComponent from './abstract-component';
 
 const createButtonMoreTemplate = () => (
@@ -10,15 +9,7 @@ export default class ButtonMore extends AbstractComponent {
     return createButtonMoreTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = getNodeFromTemplate(this.getTemplate());
-      this.handleButtonClick();
-    }
-    return this._element;
-  }
-
-  handleButtonClick(handler) {
+  addButtonMoreHandler(handler) {
     this._element.addEventListener(`click`, handler);
   }
 }

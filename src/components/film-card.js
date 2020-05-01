@@ -1,7 +1,14 @@
-import {addLeadingZero} from '../utils/common';
+import {getDurationFromMinutes} from '../utils/common';
 import {getNodeFromTemplate} from '../utils/render';
-import FilmDetails from './film-details';
 import AbstractComponent from './abstract-component';
+
+const createButtonTemplate = (type, flag) => {
+  let label = type.split(`-`).join(` `);
+  label = label[0].toUpperCase() + label.slice(1);
+  return (
+    `<button class="film-card__controls-item button film-card__controls-item--${type} ${flag && `film-card__controls-item--active`}">${label}</button>`
+  );
+};
 
 const createFilmCardTemplate = ({
   name,
@@ -14,10 +21,13 @@ const createFilmCardTemplate = ({
   runtime,
   isInWatchlist,
   isWatched,
-  isFavourite
+  isFavorite
 }) => {
-  const hours = Math.trunc(runtime / 60);
-  const minutes = runtime - hours * 60 > 10 ? `${runtime - hours * 60}` : `0${runtime - hours * 60}`;
+  const formattedDuration = getDurationFromMinutes(runtime);
+
+  const watchlistButton = createButtonTemplate(`add-to-watchlist`, isInWatchlist);
+  const watchedButton = createButtonTemplate(`mark-as-watched`, isWatched);
+  const favoriteButton = createButtonTemplate(`favorite`, isFavorite);
 
   return (
     `<article class="film-card">
@@ -25,16 +35,16 @@ const createFilmCardTemplate = ({
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${(new Date(date)).getFullYear()}</span>
-        <span class="film-card__duration">${hours > 0 ? `${hours}h` : ``} ${addLeadingZero(minutes)}m</span>
+        <span class="film-card__duration">${formattedDuration}</span>
         <span class="film-card__genre">${genres[0]}</span>
       </p>
-      <img src="./images/posters/${poster}" alt=${name} class="film-card__poster">
+      <img src="./images/posters/${poster}" alt="${name}" class="film-card__poster">
       <p class="film-card__description">${descriptionPreview}</p>
       <a class="film-card__comments">${userComments.length} comments</a>
       <form class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isInWatchlist && `film-card__controls-item--active`}">Add to watchlist</button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched  ${isWatched && `film-card__controls-item--active`}">Mark as watched</button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite ${isFavourite && `film-card__controls-item--active`}">Mark as favorite</button>
+        ${watchlistButton}
+        ${watchedButton}
+        ${favoriteButton}
       </form>
     </article>`
   );
@@ -53,24 +63,32 @@ export default class FilmCard extends AbstractComponent {
   getElement() {
     if (!this._element) {
       this._element = getNodeFromTemplate(this.getTemplate());
-      this.handleClickCard();
     }
     return this._element;
   }
 
-  handleClickCard() {
+  setCardHandler(handler) {
     const modalTriggers = [];
     const filmPoster = this._element.querySelector(`.film-card__poster`);
     const filmTitle = this._element.querySelector(`.film-card__title`);
     const filmComments = this._element.querySelector(`.film-card__comments`);
     modalTriggers.push(filmPoster, filmTitle, filmComments);
 
-    const renderModal = () => {
-      const filmDetails = new FilmDetails(this._filmCard);
-      const mainContainer = document.querySelector(`.main`);
-      mainContainer.appendChild(filmDetails.getElement());
-    };
+    modalTriggers.forEach((item) => item.addEventListener(`click`, handler));
+  }
 
-    modalTriggers.forEach((item) => item.addEventListener(`click`, renderModal));
+  setWatchlistButtonHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`)
+      .addEventListener(`click`, handler);
+  }
+
+  setWatchedButtonHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`)
+      .addEventListener(`click`, handler);
+  }
+
+  setFavoriteButtonHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--favorite`)
+      .addEventListener(`click`, handler);
   }
 }

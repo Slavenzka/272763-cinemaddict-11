@@ -1,7 +1,10 @@
-import {MONTHS} from '../const';
-import {addLeadingZero} from '../utils/common';
-import {getNodeFromTemplate} from '../utils/render';
-import AbstractComponent from './abstract-component';
+import {KEY_CODES} from '../const';
+import {
+  getDurationFromMinutes,
+  getFullDate,
+  getFullDateAndTime,
+} from '../utils/common';
+import AbstractSmartComponent from './abstract-smart-component';
 
 const createFilmDetailsTemplate = ({
   name,
@@ -17,24 +20,16 @@ const createFilmDetailsTemplate = ({
   userComments,
   isInWatchlist,
   isWatched,
-  isFavourite,
+  isFavorite,
   isAdult
-}) => {
+}, options) => {
+  const {activeEmoji} = options;
   const dateObject = new Date(date);
-  const day = dateObject.getDate() < 10 ? `0${dateObject.getDate()}` : `${dateObject.getDate()}`;
-  const month = MONTHS[dateObject.getMonth()];
-  const year = dateObject.getFullYear();
-
-  const hours = Math.trunc(runtime / 60);
-  const minutes = runtime - hours * 60 > 10 ? `${runtime - hours * 60}` : `0${runtime - hours * 60}`;
+  const releaseDate = getFullDate(dateObject);
+  const formattedDuration = getDurationFromMinutes(runtime);
 
   const commentsList = userComments.map((comment) => {
-    const commentDate = new Date(comment.date);
-    const commentYear = commentDate.getFullYear();
-    const commentMonth = addLeadingZero(commentDate.getMonth() + 1);
-    const commentDay = addLeadingZero(commentDate.getDate());
-    const commentHours = addLeadingZero(commentDate.getHours());
-    const commentMinutes = addLeadingZero(commentDate.getMinutes());
+    const commentDate = getFullDateAndTime(comment.date);
     return (
       `
         <li class="film-details__comment">
@@ -45,7 +40,7 @@ const createFilmDetailsTemplate = ({
             <p class="film-details__comment-text">${comment.text}</p>
             <p class="film-details__comment-info">
               <span class="film-details__comment-author">${comment.name}</span>
-              <span class="film-details__comment-day">${commentYear}/${commentMonth}/${commentDay} ${commentHours}:${commentMinutes}</span>
+              <span class="film-details__comment-day">${commentDate}</span>
               <button class="film-details__comment-delete">Delete</button>
             </p>
           </div>
@@ -98,11 +93,11 @@ const createFilmDetailsTemplate = ({
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${day} ${month} ${year}</td>
+                  <td class="film-details__cell">${releaseDate}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${hours > 0 ? `${hours}h` : ``} ${minutes}m</td>
+                  <td class="film-details__cell">${formattedDuration}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
@@ -128,8 +123,8 @@ const createFilmDetailsTemplate = ({
             <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isWatched ? `checked` : ``}>
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavourite ? `checked` : ``}>
-            <label for="favorite" class="film-details__control-label film-details__control-label--favorite">${isFavourite ? `Added to favorites` : `Add to favorites`}</label>
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavorite ? `checked` : ``}>
+            <label for="favorite" class="film-details__control-label film-details__control-label--favorite">${isFavorite ? `Added to favorites` : `Add to favorites`}</label>
           </section>
         </div>
 
@@ -142,7 +137,7 @@ const createFilmDetailsTemplate = ({
             </ul>
 
             <div class="film-details__new-comment">
-              <div for="add-emoji" class="film-details__add-emoji-label"></div>
+              <div for="add-emoji" class="film-details__add-emoji-label">${activeEmoji ? activeEmoji.outerHTML : ``}</div>
 
               <label class="film-details__comment-label">
                 <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -177,41 +172,81 @@ const createFilmDetailsTemplate = ({
   );
 };
 
-export default class FilmDetails extends AbstractComponent {
+export default class FilmDetails extends AbstractSmartComponent {
   constructor(filmData) {
     super();
     this._filmData = filmData;
+    this._inputValue = ``;
+    this._activeEmoji = null;
+
+    this._closeHandler = null;
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createFilmDetailsTemplate(this._filmData);
+    return createFilmDetailsTemplate(this._filmData, {
+      inputValue: this._inputValue,
+      activeEmoji: this._activeEmoji
+    });
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = getNodeFromTemplate(this.getTemplate());
-      this.handleCloseModal();
-    }
-    return this._element;
+  recoverListeners() {
+    this.setSubmitHandler();
+    this._subscribeOnEvents();
+    this.setCloseOnClickHandler(this._closeHandler);
   }
 
-  handleCloseModal() {
-    const closeButton = this._element.querySelector(`.film-details__close-btn`);
+  rerender() {
+    super.rerender();
+  }
 
-    const closeModal = () => {
-      this._element.remove();
-      this.removeElement();
-      closeButton.removeEventListener(`click`, closeModal);
-      document.removeEventListener(`keydown`, closeModalOnEscPress);
-    };
+  setSubmitHandler() {
+    const form = this.getElement().querySelector(`form`);
+    document.addEventListener(`keydown`, (evt) => this._setPostCommentHandler(evt, form));
+  }
 
-    const closeModalOnEscPress = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        closeModal();
+  setCloseOnClickHandler(handler) {
+    this._closeHandler = handler;
+
+    this._element.querySelector(`.film-details__close-btn`)
+      .addEventListener(`click`, handler);
+  }
+
+  setCloseOnEscPressHandler() {
+    const handleEscPress = (evt) => {
+      if (this._element && evt.key === `Escape` || evt.key === `Esc`) {
+        this._closeHandler();
+        document.removeEventListener(`keydown`, handleEscPress);
       }
     };
+    document.addEventListener(`keydown`, handleEscPress);
+  }
 
-    closeButton.addEventListener(`click`, closeModal);
-    document.addEventListener(`keydown`, closeModalOnEscPress);
+  _setPostCommentHandler(evt) {
+    if (this._inputValue.length !== 0 && evt.ctrlKey && evt.keyCode === KEY_CODES.enter) {
+      evt.preventDefault();
+      // form.submit();
+      // form.reset();
+      this.rerender();
+      document.removeEventListener(`keydown`, this._setPostCommentHandler);
+    }
+  }
+
+  _subscribeOnEvents() {
+    const element = this.getElement();
+    const inputComment = element.querySelector(`.film-details__comment-input`);
+    const emojiList = element.querySelector(`.film-details__emoji-list`);
+
+    inputComment.addEventListener(`input`, (evt) => {
+      this._inputValue = evt.target.value;
+      inputComment.value = this._inputValue;
+    });
+
+    emojiList.addEventListener(`click`, (evt) => {
+      if (evt.target.tagName === `IMG`) {
+        this._activeEmoji = evt.target;
+        this.rerender();
+      }
+    });
   }
 }

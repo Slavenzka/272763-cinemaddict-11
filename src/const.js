@@ -105,21 +105,6 @@ export const EMOJIS = [
   `angry`
 ];
 
-export const MONTHS = [
-  `January`,
-  `February`,
-  `March`,
-  `April`,
-  `May`,
-  `June`,
-  `July`,
-  `August`,
-  `September`,
-  `October`,
-  `November`,
-  `December`
-];
-
 export const RENDER_POSITION = {
   BEFOREEND: `beforeend`,
   AFTERBEGIN: `afterbegin`
@@ -129,4 +114,15 @@ export const SORT_TYPE = {
   DATE: `date`,
   RATING: `rating`,
   DEFAULT: `default`
+};
+
+export const KEY_CODES = {
+  enter: 13,
+  control: 17,
+  escape: 27
+};
+
+export const Mode = {
+  DEFAULT: `default`,
+  DETAILED: `detailed`
 };
