@@ -11,7 +11,7 @@ const filmsData = generateFilms(totalCardsQuantity);
 export const userProfile = {
   watchlist: filmsData.filter((item) => item.isInWatchlist).length,
   history: filmsData.filter((item) => item.isWatched).length,
-  favourites: filmsData.filter((item) => item.isFavourite).length
+  favorites: filmsData.filter((item) => item.isFavorite).length
 };
 
 const renderHeader = () => {

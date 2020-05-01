@@ -19,8 +19,12 @@ export default class Sort extends AbstractComponent {
     return createItemsSortTemplate();
   }
 
+  getSortType() {
+    return this._sortType;
+  }
+
   setSortTypeChangeHandler(handler) {
-    this._element.addEventListener(`click`, (evt) => {
+    this.getElement().addEventListener(`click`, (evt) => {
       if (evt.target.tagName !== `A`) {
         return;
       }
