@@ -1,6 +1,7 @@
 import {filterTypes} from '../const';
 import {render, replace} from '../utils/render';
 import FilterComponent from '../components/filter';
+import {getFilmsByFilter} from '../utils/filter';
 
 export default class FilterController {
   constructor(container, filmsModel) {
@@ -38,7 +39,6 @@ export default class FilterController {
   }
 
   _onFilterChange(filterType) {
-    this._filmsModel.setFilter(filterType);
     this._activeFilterType = filterType;
   }
 

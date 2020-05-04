@@ -127,7 +127,7 @@ export const Mode = {
   DETAILED: `detailed`
 };
 
-export const filterTypes = {
+export const FilterTypes = {
   ALL: `all`,
   WATCHLIST: `watchlist`,
   HISTORY: `history`,

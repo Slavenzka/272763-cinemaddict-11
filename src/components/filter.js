@@ -1,7 +1,7 @@
 import {capitalizeFirstLetter} from '../utils/common';
 import AbstractComponent from './abstract-component';
 
-const createFilterMarkup = (name, isActive, count) => {
+const createFilterMarkup = ({name, isActive, count}) => {
   const type = name.split(` `)[0].toLowerCase();
   const isItemActive = isActive ? `main-navigation__item--active` : ``;
   const itemCount = count && type !== `all` ? `<span class="main-navigation__item-count">${count}</span>` : ``;
@@ -13,7 +13,7 @@ const createFilterMarkup = (name, isActive, count) => {
 };
 
 const createFilterTemplate = (filters) => {
-  const filtersMarkup = filters.map((item, index) => createFilterMarkup(item.filterName, index === 0, item.filterCount)).join(`\n`);
+  const filtersMarkup = filters.map((item) => createFilterMarkup(item)).join(`\n`);
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
@@ -32,5 +32,12 @@ export default class FilterComponent extends AbstractComponent {
 
   getTemplate() {
     return createFilterTemplate(this._filters);
+  }
+
+  setFilterChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      const filterName = evt.target.href.slice(1);
+      handler(filterName);
+    });
   }
 }
