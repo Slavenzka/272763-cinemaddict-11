@@ -10,7 +10,7 @@ import {
   GENRES,
   COUNTRIES,
   NAMES,
-  EMOJIS,
+  emojis,
   BOARD_PRESETS,
 } from '../const';
 
@@ -78,7 +78,7 @@ const generateFilm = () => {
     .map(() => ({
       text: COMMENTS.slice(0, getRandomNumberInRange(1, 3)).join(` `),
       name: getRandomArrayItem(NAMES),
-      emoji: getRandomArrayItem(EMOJIS),
+      emoji: getRandomArrayItem(Object.values(emojis)),
       date: generateRandomTimestamp()
     }));
 

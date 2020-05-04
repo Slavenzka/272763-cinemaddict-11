@@ -98,12 +98,12 @@ export const NAMES = [
   `John Doe`
 ];
 
-export const EMOJIS = [
-  `smile`,
-  `sleeping`,
-  `puke`,
-  `angry`
-];
+export const emojis = {
+  SMILE: `smile`,
+  SLEEPING: `sleeping`,
+  PUKE: `puke`,
+  ANGRY: `angry`
+};
 
 export const RENDER_POSITION = {
   BEFOREEND: `beforeend`,
