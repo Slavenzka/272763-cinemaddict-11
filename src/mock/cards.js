@@ -47,7 +47,7 @@ const generateFilm = () => {
   }
 
   // mock self explaining properties
-  filmItem.id = `Film item id#${Math.floor(Math.random() * 1000000000)} / ${new Date()}`;
+  filmItem.id = `Film item id#${Math.floor(Math.random() * 1000000000)}}`;
   filmItem.nameOriginal = `${filmItem.name}`;
   filmItem.descriptionPreview = filmDescription;
   filmItem.rating = getRandomNumberInRange(0, maxRating, 1);

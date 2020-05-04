@@ -15,6 +15,7 @@ export default class MovieController {
     this._mode = Mode.DEFAULT;
 
     this._closeModal = this._closeModal.bind(this);
+    this._controlButtonClickHandler = this._controlButtonClickHandler.bind(this);
   }
 
   render(card) {
@@ -31,21 +32,15 @@ export default class MovieController {
     }
 
     this.component.setWatchlistButtonHandler(() => {
-      this._onDataChange(card, Object.assign({}, card, {
-        isInWatchlist: !card.isInWatchlist
-      }));
+      this._controlButtonClickHandler(`watchlist`);
     });
 
     this.component.setWatchedButtonHandler(() => {
-      this._onDataChange(card, Object.assign({}, card, {
-        isWatched: !card.isWatched
-      }));
+      this._controlButtonClickHandler(`watched`);
     });
 
     this.component.setFavoriteButtonHandler(() => {
-      this._onDataChange(card, Object.assign({}, card, {
-        isFavorite: !card.isFavorite
-      }));
+      this._controlButtonClickHandler(`favorite`);
     });
   }
 
@@ -59,17 +54,45 @@ export default class MovieController {
     remove(this.component);
   }
 
+  updateModal() {
+    if (this._detailsComponent) {
+      this._detailsComponent.updateData(this._card);
+    }
+  }
+
   _renderModal(card) {
     this._onViewChange();
     this._mode = Mode.DETAILED;
 
-    this._detailsComponent = new FilmDetails(card);
+    this._detailsComponent = new FilmDetails(card, (evt) => {
+      this._controlButtonClickHandler(evt.target.getAttribute(`for`));
+    });
     document.querySelector(`.main`)
       .appendChild(this._detailsComponent.getElement());
 
     this._detailsComponent.setSubmitHandler();
     this._detailsComponent.setCloseOnClickHandler(this._closeModal);
     this._detailsComponent.setCloseOnEscPressHandler(this._closeModal);
+  }
+
+  _controlButtonClickHandler(type) {
+    let controlName = ``;
+
+    switch (type) {
+      case `watchlist`:
+        controlName = `isInWatchlist`;
+        break;
+      case `watched`:
+        controlName = `isWatched`;
+        break;
+      case `favorite`:
+        controlName = `isFavorite`;
+        break;
+    }
+
+    this._onDataChange(this._card, Object.assign({}, this._card, {
+      [controlName]: !this._card[controlName]
+    }));
   }
 
   _closeModal() {

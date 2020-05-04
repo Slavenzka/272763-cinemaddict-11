@@ -57,7 +57,6 @@ export default class BoardController {
     this._shownCardControllers = [];
     this._shownExtraCardControllers = [];
     this._initialFilmsCount = initialRenderedCardsQuantity;
-    this._filters = generateFilters(userProfile);
     this._sortComponent = new SortComponent();
     this._buttonMore = new ButtonMoreComponent();
 
@@ -94,8 +93,7 @@ export default class BoardController {
 
     renderSectionElement(filmsContainerElement, `films-list__container`, `div`);
 
-    const newCardControllers = renderFilmCards(cards.slice(0, this._initialFilmsCount), this._onDataChange, this._onViewChange);
-    this._shownCardControllers = this._shownCardControllers.concat(newCardControllers);
+    this._renderFilms(cards.slice(0, this._initialFilmsCount));
 
     this._addButtonMore();
     this._renderExtraCategories();
@@ -150,7 +148,7 @@ export default class BoardController {
     };
 
     next();
-  };
+  }
 
   _renderExtraCategories() {
     const cards = this._filmsModel.getFilms();
@@ -171,6 +169,7 @@ export default class BoardController {
 
     if (isUpdated.status) {
       this._shownCardControllers[isUpdated.index].render(newData);
+      this._shownCardControllers[isUpdated.index].updateModal();
     }
   }
 

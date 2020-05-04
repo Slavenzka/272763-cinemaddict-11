@@ -173,11 +173,12 @@ const createFilmDetailsTemplate = ({
 };
 
 export default class FilmDetails extends AbstractSmartComponent {
-  constructor(filmData) {
+  constructor(filmData, handler) {
     super();
     this._filmData = filmData;
     this._inputValue = ``;
     this._activeEmoji = null;
+    this._controlButtonClickHandler = handler;
 
     this._closeHandler = null;
     this._subscribeOnEvents();
@@ -198,6 +199,10 @@ export default class FilmDetails extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
+  }
+
+  updateData(newData) {
+    this._filmData = newData;
   }
 
   setSubmitHandler() {
@@ -248,5 +253,33 @@ export default class FilmDetails extends AbstractSmartComponent {
         this.rerender();
       }
     });
+
+    this._setWatchlistButtonHandler();
+    this._setWatchedButtonHandler();
+    this._setFavoriteButtonHandler();
+  }
+
+  _setWatchlistButtonHandler() {
+    this.getElement().querySelector(`.film-details__control-label--watchlist`)
+      .addEventListener(`click`, (evt) => {
+        this._controlButtonClickHandler(evt);
+        this.rerender();
+      });
+  }
+
+  _setWatchedButtonHandler() {
+    this.getElement().querySelector(`.film-details__control-label--watched`)
+      .addEventListener(`click`, (evt) => {
+        this._controlButtonClickHandler(evt);
+        this.rerender();
+      });
+  }
+
+  _setFavoriteButtonHandler() {
+    this.getElement().querySelector(`.film-details__control-label--favorite`)
+      .addEventListener(`click`, (evt) => {
+        this._controlButtonClickHandler(evt);
+        this.rerender();
+      });
   }
 }
