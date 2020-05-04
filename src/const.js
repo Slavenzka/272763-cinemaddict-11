@@ -1,5 +1,5 @@
 export const BOARD_PRESETS = {
-  totalCardsQuantity: 23,
+  totalCardsQuantity: 13,
   initialRenderedCardsQuantity: 5,
   additionalCardsQuantity: 5,
   extraListCardsQuantity: 2,

@@ -64,6 +64,7 @@ export default class BoardController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
+    this._buttonMoreClickHandler = this._buttonMoreClickHandler.bind(this);
 
     this._cardsSortHandler = this._cardsSortHandler.bind(this);
     this._sortComponent.setSortTypeChangeHandler((sortType) => {
@@ -129,26 +130,27 @@ export default class BoardController {
       return;
     }
 
-    const buttonMoreClickHandler = () => {
-      const cards = this._filmsModel.getFilms();
-      const actualCardsState = getSortedCards(cards, this._sortComponent.getSortType());
-      let prevFilmsCount = this._initialFilmsCount;
-
-      const next = () => {
-        this._initialFilmsCount += BOARD_PRESETS.additionalCardsQuantity;
-
-        const filmsAdditionalCards = actualCardsState.slice(prevFilmsCount, this._initialFilmsCount);
-        this._renderFilms(filmsAdditionalCards);
-
-        prevFilmsCount = this._initialFilmsCount;
-      };
-
-      next();
-    };
     this._buttonMore.getElement();
     render(this._filmsContainer.getElement(), this._buttonMore);
-    this._buttonMore.addButtonMoreHandler(buttonMoreClickHandler);
+    this._buttonMore.addButtonMoreHandler(this._buttonMoreClickHandler);
   }
+
+  _buttonMoreClickHandler() {
+    const cards = this._filmsModel.getFilms();
+    const actualCardsState = getSortedCards(cards, this._sortComponent.getSortType());
+    let prevFilmsCount = this._initialFilmsCount;
+
+    const next = () => {
+      this._initialFilmsCount += BOARD_PRESETS.additionalCardsQuantity;
+
+      const filmsAdditionalCards = actualCardsState.slice(prevFilmsCount, this._initialFilmsCount);
+      this._renderFilms(filmsAdditionalCards);
+
+      prevFilmsCount = this._initialFilmsCount;
+    };
+
+    next();
+  };
 
   _renderExtraCategories() {
     const cards = this._filmsModel.getFilms();
