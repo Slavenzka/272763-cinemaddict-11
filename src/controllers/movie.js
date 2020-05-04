@@ -1,7 +1,7 @@
 import FilmCardComponent from '../components/film-card';
 import {render} from '../utils/render';
 import FilmDetails from '../components/film-details';
-import {replace} from '../utils/render';
+import {replace, remove} from '../utils/render';
 import {Mode} from '../const';
 
 export default class MovieController {
@@ -53,6 +53,10 @@ export default class MovieController {
     if (this._mode !== Mode.DEFAULT) {
       this._closeModal();
     }
+  }
+
+  destroy() {
+    remove(this.component);
   }
 
   _renderModal(card) {

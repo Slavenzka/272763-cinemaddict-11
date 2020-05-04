@@ -1,4 +1,4 @@
-import {filterTypes} from '../const';
+import {FilterTypes} from '../const';
 import {render, replace} from '../utils/render';
 import FilterComponent from '../components/filter';
 import {getFilmsByFilter} from '../utils/filter';
@@ -8,7 +8,7 @@ export default class FilterController {
     this._container = container;
     this._filmsModel = filmsModel;
 
-    this._activeFilterType = filterTypes.ALL;
+    this._activeFilterType = FilterTypes.ALL;
     this._filterComponent = null;
 
     this._onDataChange = this._onDataChange.bind(this);
@@ -19,8 +19,8 @@ export default class FilterController {
 
   render() {
     const container = this._container;
-    const allFilms = this._filmsModel.getFilms();
-    const filters = Object.values(filterTypes).map((filterType) => {
+    const allFilms = this._filmsModel.getFilmsAll();
+    const filters = Object.values(FilterTypes).map((filterType) => {
       return {
         name: filterType,
         count: getFilmsByFilter(allFilms, filterType).length,
@@ -39,6 +39,7 @@ export default class FilterController {
   }
 
   _onFilterChange(filterType) {
+    this._filmsModel.setFilter(filterType);
     this._activeFilterType = filterType;
   }
 

@@ -5,6 +5,7 @@ import {BOARD_PRESETS} from './const';
 import {generateFilms} from './mock/cards';
 import BoardController from './controllers/board';
 import FilmsModel from './models/films';
+import FilterController from './controllers/filter';
 
 const {totalCardsQuantity} = BOARD_PRESETS;
 const filmsData = generateFilms(totalCardsQuantity);
@@ -33,6 +34,9 @@ const mainElement = document.querySelector(`.main`);
 
 renderHeader();
 renderFooter();
+
+const filterController = new FilterController(mainElement, filmsModel);
+filterController.render();
 
 const board = new BoardController(mainElement, userProfile, filmsModel);
 board.render(filmsData);

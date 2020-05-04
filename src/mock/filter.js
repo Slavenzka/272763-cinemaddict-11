@@ -1,6 +1,6 @@
 const FILTERS = [
   {
-    name: `All movies`,
+    name: `all movies`,
   },
   {
     name: `watchlist`,
