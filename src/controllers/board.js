@@ -6,6 +6,7 @@ import SiteNavigationComponent from '../components/site-navigation';
 import SortComponent from '../components/sort';
 import CardController from '../controllers/movie';
 import FilmsComponent from '../components/films';
+import {remove} from '../utils/render';
 
 const {initialRenderedCardsQuantity} = BOARD_PRESETS;
 
@@ -111,6 +112,12 @@ export default class BoardController {
   }
 
   _addButtonMore() {
+    remove(this._buttonMore);
+
+    if (this._initialFilmsCount >= this._filmsModel.getFilms().length) {
+      return;
+    }
+
     const buttonMoreClickHandler = () => {
       const cards = this._filmsModel.getFilms();
       const actualCardsState = getSortedCards(cards, this._sortComponent.getSortType());
@@ -126,14 +133,7 @@ export default class BoardController {
         prevFilmsCount = this._initialFilmsCount;
       };
 
-      const checkAllElementsLoaded = () => {
-        if (this._initialFilmsCount >= cards.length) {
-          this._buttonMore.removeElement();
-        }
-      };
-
       next();
-      checkAllElementsLoaded();
     };
     this._buttonMore.getElement();
     render(this._contentContainer, this._buttonMore);
