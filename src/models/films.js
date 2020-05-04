@@ -17,13 +17,18 @@ export default class FilmsModel {
     const index = this._films.indexOf((item) => item.id === id);
 
     if (index === -1) {
-      return false;
+      return {
+        status: false
+      };
     }
 
     this._films = [].concat(this._films.slice(0, index), film, this._films.slice(index + 1));
     this._callHandlers(this._dataChangeHandlers);
 
-    return true;
+    return {
+      status: true,
+      index
+    };
   }
 
   setDataChangeHandler(handler) {
