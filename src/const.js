@@ -126,3 +126,10 @@ export const Mode = {
   DEFAULT: `default`,
   DETAILED: `detailed`
 };
+
+export const filterTypes = {
+  ALL: `all`,
+  WATCHLIST: `watchlist`,
+  HISTORY: `history`,
+  FAVORITES: `favorites`
+};

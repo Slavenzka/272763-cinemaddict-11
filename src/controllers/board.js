@@ -2,7 +2,7 @@ import {render, renderSectionElement, renderSectionHeading} from '../utils/rende
 import ButtonMoreComponent from '../components/button-more';
 import {BOARD_PRESETS, SORT_TYPE} from '../const';
 import {generateFilters} from '../mock/filter';
-import SiteNavigationComponent from '../components/site-navigation';
+import FilterComponent from '../components/filter';
 import SortComponent from '../components/sort';
 import CardController from '../controllers/movie';
 import FilmsComponent from '../components/films';
@@ -58,7 +58,7 @@ export default class BoardController {
     this._shownCardControllers = [];
     this._initialFilmsCount = initialRenderedCardsQuantity;
     this._filters = generateFilters(userProfile);
-    this._navigationComponent = new SiteNavigationComponent(this._filters);
+    this._filterComponent = new FilterComponent(this._filters);
     this._sortComponent = new SortComponent();
     this._buttonMore = new ButtonMoreComponent();
 
@@ -75,7 +75,7 @@ export default class BoardController {
   render() {
     const cards = this._filmsModel.getFilms();
 
-    render(this._container, this._navigationComponent);
+    render(this._container, this._filterComponent);
     render(this._container, this._sortComponent);
 
     this._contentContainer = renderSectionElement(this._container, `films`);
@@ -160,7 +160,7 @@ export default class BoardController {
     const isUpdated = this._filmsModel.updateFilm(oldData.id, newData);
 
     if (isUpdated.status) {
-      this._shownCardControllers[index].render(newData);
+      this._shownCardControllers[isUpdated.index].render(newData);
     }
   }
 

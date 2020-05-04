@@ -12,7 +12,7 @@ const createFilterMarkup = (name, isActive, count) => {
   );
 };
 
-const createSiteNavTemplate = (filters) => {
+const createFilterTemplate = (filters) => {
   const filtersMarkup = filters.map((item, index) => createFilterMarkup(item.filterName, index === 0, item.filterCount)).join(`\n`);
   return (
     `<nav class="main-navigation">
@@ -24,13 +24,13 @@ const createSiteNavTemplate = (filters) => {
   );
 };
 
-export default class SiteNavigation extends AbstractComponent {
+export default class FilterComponent extends AbstractComponent {
   constructor(filters) {
     super();
     this._filters = filters;
   }
 
   getTemplate() {
-    return createSiteNavTemplate(this._filters);
+    return createFilterTemplate(this._filters);
   }
 }
