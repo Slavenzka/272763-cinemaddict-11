@@ -2,6 +2,8 @@ export default class CommentsModel {
   constructor() {
     this._comments = [];
     this._dataChangeHandlers = [];
+
+    this.removeComment = this.removeComment.bind(this);
   }
 
   getComments() {
@@ -14,7 +16,7 @@ export default class CommentsModel {
   }
 
   removeComment(id) {
-    const index = this._comments.indexOf((film) => film.id === id);
+    const index = this._comments.findIndex((comment) => comment.id === +id);
 
     if (index === -1) {
       return false;

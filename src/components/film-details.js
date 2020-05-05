@@ -202,8 +202,12 @@ export default class FilmDetails extends AbstractSmartComponent {
     super.rerender();
   }
 
-  updateData(newData) {
+  updateData(newData, newComments) {
     this._filmData = newData;
+
+    if (newComments) {
+      this._commentsData = newComments;
+    }
   }
 
   setSubmitHandler() {
@@ -262,6 +266,7 @@ export default class FilmDetails extends AbstractSmartComponent {
           evt.preventDefault();
           const commentID = evt.currentTarget.dataset.commentId;
           this._deleteCommentHandler(commentID);
+          this.rerender();
         }
       });
     });
@@ -274,7 +279,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   _setWatchlistButtonHandler() {
     this.getElement().querySelector(`.film-details__control-label--watchlist`)
       .addEventListener(`click`, (evt) => {
-        this._controlButtonClickHandler(evt);
+        this._controlButtonClickHandler(evt.target.getAttribute(`for`));
         this.rerender();
       });
   }
@@ -282,7 +287,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   _setWatchedButtonHandler() {
     this.getElement().querySelector(`.film-details__control-label--watched`)
       .addEventListener(`click`, (evt) => {
-        this._controlButtonClickHandler(evt);
+        this._controlButtonClickHandler(evt.target.getAttribute(`for`));
         this.rerender();
       });
   }
@@ -290,7 +295,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   _setFavoriteButtonHandler() {
     this.getElement().querySelector(`.film-details__control-label--favorite`)
       .addEventListener(`click`, (evt) => {
-        this._controlButtonClickHandler(evt);
+        this._controlButtonClickHandler(evt.target.getAttribute(`for`));
         this.rerender();
       });
   }

@@ -47,10 +47,9 @@ const getSortedCards = (cards, sortType, to = cards.length) => {
 };
 
 export default class BoardController {
-  constructor(container, userProfile, filmsModel, commentsModel) {
+  constructor(container, userProfile, filmsModel) {
     this._container = container;
     this._filmsModel = filmsModel;
-    this._commentsModel = commentsModel;
     this._contentContainer = null;
     this._filmsContainer = null;
 
@@ -120,6 +119,11 @@ export default class BoardController {
     this._shownCardControllers = [];
   }
 
+  _clearExtraFilmsContainer() {
+    this._shownExtraCardControllers.forEach((cardController) => cardController.destroy());
+    this._shownExtraCardControllers = [];
+  }
+
   _addButtonMore() {
     remove(this._buttonMore);
 
@@ -150,6 +154,7 @@ export default class BoardController {
   }
 
   _renderExtraCategories() {
+    console.log(this._shownExtraCardControllers);
     const cards = this._filmsModel.getFilms();
 
     const renderExtraCategory = (categoryData, categoryName = ``) => {
@@ -165,10 +170,27 @@ export default class BoardController {
 
   _onDataChange(oldData, newData) {
     const isUpdated = this._filmsModel.updateFilm(oldData.id, newData);
+    const updatedCardControllerIndex = this._shownCardControllers.findIndex((controller) => controller.getCardId() === isUpdated.id);
+    const updatedExtraControllerIndex = this._shownExtraCardControllers.findIndex((controller) => controller.getCardId() === isUpdated.id);
 
     if (isUpdated.status) {
-      this._shownCardControllers[isUpdated.index].render(newData);
-      this._shownCardControllers[isUpdated.index].updateModal();
+      if (updatedCardControllerIndex !== -1 && updatedExtraControllerIndex === -1) {
+        this._shownCardControllers[updatedCardControllerIndex].render(newData);
+        this._shownCardControllers[updatedCardControllerIndex].updateModal();
+        this._updateExtraCategories();
+      }
+      if (updatedCardControllerIndex === -1 && updatedExtraControllerIndex !== -1) {
+        this._shownExtraCardControllers[updatedExtraControllerIndex].render(newData);
+        this._shownExtraCardControllers[updatedExtraControllerIndex].updateModal();
+        this._updateExtraCategories();
+      }
+      if (updatedCardControllerIndex !== -1 && updatedExtraControllerIndex !== -1) {
+        this._shownCardControllers[updatedCardControllerIndex].render(newData);
+        this._shownCardControllers[updatedCardControllerIndex].updateModal();
+        this._shownExtraCardControllers[updatedExtraControllerIndex].render(newData);
+        this._shownExtraCardControllers[updatedExtraControllerIndex].updateModal();
+        this._updateExtraCategories();
+      }
     }
   }
 
@@ -180,6 +202,12 @@ export default class BoardController {
     this._clearFilmsContainer();
     this._renderFilms(this._filmsModel.getFilms().slice(0, count));
     this._addButtonMore();
+  }
+
+  _updateExtraCategories() {
+    this._clearExtraFilmsContainer();
+    [...document.querySelectorAll(`.films-list--extra`)].forEach((category) => category.remove());
+    this._renderExtraCategories();
   }
 
   _onFilterChange() {

@@ -17,7 +17,7 @@ export default class MovieController {
 
     this._closeModal = this._closeModal.bind(this);
     this._controlButtonClickHandler = this._controlButtonClickHandler.bind(this);
-    // this._deleteCommentHandler = this._deleteCommentHandler.bind(this);
+    this._deleteCommentHandler = this._deleteCommentHandler.bind(this);
   }
 
   render(card) {
@@ -46,6 +46,10 @@ export default class MovieController {
     });
   }
 
+  getCardId() {
+    return this._card.id;
+  }
+
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
       this._closeModal();
@@ -58,7 +62,7 @@ export default class MovieController {
 
   updateModal() {
     if (this._detailsComponent) {
-      this._detailsComponent.updateData(this._card);
+      this._detailsComponent.updateData(this._card, this._getUpdatedCommentsList());
     }
   }
 
@@ -66,21 +70,18 @@ export default class MovieController {
     this._onViewChange();
     this._mode = Mode.DETAILED;
 
-    const allComments = commentsModel.getComments();
-    const comments = card.comments.map((commentID) => allComments.find((comment) => comment.id === commentID));
-
-    this._detailsComponent = new FilmDetails(card, comments, (evt) => {
-      this._controlButtonClickHandler(evt.target.getAttribute(`for`));
-    }/* this._deleteCommentHandler*/);
+    this._detailsComponent = new FilmDetails(card, this._getUpdatedCommentsList(), this._controlButtonClickHandler, commentsModel.removeComment);
     document.querySelector(`.main`)
       .appendChild(this._detailsComponent.getElement());
 
     this._detailsComponent.setSubmitHandler();
     this._detailsComponent.setCloseOnClickHandler(this._closeModal);
     this._detailsComponent.setCloseOnEscPressHandler(this._closeModal);
+    commentsModel.setDataChangeHandler(this._deleteCommentHandler);
   }
 
-  _controlButtonClickHandler(type) {
+  _controlButtonClickHandler(evt) {
+    const type = evt;
     let controlName = ``;
 
     switch (type) {
@@ -104,5 +105,21 @@ export default class MovieController {
     this._mode = Mode.DEFAULT;
     this._detailsComponent._element.remove();
     this._detailsComponent.removeElement();
+  }
+
+  _getUpdatedCommentsList() {
+    const allComments = commentsModel.getComments();
+    return allComments.filter((comment) => {
+      return this._card.comments.includes(comment.id);
+    });
+  }
+
+  _deleteCommentHandler() {
+    const newComments = this._getUpdatedCommentsList().map((comment) => comment.id);
+    this._onDataChange(this._card, Object.assign({}, this._card, {
+      comments: newComments
+    }));
+
+    this.updateModal();
   }
 }

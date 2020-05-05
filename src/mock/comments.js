@@ -3,9 +3,7 @@ import {
   getRandomNumberInRange,
   generateRandomTimestamp
 } from '../utils/common';
-import {BOARD_PRESETS, COMMENTS, emojis, NAMES} from '../const';
-
-const {comments} = BOARD_PRESETS;
+import {COMMENTS, emojis, NAMES} from '../const';
 
 const generateComment = (index) => {
   return {
@@ -18,5 +16,5 @@ const generateComment = (index) => {
 };
 
 export const generateFilmsComments = () => {
-  return (new Array(comments.maxQuantity).fill(``).map((_, index) => generateComment(index)));
+  return (new Array(100).fill(``).map((_, index) => generateComment(index)));
 };

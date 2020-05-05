@@ -37,7 +37,8 @@ export default class FilmsModel {
 
     return {
       status: true,
-      index
+      index,
+      id
     };
   }
 

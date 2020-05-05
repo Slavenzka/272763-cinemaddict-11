@@ -45,6 +45,6 @@ renderFooter();
 const filterController = new FilterController(mainElement, filmsModel);
 filterController.render();
 
-const board = new BoardController(mainElement, userProfile, filmsModel, commentsModel);
+const board = new BoardController(mainElement, userProfile, filmsModel);
 board.render(filmsData);
 
