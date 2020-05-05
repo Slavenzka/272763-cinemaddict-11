@@ -1,7 +1,6 @@
 import {render, renderSectionElement, renderSectionHeading} from '../utils/render';
 import ButtonMoreComponent from '../components/button-more';
 import {BOARD_PRESETS, SORT_TYPE} from '../const';
-import {generateFilters} from '../mock/filter';
 import SortComponent from '../components/sort';
 import CardController from '../controllers/movie';
 import FilmsComponent from '../components/films';
@@ -27,7 +26,7 @@ const renderTopRatedFilms = (cards, renderExtraCategory) => {
 
 const renderTopCommentedFilms = (cards, renderExtraCategory) => {
   const categoryData = [...cards]
-    .sort((a, b) => a.userComments.length < b.userComments.length)
+    .sort((a, b) => a.comments.length < b.comments.length)
     .slice(0, BOARD_PRESETS.extraListCardsQuantity);
   renderExtraCategory(categoryData, `Most commented`);
 };
@@ -48,9 +47,10 @@ const getSortedCards = (cards, sortType, to = cards.length) => {
 };
 
 export default class BoardController {
-  constructor(container, userProfile, filmsModel) {
+  constructor(container, userProfile, filmsModel, commentsModel) {
     this._container = container;
     this._filmsModel = filmsModel;
+    this._commentsModel = commentsModel;
     this._contentContainer = null;
     this._filmsContainer = null;
 
@@ -75,7 +75,6 @@ export default class BoardController {
 
   render() {
     const cards = this._filmsModel.getFilms();
-
     render(this._container, this._sortComponent);
 
     this._contentContainer = renderSectionElement(this._container, `films`);

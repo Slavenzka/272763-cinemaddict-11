@@ -3,6 +3,7 @@ import {
   getRandomArrayItem,
   shuffleArray,
   getRandomBoolean,
+  generateRandomTimestamp
 } from '../utils/common';
 import {
   COMMENTS,
@@ -10,7 +11,6 @@ import {
   GENRES,
   COUNTRIES,
   NAMES,
-  emojis,
   BOARD_PRESETS,
 } from '../const';
 
@@ -19,18 +19,6 @@ const {
   comments,
   maxRating
 } = BOARD_PRESETS;
-
-const generateRandomTimestamp = () => {
-  const getUnixTimestamp = (year) => (year - 1970) * 1000 * 60 * 60 * 24 * 365.25;
-
-  const MIN_YEAR = 1900;
-  const MAX_YEAR = (new Date()).getFullYear();
-
-  const minUnix = getUnixTimestamp(MIN_YEAR);
-  const maxUnix = getUnixTimestamp(MAX_YEAR + 1);
-
-  return getRandomNumberInRange(minUnix, maxUnix);
-};
 
 const generateFilm = () => {
   // shuffle genres array for data mocking
@@ -73,14 +61,9 @@ const generateFilm = () => {
   };
 
   // mock comments
-  filmItem.userComments = (new Array(getRandomNumberInRange(0, comments.maxQuantity)))
+  filmItem.comments = (new Array(getRandomNumberInRange(0, comments.maxQuantity)))
     .fill(``)
-    .map(() => ({
-      text: COMMENTS.slice(0, getRandomNumberInRange(1, 3)).join(` `),
-      name: getRandomArrayItem(NAMES),
-      emoji: getRandomArrayItem(Object.values(emojis)),
-      date: generateRandomTimestamp()
-    }));
+    .map((_, index) => index + 1);
 
   return filmItem;
 };

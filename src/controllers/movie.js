@@ -3,6 +3,7 @@ import {render} from '../utils/render';
 import FilmDetails from '../components/film-details';
 import {replace, remove} from '../utils/render';
 import {Mode} from '../const';
+import {commentsModel} from '../main';
 
 export default class MovieController {
   constructor(container, onDataChange, onViewChange) {
@@ -16,6 +17,7 @@ export default class MovieController {
 
     this._closeModal = this._closeModal.bind(this);
     this._controlButtonClickHandler = this._controlButtonClickHandler.bind(this);
+    // this._deleteCommentHandler = this._deleteCommentHandler.bind(this);
   }
 
   render(card) {
@@ -64,9 +66,12 @@ export default class MovieController {
     this._onViewChange();
     this._mode = Mode.DETAILED;
 
-    this._detailsComponent = new FilmDetails(card, (evt) => {
+    const allComments = commentsModel.getComments();
+    const comments = card.comments.map((commentID) => allComments.find((comment) => comment.id === commentID));
+
+    this._detailsComponent = new FilmDetails(card, comments, (evt) => {
       this._controlButtonClickHandler(evt.target.getAttribute(`for`));
-    });
+    }/* this._deleteCommentHandler*/);
     document.querySelector(`.main`)
       .appendChild(this._detailsComponent.getElement());
 

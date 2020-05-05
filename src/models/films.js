@@ -41,7 +41,7 @@ export default class FilmsModel {
     };
   }
 
-  removeFilm(id) {
+  removeComment(id) {
     const index = this._films.indexOf((film) => film.id === id);
 
     if (index === -1) {
@@ -54,7 +54,7 @@ export default class FilmsModel {
     return true;
   }
 
-  addFilm(film) {
+  addComment(film) {
     this._films = [].concat(this._films, film);
     this._callHandlers(this._dataChangeHandlers);
   }
