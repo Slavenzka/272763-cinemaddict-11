@@ -154,7 +154,6 @@ export default class BoardController {
   }
 
   _renderExtraCategories() {
-    console.log(this._shownExtraCardControllers);
     const cards = this._filmsModel.getFilms();
 
     const renderExtraCategory = (categoryData, categoryName = ``) => {
@@ -175,22 +174,21 @@ export default class BoardController {
 
     if (isUpdated.status) {
       if (updatedCardControllerIndex !== -1 && updatedExtraControllerIndex === -1) {
+        console.log(`Update cards only`);
         this._shownCardControllers[updatedCardControllerIndex].render(newData);
         this._shownCardControllers[updatedCardControllerIndex].updateModal();
-        this._updateExtraCategories();
-      }
-      if (updatedCardControllerIndex === -1 && updatedExtraControllerIndex !== -1) {
+      } else if (updatedCardControllerIndex === -1 && updatedExtraControllerIndex !== -1) {
+        console.log(`Update extras only`);
         this._shownExtraCardControllers[updatedExtraControllerIndex].render(newData);
         this._shownExtraCardControllers[updatedExtraControllerIndex].updateModal();
-        this._updateExtraCategories();
-      }
-      if (updatedCardControllerIndex !== -1 && updatedExtraControllerIndex !== -1) {
+      } else if (updatedCardControllerIndex !== -1 && updatedExtraControllerIndex !== -1) {
+        console.log(`Update both`);
         this._shownCardControllers[updatedCardControllerIndex].render(newData);
         this._shownCardControllers[updatedCardControllerIndex].updateModal();
         this._shownExtraCardControllers[updatedExtraControllerIndex].render(newData);
         this._shownExtraCardControllers[updatedExtraControllerIndex].updateModal();
-        this._updateExtraCategories();
       }
+      this._updateExtraCategories();
     }
   }
 

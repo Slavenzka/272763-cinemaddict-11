@@ -80,8 +80,7 @@ export default class MovieController {
     commentsModel.setDataChangeHandler(this._deleteCommentHandler);
   }
 
-  _controlButtonClickHandler(evt) {
-    const type = evt;
+  _controlButtonClickHandler(type) {
     let controlName = ``;
 
     switch (type) {
