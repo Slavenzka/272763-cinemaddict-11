@@ -21,6 +21,7 @@ const renderTopRatedFilms = (cards, renderExtraCategory) => {
   const categoryData = [...cards]
     .sort((a, b) => a.rating < b.rating)
     .slice(0, BOARD_PRESETS.extraListCardsQuantity);
+  categoryData.forEach((data) => console.log(data.isFavorite));
   renderExtraCategory(categoryData, `Top rated`);
 };
 
@@ -174,15 +175,12 @@ export default class BoardController {
 
     if (isUpdated.status) {
       if (updatedCardControllerIndex !== -1 && updatedExtraControllerIndex === -1) {
-        console.log(`Update cards only`);
         this._shownCardControllers[updatedCardControllerIndex].render(newData);
         this._shownCardControllers[updatedCardControllerIndex].updateModal();
       } else if (updatedCardControllerIndex === -1 && updatedExtraControllerIndex !== -1) {
-        console.log(`Update extras only`);
         this._shownExtraCardControllers[updatedExtraControllerIndex].render(newData);
         this._shownExtraCardControllers[updatedExtraControllerIndex].updateModal();
       } else if (updatedCardControllerIndex !== -1 && updatedExtraControllerIndex !== -1) {
-        console.log(`Update both`);
         this._shownCardControllers[updatedCardControllerIndex].render(newData);
         this._shownCardControllers[updatedCardControllerIndex].updateModal();
         this._shownExtraCardControllers[updatedExtraControllerIndex].render(newData);
