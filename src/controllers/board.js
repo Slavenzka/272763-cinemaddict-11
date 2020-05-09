@@ -21,7 +21,6 @@ const renderTopRatedFilms = (cards, renderExtraCategory) => {
   const categoryData = [...cards]
     .sort((a, b) => a.rating < b.rating)
     .slice(0, BOARD_PRESETS.extraListCardsQuantity);
-  categoryData.forEach((data) => console.log(data.isFavorite));
   renderExtraCategory(categoryData, `Top rated`);
 };
 
