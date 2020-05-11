@@ -122,11 +122,6 @@ export const KEY_CODES = {
   escape: 27
 };
 
-export const Mode = {
-  DEFAULT: `default`,
-  DETAILED: `detailed`
-};
-
 export const FilterTypes = {
   ALL: `all`,
   WATCHLIST: `watchlist`,

@@ -8,10 +8,10 @@ import {remove} from '../utils/render';
 
 const {initialRenderedCardsQuantity} = BOARD_PRESETS;
 
-const renderFilmCards = (cards, onDataChange, onViewChange, cardsContainer) => {
+const renderFilmCards = (cards, onDataChange, cardsContainer) => {
   const container = cardsContainer || document.querySelector(`.films-list__container`);
   return cards.map((card) => {
-    const filmCardController = new CardController(container, onDataChange, onViewChange);
+    const filmCardController = new CardController(container, onDataChange);
     filmCardController.render(card);
     return filmCardController;
   });
@@ -60,7 +60,6 @@ export default class BoardController {
     this._buttonMore = new ButtonMoreComponent();
 
     this._onDataChange = this._onDataChange.bind(this);
-    this._onViewChange = this._onViewChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
     this._buttonMoreClickHandler = this._buttonMoreClickHandler.bind(this);
 
@@ -98,20 +97,20 @@ export default class BoardController {
   }
 
   _renderFilms(films) {
-    const newFilms = renderFilmCards(films, this._onDataChange, this._onViewChange);
+    const newFilms = renderFilmCards(films, this._onDataChange);
     this._shownCardControllers = this._shownCardControllers.concat(newFilms);
     this._initialFilmsCount = this._shownCardControllers.length;
   }
 
   _renderExtraFilms(films, container) {
-    const newFilms = renderFilmCards(films, this._onDataChange, this._onViewChange, container);
+    const newFilms = renderFilmCards(films, this._onDataChange, container);
     this._shownExtraCardControllers = this._shownExtraCardControllers.concat(newFilms);
   }
 
   _cardsSortHandler(sortType) {
     this._initialFilmsCount = initialRenderedCardsQuantity;
 
-    this._shownCardControllers = renderFilmCards(getSortedCards(this._filmsModel.getFilms(), sortType, this._initialFilmsCount), this._onDataChange, this._onViewChange);
+    this._shownCardControllers = renderFilmCards(getSortedCards(this._filmsModel.getFilms(), sortType, this._initialFilmsCount), this._onDataChange);
   }
 
   _clearFilmsContainer() {
@@ -167,7 +166,7 @@ export default class BoardController {
     renderTopCommentedFilms(cards, renderExtraCategory);
   }
 
-  _onDataChange(oldData, newData) {
+  _onDataChange(oldData, newData, type = ``) {
     const isUpdated = this._filmsModel.updateFilm(oldData.id, newData);
     const updatedCardControllerIndex = this._shownCardControllers.findIndex((controller) => controller.getCardId() === isUpdated.id);
     const updatedExtraControllerIndex = this._shownExtraCardControllers.findIndex((controller) => controller.getCardId() === isUpdated.id);
@@ -175,22 +174,17 @@ export default class BoardController {
     if (isUpdated.status) {
       if (updatedCardControllerIndex !== -1 && updatedExtraControllerIndex === -1) {
         this._shownCardControllers[updatedCardControllerIndex].render(newData);
-        this._shownCardControllers[updatedCardControllerIndex].updateModal();
       } else if (updatedCardControllerIndex === -1 && updatedExtraControllerIndex !== -1) {
         this._shownExtraCardControllers[updatedExtraControllerIndex].render(newData);
-        this._shownExtraCardControllers[updatedExtraControllerIndex].updateModal();
       } else if (updatedCardControllerIndex !== -1 && updatedExtraControllerIndex !== -1) {
         this._shownCardControllers[updatedCardControllerIndex].render(newData);
-        this._shownCardControllers[updatedCardControllerIndex].updateModal();
         this._shownExtraCardControllers[updatedExtraControllerIndex].render(newData);
-        this._shownExtraCardControllers[updatedExtraControllerIndex].updateModal();
       }
+    }
+
+    if (type === `comment`) {
       this._updateExtraCategories();
     }
-  }
-
-  _onViewChange() {
-    this._shownCardControllers.forEach((it) => it.setDefaultView());
   }
 
   _updateCards(count) {

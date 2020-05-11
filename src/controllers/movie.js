@@ -1,23 +1,17 @@
 import FilmCardComponent from '../components/film-card';
 import {render} from '../utils/render';
-import FilmDetails from '../components/film-details';
 import {replace, remove} from '../utils/render';
-import {Mode} from '../const';
-import {commentsModel} from '../main';
+import {modalController} from '../main';
 
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange) {
     this._container = container;
     this.component = null;
-    this._detailsComponent = null;
     this._card = null;
     this._onDataChange = onDataChange;
-    this._onViewChange = onViewChange;
-    this._mode = Mode.DEFAULT;
+    this._modalController = null;
 
-    this._closeModal = this._closeModal.bind(this);
     this._controlButtonClickHandler = this._controlButtonClickHandler.bind(this);
-    this._deleteCommentHandler = this._deleteCommentHandler.bind(this);
   }
 
   render(card) {
@@ -50,34 +44,13 @@ export default class MovieController {
     return this._card.id;
   }
 
-  setDefaultView() {
-    if (this._mode !== Mode.DEFAULT) {
-      this._closeModal();
-    }
-  }
-
   destroy() {
     remove(this.component);
   }
 
-  updateModal() {
-    if (this._detailsComponent) {
-      this._detailsComponent.updateData(this._card, this._getUpdatedCommentsList());
-    }
-  }
-
   _renderModal(card) {
-    this._onViewChange();
-    this._mode = Mode.DETAILED;
-
-    this._detailsComponent = new FilmDetails(card, this._getUpdatedCommentsList(), this._controlButtonClickHandler, commentsModel.removeComment);
-    document.querySelector(`.main`)
-      .appendChild(this._detailsComponent.getElement());
-
-    this._detailsComponent.setSubmitHandler();
-    this._detailsComponent.setCloseOnClickHandler(this._closeModal);
-    this._detailsComponent.setCloseOnEscPressHandler(this._closeModal);
-    commentsModel.setDataChangeHandler(this._deleteCommentHandler);
+    this._modalController = modalController;
+    this._modalController.render(this._controlButtonClickHandler, this._onDataChange, card.id);
   }
 
   _controlButtonClickHandler(type) {
@@ -98,27 +71,5 @@ export default class MovieController {
     this._onDataChange(this._card, Object.assign({}, this._card, {
       [controlName]: !this._card[controlName]
     }));
-  }
-
-  _closeModal() {
-    this._mode = Mode.DEFAULT;
-    this._detailsComponent._element.remove();
-    this._detailsComponent.removeElement();
-  }
-
-  _getUpdatedCommentsList() {
-    const allComments = commentsModel.getComments();
-    return allComments.filter((comment) => {
-      return this._card.comments.includes(comment.id);
-    });
-  }
-
-  _deleteCommentHandler() {
-    const newComments = this._getUpdatedCommentsList().map((comment) => comment.id);
-    this._onDataChange(this._card, Object.assign({}, this._card, {
-      comments: newComments
-    }));
-
-    this.updateModal();
   }
 }

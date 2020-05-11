@@ -199,6 +199,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   rerender() {
+    // console.log(`Rerender`);
     super.rerender();
   }
 
@@ -277,25 +278,25 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   _setWatchlistButtonHandler() {
-    this.getElement().querySelector(`.film-details__control-label--watchlist`)
-      .addEventListener(`click`, (evt) => {
-        this._controlButtonClickHandler(evt.target.getAttribute(`for`));
+    this.getElement().querySelector(`#watchlist`)
+      .addEventListener(`change`, (evt) => {
+        this._controlButtonClickHandler(evt.target.getAttribute(`id`));
         this.rerender();
       });
   }
 
   _setWatchedButtonHandler() {
-    this.getElement().querySelector(`.film-details__control-label--watched`)
-      .addEventListener(`click`, (evt) => {
-        this._controlButtonClickHandler(evt.target.getAttribute(`for`));
+    this.getElement().querySelector(`#watched`)
+      .addEventListener(`change`, (evt) => {
+        this._controlButtonClickHandler(evt.target.getAttribute(`id`));
         this.rerender();
       });
   }
 
   _setFavoriteButtonHandler() {
-    this.getElement().querySelector(`.film-details__control-label--favorite`)
-      .addEventListener(`click`, (evt) => {
-        this._controlButtonClickHandler(evt.target.getAttribute(`for`));
+    this.getElement().querySelector(`#favorite`)
+      .addEventListener(`change`, (evt) => {
+        this._controlButtonClickHandler(evt.target.getAttribute(`id`));
         this.rerender();
       });
   }

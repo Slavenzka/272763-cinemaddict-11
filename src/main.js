@@ -8,16 +8,19 @@ import FilmsModel from './models/films';
 import FilterController from './controllers/filter';
 import {generateFilmsComments} from './mock/comments';
 import CommentsModel from './models/comments';
+import ModalController from './controllers/modal';
 
 const {totalCardsQuantity} = BOARD_PRESETS;
 
 const filmsData = generateFilms(totalCardsQuantity);
-const filmsModel = new FilmsModel();
+export const filmsModel = new FilmsModel();
 filmsModel.setFilms(filmsData);
 
 const commentsData = generateFilmsComments();
 export const commentsModel = new CommentsModel();
 commentsModel.setComments(commentsData);
+
+export const modalController = new ModalController();
 
 export const userProfile = {
   watchlist: filmsData.filter((item) => item.isInWatchlist).length,
