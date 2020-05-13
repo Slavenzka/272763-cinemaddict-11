@@ -5,6 +5,7 @@ import SortComponent from '../components/sort';
 import CardController from '../controllers/movie';
 import FilmsComponent from '../components/films';
 import {remove} from '../utils/render';
+import {modalController} from '../main';
 
 const {initialRenderedCardsQuantity} = BOARD_PRESETS;
 
@@ -62,6 +63,7 @@ export default class BoardController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
     this._buttonMoreClickHandler = this._buttonMoreClickHandler.bind(this);
+    this._updateExtraCategories = this._updateExtraCategories.bind(this);
 
     this._cardsSortHandler = this._cardsSortHandler.bind(this);
     this._sortComponent.setSortTypeChangeHandler((sortType) => {
@@ -74,6 +76,8 @@ export default class BoardController {
   render() {
     const cards = this._filmsModel.getFilms();
     render(this._container, this._sortComponent);
+
+    modalController.setCommentChangeHandler(this._updateExtraCategories);
 
     this._contentContainer = renderSectionElement(this._container, `films`);
 
@@ -166,7 +170,7 @@ export default class BoardController {
     renderTopCommentedFilms(cards, renderExtraCategory);
   }
 
-  _onDataChange(oldData, newData, type = ``) {
+  _onDataChange(oldData, newData) {
     const isUpdated = this._filmsModel.updateFilm(oldData.id, newData);
     const updatedCardControllerIndex = this._shownCardControllers.findIndex((controller) => controller.getCardId() === isUpdated.id);
     const updatedExtraControllerIndex = this._shownExtraCardControllers.findIndex((controller) => controller.getCardId() === isUpdated.id);
@@ -180,10 +184,6 @@ export default class BoardController {
         this._shownCardControllers[updatedCardControllerIndex].render(newData);
         this._shownExtraCardControllers[updatedExtraControllerIndex].render(newData);
       }
-    }
-
-    if (type === `comment`) {
-      this._updateExtraCategories();
     }
   }
 

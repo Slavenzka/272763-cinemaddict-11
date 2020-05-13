@@ -11,6 +11,7 @@ export default class ModalController {
     this._controlButtonClickHandler = null;
     this._onDataChange = null;
 
+    this._onCommentChange = [];
     this.handleClickControl = this.handleClickControl.bind(this);
     this._deleteCommentHandler = this._deleteCommentHandler.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -46,6 +47,10 @@ export default class ModalController {
     this._updateModal();
   }
 
+  closeModal() {
+    remove(this._detailsComponent);
+  }
+
   _getUpdatedCommentsList() {
     const allComments = commentsModel.getComments();
     return allComments.filter((comment) => {
@@ -57,12 +62,17 @@ export default class ModalController {
     const newComments = this._getUpdatedCommentsList().map((comment) => comment.id);
     this._onDataChange(this._card, Object.assign({}, this._card, {
       comments: newComments
-    }), `comment`);
+    }));
 
     this._updateModal();
+    this.callCommentChangeHandlers();
   }
 
-  closeModal() {
-    remove(this._detailsComponent);
+  setCommentChangeHandler(handler) {
+    this._onCommentChange.push(handler);
+  }
+
+  callCommentChangeHandlers() {
+    this._onCommentChange.forEach((handler) => handler());
   }
 }
