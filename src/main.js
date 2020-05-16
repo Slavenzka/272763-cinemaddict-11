@@ -25,15 +25,9 @@ commentsModel.setComments(commentsData);
 
 export const modalController = new ModalController();
 
-export const userProfile = {
-  watchlist: filmsData.filter((item) => item.isInWatchlist).length,
-  history: filmsData.filter((item) => item.isWatched).length,
-  favorites: filmsData.filter((item) => item.isFavorite).length
-};
-
 const renderHeader = () => {
   const headerElement = document.querySelector(`.header`);
-  const userRank = new UserRankClassComponent(userProfile.history);
+  const userRank = new UserRankClassComponent();
   render(headerElement, userRank);
 };
 
@@ -56,7 +50,7 @@ render(mainElement, filmsScreenWrapper);
 
 export const sortComponent = new SortComponent();
 
-const board = new BoardController(mainElement, userProfile, filmsModel, sortComponent);
+const board = new BoardController(mainElement, filmsModel, sortComponent);
 board.render(filmsData);
 
 export const statsComponent = new Stats();

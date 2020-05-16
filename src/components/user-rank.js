@@ -1,5 +1,6 @@
 import {USER_RANK_PRESETS} from '../const';
 import AbstractComponent from './abstract-component';
+import {filmsModel} from '../main';
 
 const createUserRankTemplate = (watchedMoviesQuantity) => {
   let status = ``;
@@ -21,9 +22,10 @@ const createUserRankTemplate = (watchedMoviesQuantity) => {
 };
 
 export default class UserRank extends AbstractComponent {
-  constructor(watchedMoviesQuantity) {
+  constructor() {
     super();
-    this._watchedCounter = watchedMoviesQuantity;
+    this._filmsData = filmsModel.getFilms();
+    this._watchedCounter = this._filmsData.filter((film) => film.isWatched).length;
   }
 
   getTemplate() {

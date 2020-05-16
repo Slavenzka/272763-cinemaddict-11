@@ -47,7 +47,7 @@ const getSortedCards = (cards, sortType, to = cards.length) => {
 };
 
 export default class BoardController {
-  constructor(container, userProfile, filmsModel, sortComponent) {
+  constructor(container, filmsModel, sortComponent) {
     this._container = container;
     this._filmsModel = filmsModel;
     this._contentContainer = null;
