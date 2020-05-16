@@ -111,7 +111,7 @@ export const RENDER_POSITION = {
   BEFORENODE: `beforenode`
 };
 
-export const SORT_TYPE = {
+export const sortType = {
   DATE: `date`,
   RATING: `rating`,
   DEFAULT: `default`

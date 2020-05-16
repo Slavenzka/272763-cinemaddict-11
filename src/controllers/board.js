@@ -1,6 +1,6 @@
 import {render, renderSectionElement, renderSectionHeading} from '../utils/render';
 import ButtonMoreComponent from '../components/button-more';
-import {BOARD_PRESETS, RENDER_POSITION, SORT_TYPE} from '../const';
+import {BOARD_PRESETS, RENDER_POSITION, sortType} from '../const';
 import CardController from '../controllers/movie';
 import FilmsComponent from '../components/films';
 import {remove} from '../utils/render';
@@ -31,13 +31,13 @@ const renderTopCommentedFilms = (cards, renderExtraCategory) => {
   renderExtraCategory(categoryData, `Most commented`);
 };
 
-const getSortedCards = (cards, sortType, to = cards.length) => {
+const getSortedCards = (cards, sortTypeActive, to = cards.length) => {
   let sortableCards = cards.slice();
-  switch (sortType) {
-    case SORT_TYPE.DATE:
+  switch (sortTypeActive) {
+    case sortType.DATE:
       sortableCards = sortableCards.sort((a, b) => a.date < b.date);
       break;
-    case SORT_TYPE.RATING:
+    case sortType.RATING:
       sortableCards = sortableCards.sort((a, b) => a.rating < b.rating);
       break;
     default:
@@ -65,19 +65,11 @@ export default class BoardController {
     this._updateExtraCategories = this._updateExtraCategories.bind(this);
 
     this._cardsSortHandler = this._cardsSortHandler.bind(this);
-    this._sortComponent.setSortTypeChangeHandler((sortType) => {
+    this._sortComponent.setSortTypeChangeHandler((activeSortType) => {
       this._clearFilmsContainer();
-      this._cardsSortHandler(sortType);
+      this._cardsSortHandler(activeSortType);
     });
     this._filmsModel.setFilterChangeHandler(this._onFilterChange);
-  }
-
-  hide() {
-    this._container.hide();
-  }
-
-  show() {
-    this._container.show();
   }
 
   render() {
@@ -118,10 +110,10 @@ export default class BoardController {
     this._shownExtraCardControllers = this._shownExtraCardControllers.concat(newFilms);
   }
 
-  _cardsSortHandler(sortType) {
+  _cardsSortHandler(activeSortType) {
     this._initialFilmsCount = initialRenderedCardsQuantity;
 
-    this._shownCardControllers = renderFilmCards(getSortedCards(this._filmsModel.getFilms(), sortType, this._initialFilmsCount), this._onDataChange);
+    this._shownCardControllers = renderFilmCards(getSortedCards(this._filmsModel.getFilms(), activeSortType, this._initialFilmsCount), this._onDataChange);
   }
 
   _clearFilmsContainer() {
