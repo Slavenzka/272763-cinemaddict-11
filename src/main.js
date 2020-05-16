@@ -4,9 +4,23 @@ import {render} from './utils/render';
 import {BOARD_PRESETS} from './const';
 import {generateFilms} from './mock/cards';
 import BoardController from './controllers/board';
+import FilmsModel from './models/films';
+import FilterController from './controllers/filter';
+import {generateFilmsComments} from './mock/comments';
+import CommentsModel from './models/comments';
+import ModalController from './controllers/modal';
 
 const {totalCardsQuantity} = BOARD_PRESETS;
+
 const filmsData = generateFilms(totalCardsQuantity);
+export const filmsModel = new FilmsModel();
+filmsModel.setFilms(filmsData);
+
+const commentsData = generateFilmsComments();
+export const commentsModel = new CommentsModel();
+commentsModel.setComments(commentsData);
+
+export const modalController = new ModalController();
 
 export const userProfile = {
   watchlist: filmsData.filter((item) => item.isInWatchlist).length,
@@ -31,6 +45,9 @@ const mainElement = document.querySelector(`.main`);
 renderHeader();
 renderFooter();
 
-const board = new BoardController(mainElement, userProfile);
+const filterController = new FilterController(mainElement, filmsModel);
+filterController.render();
+
+const board = new BoardController(mainElement, userProfile, filmsModel);
 board.render(filmsData);
 

@@ -17,22 +17,21 @@ const createFilmDetailsTemplate = ({
   description,
   team,
   country,
-  userComments,
   isInWatchlist,
   isWatched,
   isFavorite,
   isAdult
-}, options) => {
+}, comments, options) => {
   const {activeEmoji} = options;
   const dateObject = new Date(date);
   const releaseDate = getFullDate(dateObject);
   const formattedDuration = getDurationFromMinutes(runtime);
 
-  const commentsList = userComments.map((comment) => {
+  const commentsList = comments.map((comment) => {
     const commentDate = getFullDateAndTime(comment.date);
     return (
       `
-        <li class="film-details__comment">
+        <li class="film-details__comment" data-comment-id="${comment.id}">
           <span class="film-details__comment-emoji">
             <img src="./images/emoji/${comment.emoji}.png" width="55" height="55" alt="emoji-${comment.emoji}">
           </span>
@@ -130,7 +129,7 @@ const createFilmDetailsTemplate = ({
 
         <div class="form-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${userComments.length}</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
             <ul class="film-details__comments-list">
               ${commentsList}
@@ -173,18 +172,21 @@ const createFilmDetailsTemplate = ({
 };
 
 export default class FilmDetails extends AbstractSmartComponent {
-  constructor(filmData) {
+  constructor(filmData, commentsData, controlButtonHandler, deleteCommentHandler) {
     super();
     this._filmData = filmData;
+    this._commentsData = commentsData;
     this._inputValue = ``;
     this._activeEmoji = null;
+    this._controlButtonClickHandler = controlButtonHandler;
 
     this._closeHandler = null;
     this._subscribeOnEvents();
+    this._deleteCommentHandler = deleteCommentHandler;
   }
 
   getTemplate() {
-    return createFilmDetailsTemplate(this._filmData, {
+    return createFilmDetailsTemplate(this._filmData, this._commentsData, {
       inputValue: this._inputValue,
       activeEmoji: this._activeEmoji
     });
@@ -197,7 +199,16 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   rerender() {
+    // console.log(`Rerender`);
     super.rerender();
+  }
+
+  updateData(newData, newComments) {
+    this._filmData = newData;
+
+    if (newComments) {
+      this._commentsData = newComments;
+    }
   }
 
   setSubmitHandler() {
@@ -236,6 +247,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     const element = this.getElement();
     const inputComment = element.querySelector(`.film-details__comment-input`);
     const emojiList = element.querySelector(`.film-details__emoji-list`);
+    const commentItems = [...element.querySelectorAll(`.film-details__comment`)];
 
     inputComment.addEventListener(`input`, (evt) => {
       this._inputValue = evt.target.value;
@@ -248,5 +260,44 @@ export default class FilmDetails extends AbstractSmartComponent {
         this.rerender();
       }
     });
+
+    commentItems.forEach((comment) => {
+      comment.addEventListener(`click`, (evt) => {
+        if (evt.target.tagName === `BUTTON`) {
+          evt.preventDefault();
+          const commentID = evt.currentTarget.dataset.commentId;
+          this._deleteCommentHandler(commentID);
+          this.rerender();
+        }
+      });
+    });
+
+    this._setWatchlistButtonHandler();
+    this._setWatchedButtonHandler();
+    this._setFavoriteButtonHandler();
+  }
+
+  _setWatchlistButtonHandler() {
+    this.getElement().querySelector(`#watchlist`)
+      .addEventListener(`change`, (evt) => {
+        this._controlButtonClickHandler(evt.target.getAttribute(`id`));
+        this.rerender();
+      });
+  }
+
+  _setWatchedButtonHandler() {
+    this.getElement().querySelector(`#watched`)
+      .addEventListener(`change`, (evt) => {
+        this._controlButtonClickHandler(evt.target.getAttribute(`id`));
+        this.rerender();
+      });
+  }
+
+  _setFavoriteButtonHandler() {
+    this.getElement().querySelector(`#favorite`)
+      .addEventListener(`change`, (evt) => {
+        this._controlButtonClickHandler(evt.target.getAttribute(`id`));
+        this.rerender();
+      });
   }
 }

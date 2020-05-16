@@ -1,24 +1,24 @@
 const FILTERS = [
   {
-    filterName: `All movies`,
+    name: `all movies`,
   },
   {
-    filterName: `watchlist`,
-    filterCount: 0
+    name: `watchlist`,
+    count: 0
   },
   {
-    filterName: `history`,
-    filterCount: 0
+    name: `history`,
+    count: 0
   },
   {
-    filterName: `favorites`,
-    filterCount: 0
+    name: `favorites`,
+    count: 0
   }
 ];
 
 export const generateFilters = (userData) => {
   return FILTERS.map((filter) => {
-    filter.filterCount = userData[filter.filterName];
+    filter.count = userData[filter.filterName];
     return filter;
   });
 };
