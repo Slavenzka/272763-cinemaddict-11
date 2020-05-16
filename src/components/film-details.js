@@ -2,7 +2,7 @@ import {KEY_CODES, NAMES} from '../const';
 import {
   getDurationFromMinutes,
   getFullDate,
-  getFullDateAndTime, getRandomArrayItem, getRandomNumberInRange,
+  getFullDateAndTime, getRandomArrayItem,
 } from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
 import {commentsModel} from '../main';
