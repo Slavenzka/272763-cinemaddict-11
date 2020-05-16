@@ -7,6 +7,7 @@ import {
 } from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
 import {commentsModel} from '../main';
+import {encode} from 'he';
 
 const createFilmDetailsTemplate = ({
   name,
@@ -38,7 +39,7 @@ const createFilmDetailsTemplate = ({
             <img src="./images/emoji/${comment.emoji}.png" width="55" height="55" alt="emoji-${comment.emoji}">
           </span>
           <div>
-            <p class="film-details__comment-text">${comment.text}</p>
+            <p class="film-details__comment-text">${encode(comment.text)}</p>
             <p class="film-details__comment-info">
               <span class="film-details__comment-author">${comment.name}</span>
               <span class="film-details__comment-day">${commentDate}</span>
