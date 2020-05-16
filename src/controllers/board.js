@@ -4,7 +4,7 @@ import {BOARD_PRESETS, RENDER_POSITION, SORT_TYPE} from '../const';
 import CardController from '../controllers/movie';
 import FilmsComponent from '../components/films';
 import {remove} from '../utils/render';
-import {modalController} from '../main';
+import {modalController, userRank} from '../main';
 
 const {initialRenderedCardsQuantity} = BOARD_PRESETS;
 
@@ -185,11 +185,14 @@ export default class BoardController {
     if (isUpdated.status) {
       if (updatedCardControllerIndex !== -1 && updatedExtraControllerIndex === -1) {
         this._shownCardControllers[updatedCardControllerIndex].render(newData);
+        userRank.updateUserRank();
       } else if (updatedCardControllerIndex === -1 && updatedExtraControllerIndex !== -1) {
         this._shownExtraCardControllers[updatedExtraControllerIndex].render(newData);
+        userRank.updateUserRank();
       } else if (updatedCardControllerIndex !== -1 && updatedExtraControllerIndex !== -1) {
         this._shownCardControllers[updatedCardControllerIndex].render(newData);
         this._shownExtraCardControllers[updatedExtraControllerIndex].render(newData);
+        userRank.updateUserRank();
       }
     }
   }

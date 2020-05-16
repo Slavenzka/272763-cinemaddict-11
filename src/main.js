@@ -25,22 +25,15 @@ commentsModel.setComments(commentsData);
 
 export const modalController = new ModalController();
 
-const renderHeader = () => {
-  const headerElement = document.querySelector(`.header`);
-  const userRank = new UserRankClassComponent();
-  render(headerElement, userRank);
-};
-
-const renderFooter = () => {
-  const footerCounterContainer = document.querySelector(`.footer__statistics`);
-  const footerCounter = new FooterCountComponent(filmsData.length);
-  render(footerCounterContainer, footerCounter);
-};
-
 const mainElement = document.querySelector(`.main`);
 
-renderHeader();
-renderFooter();
+const headerElement = document.querySelector(`.header`);
+export const userRank = new UserRankClassComponent();
+render(headerElement, userRank);
+
+const footerCounterContainer = document.querySelector(`.footer__statistics`);
+const footerCounter = new FooterCountComponent(filmsData.length);
+render(footerCounterContainer, footerCounter);
 
 const filterController = new FilterController(mainElement, filmsModel);
 filterController.render();
