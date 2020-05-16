@@ -1,7 +1,6 @@
 import {render, renderSectionElement, renderSectionHeading} from '../utils/render';
 import ButtonMoreComponent from '../components/button-more';
-import {BOARD_PRESETS, SORT_TYPE} from '../const';
-import SortComponent from '../components/sort';
+import {BOARD_PRESETS, RENDER_POSITION, SORT_TYPE} from '../const';
 import CardController from '../controllers/movie';
 import FilmsComponent from '../components/films';
 import {remove} from '../utils/render';
@@ -48,7 +47,7 @@ const getSortedCards = (cards, sortType, to = cards.length) => {
 };
 
 export default class BoardController {
-  constructor(container, userProfile, filmsModel) {
+  constructor(container, userProfile, filmsModel, sortComponent) {
     this._container = container;
     this._filmsModel = filmsModel;
     this._contentContainer = null;
@@ -57,7 +56,7 @@ export default class BoardController {
     this._shownCardControllers = [];
     this._shownExtraCardControllers = [];
     this._initialFilmsCount = initialRenderedCardsQuantity;
-    this._sortComponent = new SortComponent();
+    this._sortComponent = sortComponent;
     this._buttonMore = new ButtonMoreComponent();
 
     this._onDataChange = this._onDataChange.bind(this);
@@ -83,11 +82,11 @@ export default class BoardController {
 
   render() {
     const cards = this._filmsModel.getFilms();
-    render(this._container, this._sortComponent);
+    this._contentContainer = document.querySelector(`section.films`);
+
+    render(this._container, this._sortComponent, RENDER_POSITION.BEFORENODE, this._contentContainer);
 
     modalController.setCommentChangeHandler(this._updateExtraCategories);
-
-    this._contentContainer = renderSectionElement(this._container, `films`);
 
     this._filmsContainer = new FilmsComponent();
     const filmsContainerElement = this._filmsContainer.getElement();

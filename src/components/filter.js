@@ -1,5 +1,6 @@
 import {capitalizeFirstLetter} from '../utils/common';
 import AbstractComponent from './abstract-component';
+import {filmsScreenWrapper, sortComponent, statsComponent} from '../main';
 
 const createFilterMarkup = ({name, isActive, count}) => {
   const type = name.split(` `)[0].toLowerCase();
@@ -39,7 +40,17 @@ export default class FilterComponent extends AbstractComponent {
     this.getElement().addEventListener(`click`, (evt) => {
       if (evt.target.tagName === `A`) {
         const filterName = evt.target.getAttribute(`href`).slice(1);
-        handler(filterName);
+
+        if (filterName === `stats`) {
+          statsComponent.show();
+          filmsScreenWrapper.hide();
+          sortComponent.hide();
+        } else {
+          statsComponent.hide();
+          filmsScreenWrapper.show();
+          sortComponent.show();
+          handler(filterName);
+        }
       }
       if (evt.target.tagName === `SPAN`) {
         const filterName = evt.target.parentElement.getAttribute(`href`).slice(1);

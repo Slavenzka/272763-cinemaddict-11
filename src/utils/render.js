@@ -21,10 +21,13 @@ export const getNodeFromTemplate = (template) => {
   return node.firstChild;
 };
 
-export const render = (container, component, position = RENDER_POSITION.BEFOREEND) => {
+export const render = (container, component, position = RENDER_POSITION.BEFOREEND, referenceNode) => {
   switch (position) {
     case `afterbegin`:
       container.prepend(component.getElement());
+      break;
+    case `beforenode`:
+      container.insertBefore(component.getElement(), referenceNode);
       break;
     default:
       container.append(component.getElement());

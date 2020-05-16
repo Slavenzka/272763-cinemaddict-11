@@ -9,6 +9,9 @@ import FilterController from './controllers/filter';
 import {generateFilmsComments} from './mock/comments';
 import CommentsModel from './models/comments';
 import ModalController from './controllers/modal';
+import Stats from './components/stats';
+import FilmsPage from './components/films-page';
+import SortComponent from './components/sort';
 
 const {totalCardsQuantity} = BOARD_PRESETS;
 
@@ -48,6 +51,14 @@ renderFooter();
 const filterController = new FilterController(mainElement, filmsModel);
 filterController.render();
 
-const board = new BoardController(mainElement, userProfile, filmsModel);
+export const filmsScreenWrapper = new FilmsPage();
+render(mainElement, filmsScreenWrapper);
+
+export const sortComponent = new SortComponent();
+
+const board = new BoardController(mainElement, userProfile, filmsModel, sortComponent);
 board.render(filmsData);
 
+export const statsComponent = new Stats();
+render(mainElement, statsComponent);
+statsComponent.hide();

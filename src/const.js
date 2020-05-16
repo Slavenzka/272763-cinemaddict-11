@@ -107,7 +107,8 @@ export const emojis = {
 
 export const RENDER_POSITION = {
   BEFOREEND: `beforeend`,
-  AFTERBEGIN: `afterbegin`
+  AFTERBEGIN: `afterbegin`,
+  BEFORENODE: `beforenode`
 };
 
 export const SORT_TYPE = {
