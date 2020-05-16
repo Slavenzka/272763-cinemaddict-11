@@ -1,5 +1,5 @@
 export const BOARD_PRESETS = {
-  totalCardsQuantity: 23,
+  totalCardsQuantity: 13,
   initialRenderedCardsQuantity: 5,
   additionalCardsQuantity: 5,
   extraListCardsQuantity: 2,
@@ -98,12 +98,12 @@ export const NAMES = [
   `John Doe`
 ];
 
-export const EMOJIS = [
-  `smile`,
-  `sleeping`,
-  `puke`,
-  `angry`
-];
+export const emojis = {
+  SMILE: `smile`,
+  SLEEPING: `sleeping`,
+  PUKE: `puke`,
+  ANGRY: `angry`
+};
 
 export const RENDER_POSITION = {
   BEFOREEND: `beforeend`,
@@ -122,7 +122,9 @@ export const KEY_CODES = {
   escape: 27
 };
 
-export const Mode = {
-  DEFAULT: `default`,
-  DETAILED: `detailed`
+export const FilterTypes = {
+  ALL: `all`,
+  WATCHLIST: `watchlist`,
+  HISTORY: `history`,
+  FAVORITES: `favorites`
 };

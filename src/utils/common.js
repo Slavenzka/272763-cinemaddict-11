@@ -16,6 +16,18 @@ export const addLeadingZero = (number) => number < 10 ? `0${number}` : `${number
 
 export const getRandomBoolean = () => Math.random() > 0.5;
 
+export const generateRandomTimestamp = () => {
+  const getUnixTimestamp = (year) => (year - 1970) * 1000 * 60 * 60 * 24 * 365.25;
+
+  const MIN_YEAR = 1900;
+  const MAX_YEAR = (new Date()).getFullYear();
+
+  const minUnix = getUnixTimestamp(MIN_YEAR);
+  const maxUnix = getUnixTimestamp(MAX_YEAR + 1);
+
+  return getRandomNumberInRange(minUnix, maxUnix);
+};
+
 export const capitalizeFirstLetter = (string) => string.slice(0, 1).toUpperCase() + string.slice(1);
 
 /**

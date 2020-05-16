@@ -1,20 +1,17 @@
 import FilmCardComponent from '../components/film-card';
 import {render} from '../utils/render';
-import FilmDetails from '../components/film-details';
-import {replace} from '../utils/render';
-import {Mode} from '../const';
+import {replace, remove} from '../utils/render';
+import {modalController} from '../main';
 
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange) {
     this._container = container;
     this.component = null;
-    this._detailsComponent = null;
     this._card = null;
     this._onDataChange = onDataChange;
-    this._onViewChange = onViewChange;
-    this._mode = Mode.DEFAULT;
+    this._modalController = null;
 
-    this._closeModal = this._closeModal.bind(this);
+    this._controlButtonClickHandler = this._controlButtonClickHandler.bind(this);
   }
 
   render(card) {
@@ -31,46 +28,48 @@ export default class MovieController {
     }
 
     this.component.setWatchlistButtonHandler(() => {
-      this._onDataChange(card, Object.assign({}, card, {
-        isInWatchlist: !card.isInWatchlist
-      }));
+      this._controlButtonClickHandler(`watchlist`);
     });
 
     this.component.setWatchedButtonHandler(() => {
-      this._onDataChange(card, Object.assign({}, card, {
-        isWatched: !card.isWatched
-      }));
+      this._controlButtonClickHandler(`watched`);
     });
 
     this.component.setFavoriteButtonHandler(() => {
-      this._onDataChange(card, Object.assign({}, card, {
-        isFavorite: !card.isFavorite
-      }));
+      this._controlButtonClickHandler(`favorite`);
     });
   }
 
-  setDefaultView() {
-    if (this._mode !== Mode.DEFAULT) {
-      this._closeModal();
-    }
+  getCardId() {
+    return this._card.id;
+  }
+
+  destroy() {
+    remove(this.component);
   }
 
   _renderModal(card) {
-    this._onViewChange();
-    this._mode = Mode.DETAILED;
-
-    this._detailsComponent = new FilmDetails(card);
-    document.querySelector(`.main`)
-      .appendChild(this._detailsComponent.getElement());
-
-    this._detailsComponent.setSubmitHandler();
-    this._detailsComponent.setCloseOnClickHandler(this._closeModal);
-    this._detailsComponent.setCloseOnEscPressHandler(this._closeModal);
+    this._modalController = modalController;
+    this._modalController.render(this._controlButtonClickHandler, this._onDataChange, card.id);
   }
 
-  _closeModal() {
-    this._mode = Mode.DEFAULT;
-    this._detailsComponent._element.remove();
-    this._detailsComponent.removeElement();
+  _controlButtonClickHandler(type) {
+    let controlName = ``;
+
+    switch (type) {
+      case `watchlist`:
+        controlName = `isInWatchlist`;
+        break;
+      case `watched`:
+        controlName = `isWatched`;
+        break;
+      case `favorite`:
+        controlName = `isFavorite`;
+        break;
+    }
+
+    this._onDataChange(this._card, Object.assign({}, this._card, {
+      [controlName]: !this._card[controlName]
+    }));
   }
 }
