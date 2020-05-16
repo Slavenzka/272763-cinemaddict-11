@@ -24,7 +24,6 @@ export default class FilterController {
       return {
         name: filterType,
         count: getFilmsByFilter(allFilms, filterType).length,
-        isActive: filterType === this._activeFilterType
       };
     });
     const oldComponent = this._filterComponent;
