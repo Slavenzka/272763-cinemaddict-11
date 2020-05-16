@@ -24,17 +24,23 @@ const createUserRankTemplate = (watchedMoviesQuantity) => {
 export default class UserRank extends AbstractSmartComponent {
   constructor() {
     super();
-    this._filmsData = filmsModel.getFilms();
-    this._watchedCounter = this._filmsData.filter((film) => film.isWatched).length;
+    this._filmsData = null;
+    this._watchedCounter = null;
+
+    this._setUserRankData();
   }
 
   getTemplate() {
     return createUserRankTemplate(this._watchedCounter);
   }
 
-  updateUserRank() {
+  _setUserRankData() {
     this._filmsData = filmsModel.getFilms();
     this._watchedCounter = this._filmsData.filter((film) => film.isWatched).length;
+  }
+
+  updateUserRank() {
+    this._setUserRankData();
     this.rerender();
   }
 
