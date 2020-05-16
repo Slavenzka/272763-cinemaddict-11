@@ -8,7 +8,6 @@ export default class FilterController {
     this._container = container;
     this._filmsModel = filmsModel;
 
-    this._activeFilterType = FilterTypes.ALL;
     this._filterComponent = null;
 
     this._onDataChange = this._onDataChange.bind(this);

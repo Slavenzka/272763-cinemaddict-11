@@ -45,9 +45,6 @@ export const generateFilms = (totalCardsQuantity) => {
     filmItem.genres = (new Array(getRandomNumberInRange(1, maxGenres)))
       .fill(``)
       .map((_, i) => randomGenres[i]);
-    filmItem.isInWatchlist = getRandomBoolean();
-    filmItem.isWatched = getRandomBoolean();
-    filmItem.isFavorite = getRandomBoolean();
     filmItem.date = generateRandomTimestamp();
     filmItem.isAdult = getRandomBoolean();
     filmItem.country = getRandomArrayItem(COUNTRIES);
@@ -56,6 +53,12 @@ export const generateFilms = (totalCardsQuantity) => {
     // mock movie team
     const writersPool = shuffleArray(NAMES);
     const actorsPool = shuffleArray(NAMES);
+    filmItem[`user_details`] = {
+      [`watchlist`]: getRandomBoolean(),
+      [`already_watched`]: getRandomBoolean(),
+      [`watching_date`]: generateRandomTimestamp(),
+      [`favorite`]: getRandomBoolean()
+    };
 
     filmItem.team = {
       director: getRandomArrayItem(shuffleArray(NAMES)),
