@@ -1,4 +1,5 @@
 import moment from 'moment';
+import {userRankPresets} from '../const';
 
 export const getRandomArrayItem = (array) => array[Math.floor(Math.random() * array.length)];
 
@@ -60,4 +61,18 @@ export const getFullDate = (date) => {
 
 export const getFullDateAndTime = (date) => {
   return moment(date).format(`YYYY/MM/DD hh:mm`);
+};
+
+export const getUserRank = (watchedCount) => {
+  let status = ``;
+  const {NOVICE, FAN, BUFF} = userRankPresets;
+
+  if (watchedCount >= NOVICE.min && watchedCount <= NOVICE.max) {
+    status = NOVICE.status;
+  } else if (watchedCount >= FAN.min && watchedCount <= FAN.max) {
+    status = FAN.status;
+  } else if (watchedCount >= BUFF.min) {
+    status = BUFF.status;
+  }
+  return status;
 };

@@ -12,17 +12,20 @@ export const BOARD_PRESETS = {
     trimmedCommentLength: 139,
   },
 };
-export const USER_RANK_PRESETS = {
-  novice: {
+export const userRankPresets = {
+  NOVICE: {
     min: 2,
-    max: 10
+    max: 10,
+    status: `Novice`
   },
-  fan: {
+  FAN: {
     min: 11,
-    max: 20
+    max: 20,
+    status: `Fan`
   },
-  buff: {
-    min: 21
+  BUFF: {
+    min: 21,
+    status: `Movie Buff`
   }
 };
 

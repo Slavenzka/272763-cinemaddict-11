@@ -1,13 +1,14 @@
 import AbstractSmartComponent from './abstract-smart-component';
+import {userRank} from '../main';
 // import Chart from "chart.js";
 // import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-const createStatsTemplate = () => (
+const createStatsTemplate = (actualUserRank) => (
   `<section class="statistic">
     <p class="statistic__rank">
       Your rank
       <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">Sci-Fighter</span>
+      <span class="statistic__rank-label">${actualUserRank}</span>
     </p>
 
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -52,12 +53,18 @@ const createStatsTemplate = () => (
 );
 
 export default class Stats extends AbstractSmartComponent {
+  constructor() {
+    super();
+    this._userRank = null;
+  }
+
   getTemplate() {
-    return createStatsTemplate();
+    return createStatsTemplate(this._userRank);
   }
 
   show() {
     super.show();
+    this._userRank = userRank.userRank;
     this.rerender();
   }
 
