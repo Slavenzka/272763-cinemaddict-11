@@ -8,12 +8,14 @@ export default class ModalController {
     this.id = null;
     this._detailsComponent = null;
 
-    this._controlButtonClickHandler = null;
     this._onDataChange = null;
-
     this._onCommentChange = [];
+
+    this._controlButtonClickHandler = null;
+
     this.handleClickControl = this.handleClickControl.bind(this);
-    this._deleteCommentHandler = this._deleteCommentHandler.bind(this);
+    this.deleteCommentHandler = this.deleteCommentHandler.bind(this);
+    this.addCommentHandler = this.addCommentHandler.bind(this);
     this.closeModal = this.closeModal.bind(this);
   }
 
@@ -27,14 +29,16 @@ export default class ModalController {
     this._onDataChange = onDataChange;
 
     this._card = filmsModel.getFilms().find((film) => film.id === this.id);
-    this._detailsComponent = new FilmDetails(this._card, this._getUpdatedCommentsList(), this.handleClickControl, commentsModel.removeComment);
+    this._detailsComponent = new FilmDetails(this._card, this._getUpdatedCommentsList(), this.handleClickControl);
     document.querySelector(`.main`)
       .appendChild(this._detailsComponent.getElement());
 
     this._detailsComponent.setSubmitHandler();
     this._detailsComponent.setCloseOnClickHandler(this.closeModal);
     this._detailsComponent.setCloseOnEscPressHandler(this.closeModal);
-    commentsModel.setDataChangeHandler(this._deleteCommentHandler);
+    // SET COMMENTS MODEL HANDLERS
+    commentsModel.setDeleteCommentHandler(this.deleteCommentHandler);
+    commentsModel.setAddCommentHandler(this.addCommentHandler);
   }
 
   _updateModal() {
@@ -58,8 +62,19 @@ export default class ModalController {
     });
   }
 
-  _deleteCommentHandler() {
+  deleteCommentHandler() {
     const newComments = this._getUpdatedCommentsList().map((comment) => comment.id);
+    this._onDataChange(this._card, Object.assign({}, this._card, {
+      comments: newComments
+    }));
+
+    this._updateModal();
+    this.callCommentChangeHandlers();
+  }
+
+  addCommentHandler(newComment) {
+    const newComments = [].concat(this._card.comments, newComment.id);
+
     this._onDataChange(this._card, Object.assign({}, this._card, {
       comments: newComments
     }));

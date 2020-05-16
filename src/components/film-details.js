@@ -1,10 +1,11 @@
-import {KEY_CODES} from '../const';
+import {KEY_CODES, NAMES} from '../const';
 import {
   getDurationFromMinutes,
   getFullDate,
-  getFullDateAndTime,
+  getFullDateAndTime, getRandomArrayItem, getRandomNumberInRange,
 } from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
+import {commentsModel} from '../main';
 
 const createFilmDetailsTemplate = ({
   name,
@@ -136,7 +137,7 @@ const createFilmDetailsTemplate = ({
             </ul>
 
             <div class="film-details__new-comment">
-              <div for="add-emoji" class="film-details__add-emoji-label">${activeEmoji ? activeEmoji.outerHTML : ``}</div>
+              <div for="add-emoji" class="film-details__add-emoji-label">${activeEmoji && activeEmoji.image ? activeEmoji.image.outerHTML : ``}</div>
 
               <label class="film-details__comment-label">
                 <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -172,17 +173,21 @@ const createFilmDetailsTemplate = ({
 };
 
 export default class FilmDetails extends AbstractSmartComponent {
-  constructor(filmData, commentsData, controlButtonHandler, deleteCommentHandler) {
+  constructor(filmData, commentsData, controlButtonHandler) {
     super();
     this._filmData = filmData;
     this._commentsData = commentsData;
     this._inputValue = ``;
-    this._activeEmoji = null;
-    this._controlButtonClickHandler = controlButtonHandler;
+    this._activeEmoji = {};
 
     this._closeHandler = null;
     this._subscribeOnEvents();
-    this._deleteCommentHandler = deleteCommentHandler;
+    this._controlButtonClickHandler = controlButtonHandler;
+    this._deleteCommentHandler = commentsModel.removeComment;
+    this._addCommentHandler = commentsModel.addComment;
+
+    this._setPostCommentHandler = this._setPostCommentHandler.bind(this);
+    this._handleEscPress = this._handleEscPress.bind(this);
   }
 
   getTemplate() {
@@ -193,13 +198,11 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   recoverListeners() {
-    this.setSubmitHandler();
     this._subscribeOnEvents();
     this.setCloseOnClickHandler(this._closeHandler);
   }
 
   rerender() {
-    // console.log(`Rerender`);
     super.rerender();
   }
 
@@ -212,41 +215,44 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   setSubmitHandler() {
-    const form = this.getElement().querySelector(`form`);
-    document.addEventListener(`keydown`, (evt) => this._setPostCommentHandler(evt, form));
+    document.addEventListener(`keydown`, this._setPostCommentHandler);
   }
 
   setCloseOnClickHandler(handler) {
     this._closeHandler = handler;
 
     this._element.querySelector(`.film-details__close-btn`)
-      .addEventListener(`click`, handler);
+      .addEventListener(`click`, (evt) => {
+        handler(evt);
+        document.removeEventListener(`keydown`, this._handleEscPress);
+        document.removeEventListener(`keydown`, this._setPostCommentHandler);
+      });
   }
 
   setCloseOnEscPressHandler() {
-    const handleEscPress = (evt) => {
-      if (this._element && evt.key === `Escape` || evt.key === `Esc`) {
-        this._closeHandler();
-        document.removeEventListener(`keydown`, handleEscPress);
-      }
-    };
-    document.addEventListener(`keydown`, handleEscPress);
+    document.addEventListener(`keydown`, this._handleEscPress);
   }
 
   _setPostCommentHandler(evt) {
-    if (this._inputValue.length !== 0 && evt.ctrlKey && evt.keyCode === KEY_CODES.enter) {
+    if (this._inputValue.length !== 0 && this._activeEmoji && evt.ctrlKey && evt.keyCode === KEY_CODES.enter) {
       evt.preventDefault();
-      // form.submit();
-      // form.reset();
+      const newComment = {
+        id: commentsModel.getComments()[commentsModel.getComments().length - 1].id + 1,
+        text: this._inputValue,
+        name: getRandomArrayItem(NAMES),
+        emoji: this._activeEmoji.type,
+        date: new Date()
+      };
+      this._addCommentHandler(newComment);
+      this._resetCommentData();
       this.rerender();
-      document.removeEventListener(`keydown`, this._setPostCommentHandler);
     }
   }
 
   _subscribeOnEvents() {
     const element = this.getElement();
     const inputComment = element.querySelector(`.film-details__comment-input`);
-    const emojiList = element.querySelector(`.film-details__emoji-list`);
+    const emojiList = [...element.querySelectorAll(`.film-details__emoji-label`)];
     const commentItems = [...element.querySelectorAll(`.film-details__comment`)];
 
     inputComment.addEventListener(`input`, (evt) => {
@@ -254,11 +260,14 @@ export default class FilmDetails extends AbstractSmartComponent {
       inputComment.value = this._inputValue;
     });
 
-    emojiList.addEventListener(`click`, (evt) => {
-      if (evt.target.tagName === `IMG`) {
-        this._activeEmoji = evt.target;
-        this.rerender();
-      }
+    emojiList.forEach((emojiLabel) => {
+      emojiLabel.addEventListener(`click`, (evt) => {
+        if (evt.target.tagName === `IMG`) {
+          this._activeEmoji.image = evt.target;
+          this._activeEmoji.type = evt.currentTarget.htmlFor.split(`-`)[1];
+          this.rerender();
+        }
+      });
     });
 
     commentItems.forEach((comment) => {
@@ -299,5 +308,18 @@ export default class FilmDetails extends AbstractSmartComponent {
         this._controlButtonClickHandler(evt.target.getAttribute(`id`));
         this.rerender();
       });
+  }
+
+  _resetCommentData() {
+    this._inputValue = ``;
+    this._activeEmoji = {};
+  }
+
+  _handleEscPress(evt) {
+    if (this._element && evt.key === `Escape` || evt.key === `Esc`) {
+      this._closeHandler();
+      document.removeEventListener(`keydown`, this._handleEscPress);
+      document.removeEventListener(`keydown`, this._setPostCommentHandler);
+    }
   }
 }
