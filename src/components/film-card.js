@@ -10,24 +10,23 @@ const createButtonTemplate = (type, flag) => {
   );
 };
 
-const createFilmCardTemplate = ({
-  name,
-  rating,
-  date,
-  genres,
-  poster,
-  descriptionPreview,
-  comments,
-  runtime,
-  isInWatchlist,
-  isWatched,
-  isFavorite
-}) => {
+const createFilmCardTemplate = (cardData) => {
+  const {
+    name,
+    rating,
+    date,
+    genres,
+    poster,
+    descriptionPreview,
+    comments,
+    runtime,
+  } = cardData;
+  const userInfo = cardData[`user_details`];
   const formattedDuration = getDurationFromMinutes(runtime);
 
-  const watchlistButton = createButtonTemplate(`add-to-watchlist`, isInWatchlist);
-  const watchedButton = createButtonTemplate(`mark-as-watched`, isWatched);
-  const favoriteButton = createButtonTemplate(`favorite`, isFavorite);
+  const watchlistButton = createButtonTemplate(`add-to-watchlist`, userInfo[`watchlist`]);
+  const watchedButton = createButtonTemplate(`mark-as-watched`, userInfo[`already_watched`]);
+  const favoriteButton = createButtonTemplate(`favorite`, userInfo[`favorite`]);
 
   return (
     `<article class="film-card">

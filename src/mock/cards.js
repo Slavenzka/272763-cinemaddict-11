@@ -13,6 +13,7 @@ import {
   NAMES,
   BOARD_PRESETS,
 } from '../const';
+import moment from 'moment';
 
 const {
   maxGenres,
@@ -56,7 +57,7 @@ export const generateFilms = (totalCardsQuantity) => {
     filmItem[`user_details`] = {
       [`watchlist`]: getRandomBoolean(),
       [`already_watched`]: getRandomBoolean(),
-      [`watching_date`]: generateRandomTimestamp(),
+      [`watching_date`]: moment(generateRandomTimestamp()).format(),
       [`favorite`]: getRandomBoolean()
     };
 

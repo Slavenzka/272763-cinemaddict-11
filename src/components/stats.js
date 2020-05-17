@@ -2,6 +2,7 @@ import AbstractSmartComponent from './abstract-smart-component';
 import {filmsModel, userRank} from '../main';
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {StatsFilterTypes} from '../const';
 
 const renderDiagram = () => {
   const BAR_HEIGHT = 50;
@@ -68,78 +69,101 @@ const renderDiagram = () => {
   });
 };
 
-const createStatsTemplate = (actualUserRank) => (
-  `<section class="statistic">
-    <p class="statistic__rank">
-      Your rank
-      <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">${actualUserRank}</span>
-    </p>
+const createStatsItemTemplate = (activeFilterType, isChecked) => {
+  const filterTypeArray = activeFilterType.split(`-`);
+  filterTypeArray[0] = filterTypeArray[0][0].toUpperCase() + filterTypeArray[0].slice(1);
+  const label = filterTypeArray.join(` `);
+  return (
+    `<input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${activeFilterType}" value="${activeFilterType}" ${isChecked ? `checked` : ``}>
+    <label for="statistic-${activeFilterType}" class="statistic__filters-label">${label}</label>`
+  );
+};
 
-    <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
-      <p class="statistic__filters-description">Show stats:</p>
+const createStatsTemplate = (actualUserRank, activeFilterType) => {
+  const inputList = (Object.values(StatsFilterTypes)).map((item) => createStatsItemTemplate(item, item === activeFilterType)).join(`\n`);
+  return (
+    `<section class="statistic">
+      <p class="statistic__rank">
+        Your rank
+        <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+        <span class="statistic__rank-label">${actualUserRank}</span>
+      </p>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" checked>
-      <label for="statistic-all-time" class="statistic__filters-label">All time</label>
+      <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
+        <p class="statistic__filters-description">Show stats:</p>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today">
-      <label for="statistic-today" class="statistic__filters-label">Today</label>
+        ${inputList}
+      </form>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week">
-      <label for="statistic-week" class="statistic__filters-label">Week</label>
+      <ul class="statistic__text-list">
+        <li class="statistic__text-item">
+          <h4 class="statistic__item-title">You watched</h4>
+          <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+        </li>
+        <li class="statistic__text-item">
+          <h4 class="statistic__item-title">Total duration</h4>
+          <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+        </li>
+        <li class="statistic__text-item">
+          <h4 class="statistic__item-title">Top genre</h4>
+          <p class="statistic__item-text">Sci-Fi</p>
+        </li>
+      </ul>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month">
-      <label for="statistic-month" class="statistic__filters-label">Month</label>
+      <div class="statistic__chart-wrap">
+        <canvas class="statistic__chart" width="1000"></canvas>
+      </div>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year">
-      <label for="statistic-year" class="statistic__filters-label">Year</label>
-    </form>
-
-    <ul class="statistic__text-list">
-      <li class="statistic__text-item">
-        <h4 class="statistic__item-title">You watched</h4>
-        <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
-      </li>
-      <li class="statistic__text-item">
-        <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
-      </li>
-      <li class="statistic__text-item">
-        <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">Sci-Fi</p>
-      </li>
-    </ul>
-
-    <div class="statistic__chart-wrap">
-      <canvas class="statistic__chart" width="1000"></canvas>
-    </div>
-
-  </section>`
-);
+    </section>`
+  );
+};
 
 export default class Stats extends AbstractSmartComponent {
   constructor() {
     super();
     this._userRank = null;
     this._filmsData = null;
+    this._activeFilterType = StatsFilterTypes.ALL;
+
+    this._handleClickItem = this._handleClickItem.bind(this);
   }
 
   getTemplate() {
-    return createStatsTemplate(this._userRank);
+    return createStatsTemplate(this._userRank, this._activeFilterType);
   }
 
   renderer() {
-    super.rerender();
-
+    this._filmsData = filmsModel.getFilms();
+    this._userRank = userRank.userRank;
     renderDiagram();
   }
 
   show() {
-    this._filmsData = filmsModel.getFilms();
+    this.renderer();
+    this._addItemClickListeners();
     super.show();
+    this.rerender();
+  }
+
+  _addItemClickListeners() {
+    const inputList = [...this.getElement().querySelectorAll(`.statistic__filters-input`)];
+    inputList.forEach((item) => {
+      item.addEventListener(`change`, this._handleClickItem);
+    });
+  }
+
+  _handleClickItem(evt) {
+    this._activeFilterType = evt.target.value;
+    this.rerender();
+  }
+
+  rerender() {
     this._userRank = userRank.userRank;
+    super.rerender();
     this.renderer();
   }
 
-  recoverListeners() {}
+  recoverListeners() {
+    this._addItemClickListeners();
+  }
 }

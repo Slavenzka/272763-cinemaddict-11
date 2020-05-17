@@ -132,3 +132,11 @@ export const FilterTypes = {
   HISTORY: `history`,
   FAVORITES: `favorites`
 };
+
+export const StatsFilterTypes = {
+  ALL: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`
+};
