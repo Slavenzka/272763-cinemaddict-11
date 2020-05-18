@@ -134,6 +134,7 @@ export default class Stats extends AbstractSmartComponent {
 
   renderer() {
     this._filmsData = filmsModel.getFilms();
+    console.log(this._filmsData);
     this._userRank = userRank.userRank;
     renderDiagram();
   }
@@ -142,7 +143,6 @@ export default class Stats extends AbstractSmartComponent {
     this.renderer();
     this._addItemClickListeners();
     super.show();
-    this.rerender();
   }
 
   _addItemClickListeners() {

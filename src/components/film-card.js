@@ -1,6 +1,7 @@
 import {getDurationFromMinutes} from '../utils/common';
 import {getNodeFromTemplate} from '../utils/render';
 import AbstractComponent from './abstract-component';
+import {BOARD_PRESETS} from '../const';
 
 const createButtonTemplate = (type, flag) => {
   let label = type.split(`-`).join(` `);
@@ -12,17 +13,25 @@ const createButtonTemplate = (type, flag) => {
 
 const createFilmCardTemplate = (cardData) => {
   const {
-    name,
-    rating,
-    date,
-    genres,
-    poster,
-    descriptionPreview,
     comments,
-    runtime,
+    [`film_info`]: filmInfo,
+    [`user_details`]: userInfo
   } = cardData;
-  const userInfo = cardData[`user_details`];
+
+  const {
+    title,
+    [`age_rating`]: rating,
+    release,
+    genre: genres,
+    poster,
+    description,
+    runtime
+  } = filmInfo;
   const formattedDuration = getDurationFromMinutes(runtime);
+
+  const descriptionPreview = description.length > BOARD_PRESETS.comments.trimmedCommentLength
+    ? description.slice(0, BOARD_PRESETS.comments.trimmedCommentLength) + `&#8230;`
+    : description;
 
   const watchlistButton = createButtonTemplate(`add-to-watchlist`, userInfo[`watchlist`]);
   const watchedButton = createButtonTemplate(`mark-as-watched`, userInfo[`already_watched`]);
@@ -30,10 +39,10 @@ const createFilmCardTemplate = (cardData) => {
 
   return (
     `<article class="film-card">
-      <h3 class="film-card__title">${name}</h3>
+      <h3 class="film-card__title">${title}</h3>
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
-        <span class="film-card__year">${(new Date(date)).getFullYear()}</span>
+        <span class="film-card__year">${(new Date(release.date)).getFullYear()}</span>
         <span class="film-card__duration">${formattedDuration}</span>
         <span class="film-card__genre">${genres[0]}</span>
       </p>

@@ -11,19 +11,25 @@ import {encode} from 'he';
 
 const createFilmDetailsTemplate = (data, comments, options) => {
   const {
-    name,
-    nameOriginal,
-    rating,
-    date,
-    runtime,
-    genres,
+    [`film_info`]: filmInfo,
+    [`user_details`]: userInfo
+  } = data;
+
+  const {
+    title,
+    [`alternative_title`]: titleOriginal,
+    [`age_rating`]: rating,
+    release,
+    genre: genres,
     poster,
     description,
-    team,
-    country,
-    isAdult
-  } = data;
-  const userInfo = data[`user_details`];
+    runtime,
+    director,
+    writers,
+    actors
+  } = filmInfo;
+
+  const {date, [`release_country`]: country} = release;
   const {activeEmoji} = options;
   const dateObject = new Date(date);
   const releaseDate = getFullDate(dateObject);
@@ -59,17 +65,14 @@ const createFilmDetailsTemplate = (data, comments, options) => {
           </div>
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
-              <img class="film-details__poster-img" src="./images/posters/${poster}" alt=${name}>
-              ${isAdult
-      ? `<p class="film-details__age">18+</p>`
-      : ``
-    }
+              <img class="film-details__poster-img" src="./images/posters/${poster}" alt=${title}>
+              ${rating >= 18 ? `<p class="film-details__age">18+</p>` : ``}
             </div>
             <div class="film-details__info">
               <div class="film-details__info-head">
                 <div class="film-details__title-wrap">
-                  <h3 class="film-details__title">${name}</h3>
-                  <p class="film-details__title-original">Original: ${nameOriginal}</p>
+                  <h3 class="film-details__title">${title}</h3>
+                  <p class="film-details__title-original">Original: ${titleOriginal}</p>
                 </div>
                 <div class="film-details__rating">
                   <p class="film-details__total-rating">${rating}</p>
@@ -78,15 +81,15 @@ const createFilmDetailsTemplate = (data, comments, options) => {
               <table class="film-details__table">
                 <tr class="film-details__row">
                   <td class="film-details__term">Director</td>
-                  <td class="film-details__cell">${team.director}</td>
+                  <td class="film-details__cell">${director}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Writers</td>
-                  <td class="film-details__cell">${team.writers.join(`, `)}</td>
+                  <td class="film-details__cell">${writers.join(`, `)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Actors</td>
-                  <td class="film-details__cell">${team.actors.join(`, `)}</td>
+                  <td class="film-details__cell">${actors.join(`, `)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
