@@ -9,22 +9,21 @@ import AbstractSmartComponent from './abstract-smart-component';
 import {commentsModel} from '../main';
 import {encode} from 'he';
 
-const createFilmDetailsTemplate = ({
-  name,
-  nameOriginal,
-  rating,
-  date,
-  runtime,
-  genres,
-  poster,
-  description,
-  team,
-  country,
-  isInWatchlist,
-  isWatched,
-  isFavorite,
-  isAdult
-}, comments, options) => {
+const createFilmDetailsTemplate = (data, comments, options) => {
+  const {
+    name,
+    nameOriginal,
+    rating,
+    date,
+    runtime,
+    genres,
+    poster,
+    description,
+    team,
+    country,
+    isAdult
+  } = data;
+  const userInfo = data[`user_details`];
   const {activeEmoji} = options;
   const dateObject = new Date(date);
   const releaseDate = getFullDate(dateObject);
@@ -113,12 +112,12 @@ const createFilmDetailsTemplate = ({
             </div>
           </div>
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${isInWatchlist ? `checked` : ``}>
-            <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">${isInWatchlist ? `In watchlist already` : `Add to watchlist`}</label>
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isWatched ? `checked` : ``}>
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${userInfo[`watchlist`] ? `checked` : ``}>
+            <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">${userInfo[`watchlist`] ? `In watchlist already` : `Add to watchlist`}</label>
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${userInfo[`already_watched`] ? `checked` : ``}>
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavorite ? `checked` : ``}>
-            <label for="favorite" class="film-details__control-label film-details__control-label--favorite">${isFavorite ? `Added to favorites` : `Add to favorites`}</label>
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${userInfo[`favorite`] ? `checked` : ``}>
+            <label for="favorite" class="film-details__control-label film-details__control-label--favorite">${userInfo[`favorite`] ? `Added to favorites` : `Add to favorites`}</label>
           </section>
         </div>
         <div class="form-details__bottom-container">
@@ -274,24 +273,24 @@ export default class FilmDetails extends AbstractSmartComponent {
 
   _setWatchlistButtonHandler() {
     this.getElement().querySelector(`#watchlist`)
-      .addEventListener(`change`, (evt) => {
-        this._controlButtonClickHandler(evt.target.getAttribute(`id`));
+      .addEventListener(`change`, () => {
+        this._controlButtonClickHandler(`watchlist`);
         this.rerender();
       });
   }
 
   _setWatchedButtonHandler() {
     this.getElement().querySelector(`#watched`)
-      .addEventListener(`change`, (evt) => {
-        this._controlButtonClickHandler(evt.target.getAttribute(`id`));
+      .addEventListener(`change`, () => {
+        this._controlButtonClickHandler(`already_watched`);
         this.rerender();
       });
   }
 
   _setFavoriteButtonHandler() {
     this.getElement().querySelector(`#favorite`)
-      .addEventListener(`change`, (evt) => {
-        this._controlButtonClickHandler(evt.target.getAttribute(`id`));
+      .addEventListener(`change`, () => {
+        this._controlButtonClickHandler(`favorite`);
         this.rerender();
       });
   }
