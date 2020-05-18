@@ -3,13 +3,59 @@ import {filmsModel, userRank} from '../main';
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {StatsFilterTypes} from '../const';
+import moment from 'moment';
+
+const getFilteredData = (data, filterType) => {
+  let filteredData = null;
+
+  switch (filterType) {
+    case `today`:
+      filteredData = data.filter((film) => {
+        const differenceInDays = moment().diff(film[`user_details`][`watching_date`], `days`);
+        console.log(differenceInDays);
+        return differenceInDays < 1;
+      });
+      break;
+    case `week`:
+      filteredData = data.filter((film) => {
+        const differenceInWeeks = moment().diff(film[`user_details`][`watching_date`], `week`);
+        console.log(differenceInWeeks);
+        return differenceInWeeks < 1;
+      });
+      break;
+    case `month`:
+      filteredData = data.filter((film) => {
+        const differenceInMonths = moment().diff(film[`user_details`][`watching_date`], `month`);
+        console.log(differenceInMonths);
+        return differenceInMonths < 1;
+      });
+      break;
+    case `year`:
+      filteredData = data.filter((film) => {
+        const differenceInYears = moment().diff(film[`user_details`][`watching_date`], `years`);
+        console.log(differenceInYears);
+        return differenceInYears < 1;
+      });
+      break;
+    default:
+      filteredData = [...data];
+      break;
+  }
+
+  console.log(filteredData);
+  return filteredData;
+};
 
 const renderDiagram = () => {
   const BAR_HEIGHT = 50;
   const statisticCtx = document.querySelector(`.statistic__chart`);
 
+  // const labels = Array.from(genres);
+  // console.log(labels);
+
   // Обязательно рассчитайте высоту canvas, она зависит от количества элементов диаграммы
   statisticCtx.height = BAR_HEIGHT * 5;
+
 
   return new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
@@ -17,7 +63,7 @@ const renderDiagram = () => {
     data: {
       labels: [`Sci-Fi`, `Animation`, `Fantasy`, `Comedy`, `TV Series`],
       datasets: [{
-        data: [11, 8, 7, 4, 3],
+        data: [1, 2, 3, 4, 5, 6, 7, 8],
         backgroundColor: `#ffe800`,
         hoverBackgroundColor: `#ffe800`,
         anchor: `start`
@@ -73,14 +119,17 @@ const createStatsItemTemplate = (activeFilterType, isChecked) => {
   const filterTypeArray = activeFilterType.split(`-`);
   filterTypeArray[0] = filterTypeArray[0][0].toUpperCase() + filterTypeArray[0].slice(1);
   const label = filterTypeArray.join(` `);
+
   return (
     `<input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${activeFilterType}" value="${activeFilterType}" ${isChecked ? `checked` : ``}>
     <label for="statistic-${activeFilterType}" class="statistic__filters-label">${label}</label>`
   );
 };
 
-const createStatsTemplate = (actualUserRank, activeFilterType) => {
+const createStatsTemplate = (actualUserRank, activeFilterType, data) => {
   const inputList = (Object.values(StatsFilterTypes)).map((item) => createStatsItemTemplate(item, item === activeFilterType)).join(`\n`);
+  const watchedMoviesQuantity = data.filtered.length;
+
   return (
     `<section class="statistic">
       <p class="statistic__rank">
@@ -98,7 +147,7 @@ const createStatsTemplate = (actualUserRank, activeFilterType) => {
       <ul class="statistic__text-list">
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">You watched</h4>
-          <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+          <p class="statistic__item-text">${watchedMoviesQuantity} <span class="statistic__item-description">movies</span></p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Total duration</h4>
@@ -122,27 +171,29 @@ export default class Stats extends AbstractSmartComponent {
   constructor() {
     super();
     this._userRank = null;
-    this._filmsData = null;
+    this._filmsData = filmsModel.getFilms();
+    this._actualData = {};
     this._activeFilterType = StatsFilterTypes.ALL;
 
     this._handleClickItem = this._handleClickItem.bind(this);
+    this._getUpdatedData = this._getUpdatedData.bind(this);
+    this._getUpdatedData();
   }
 
   getTemplate() {
-    return createStatsTemplate(this._userRank, this._activeFilterType);
+    return createStatsTemplate(this._userRank, this._activeFilterType, this._actualData);
   }
 
   renderer() {
-    this._filmsData = filmsModel.getFilms();
-    console.log(this._filmsData);
     this._userRank = userRank.userRank;
-    renderDiagram();
+    this._getUpdatedData();
   }
 
   show() {
     this.renderer();
     this._addItemClickListeners();
     super.show();
+    this.rerender();
   }
 
   _addItemClickListeners() {
@@ -157,10 +208,24 @@ export default class Stats extends AbstractSmartComponent {
     this.rerender();
   }
 
+  _getUpdatedData() {
+    this._actualData.filtered = [...getFilteredData(this._filmsData, this._activeFilterType)];
+
+    const genresCount = {};
+    this._filmsData.forEach((film) => {
+      film[`film_info`][`genre`].forEach((genre) => {
+        genresCount[genre] = genresCount[genre] ? genresCount[genre] + 1 : 1;
+      });
+    });
+
+    this._actualData.genres = genresCount;
+  }
+
   rerender() {
     this._userRank = userRank.userRank;
-    super.rerender();
     this.renderer();
+    super.rerender();
+    renderDiagram();
   }
 
   recoverListeners() {

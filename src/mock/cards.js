@@ -64,7 +64,7 @@ export const generateFilms = (totalCardsQuantity) => {
     filmItem[`user_details`] = {
       [`watchlist`]: getRandomBoolean(),
       [`already_watched`]: getRandomBoolean(),
-      [`watching_date`]: moment(generateRandomTimestamp()).format(),
+      [`watching_date`]: moment(moment().subtract(getRandomNumberInRange(0, 365), `days`)).format(),
       [`favorite`]: getRandomBoolean()
     };
 
