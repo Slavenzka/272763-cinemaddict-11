@@ -6,34 +6,30 @@ import {StatsFilterTypes} from '../const';
 import moment from 'moment';
 
 const getFilteredData = (data, filterType) => {
-  let filteredData = null;
+  let filteredData;
 
   switch (filterType) {
     case `today`:
       filteredData = data.filter((film) => {
         const differenceInDays = moment().diff(film[`user_details`][`watching_date`], `days`);
-        // console.log(differenceInDays);
         return differenceInDays < 1;
       });
       break;
     case `week`:
       filteredData = data.filter((film) => {
         const differenceInWeeks = moment().diff(film[`user_details`][`watching_date`], `week`);
-        // console.log(differenceInWeeks);
         return differenceInWeeks < 1;
       });
       break;
     case `month`:
       filteredData = data.filter((film) => {
         const differenceInMonths = moment().diff(film[`user_details`][`watching_date`], `month`);
-        // console.log(differenceInMonths);
         return differenceInMonths < 1;
       });
       break;
     case `year`:
       filteredData = data.filter((film) => {
         const differenceInYears = moment().diff(film[`user_details`][`watching_date`], `years`);
-        // console.log(differenceInYears);
         return differenceInYears < 1;
       });
       break;
@@ -46,24 +42,21 @@ const getFilteredData = (data, filterType) => {
   return filteredData;
 };
 
-const renderDiagram = () => {
+const renderDiagram = (data) => {
   const BAR_HEIGHT = 50;
   const statisticCtx = document.querySelector(`.statistic__chart`);
 
-  // const labels = Array.from(genres);
-  // console.log(labels);
-
   // Обязательно рассчитайте высоту canvas, она зависит от количества элементов диаграммы
-  statisticCtx.height = BAR_HEIGHT * 5;
+  statisticCtx.height = BAR_HEIGHT * Object.keys(data).length;
 
 
   return new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
     data: {
-      labels: [`Sci-Fi`, `Animation`, `Fantasy`, `Comedy`, `TV Series`],
+      labels: Object.keys(data),
       datasets: [{
-        data: [1, 2, 3, 4, 5, 6, 7, 8],
+        data: Object.values(data),
         backgroundColor: `#ffe800`,
         hoverBackgroundColor: `#ffe800`,
         anchor: `start`
@@ -233,7 +226,7 @@ export default class Stats extends AbstractSmartComponent {
     this._userRank = userRank.userRank;
     this.renderer();
     super.rerender();
-    renderDiagram();
+    renderDiagram(this._actualData.genres);
   }
 
   recoverListeners() {
