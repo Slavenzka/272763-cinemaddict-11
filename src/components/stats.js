@@ -12,28 +12,28 @@ const getFilteredData = (data, filterType) => {
     case `today`:
       filteredData = data.filter((film) => {
         const differenceInDays = moment().diff(film[`user_details`][`watching_date`], `days`);
-        console.log(differenceInDays);
+        // console.log(differenceInDays);
         return differenceInDays < 1;
       });
       break;
     case `week`:
       filteredData = data.filter((film) => {
         const differenceInWeeks = moment().diff(film[`user_details`][`watching_date`], `week`);
-        console.log(differenceInWeeks);
+        // console.log(differenceInWeeks);
         return differenceInWeeks < 1;
       });
       break;
     case `month`:
       filteredData = data.filter((film) => {
         const differenceInMonths = moment().diff(film[`user_details`][`watching_date`], `month`);
-        console.log(differenceInMonths);
+        // console.log(differenceInMonths);
         return differenceInMonths < 1;
       });
       break;
     case `year`:
       filteredData = data.filter((film) => {
         const differenceInYears = moment().diff(film[`user_details`][`watching_date`], `years`);
-        console.log(differenceInYears);
+        // console.log(differenceInYears);
         return differenceInYears < 1;
       });
       break;
@@ -42,7 +42,7 @@ const getFilteredData = (data, filterType) => {
       break;
   }
 
-  console.log(filteredData);
+  // console.log(filteredData);
   return filteredData;
 };
 
@@ -129,6 +129,14 @@ const createStatsItemTemplate = (activeFilterType, isChecked) => {
 const createStatsTemplate = (actualUserRank, activeFilterType, data) => {
   const inputList = (Object.values(StatsFilterTypes)).map((item) => createStatsItemTemplate(item, item === activeFilterType)).join(`\n`);
   const watchedMoviesQuantity = data.filtered.length;
+  const totalMoviesDuration = data.filtered.reduce((total, item) => {
+    total += item[`film_info`].runtime;
+    return total;
+  }, 0);
+  const hours = moment.duration(totalMoviesDuration, `minutes`).get(`hours`);
+  const minutes = moment.duration(totalMoviesDuration, `minutes`).get(`minutes`);
+
+  const genresArraySorted = Object.keys(data.genres).sort((key1, key2) => data.genres[key1] < data.genres[key2]);
 
   return (
     `<section class="statistic">
@@ -151,11 +159,11 @@ const createStatsTemplate = (actualUserRank, activeFilterType, data) => {
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Total duration</h4>
-          <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+          <p class="statistic__item-text">${hours} <span class="statistic__item-description">h</span> ${minutes} <span class="statistic__item-description">m</span></p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">Sci-Fi</p>
+          <p class="statistic__item-text">${genresArraySorted[0] || ``}</p>
         </li>
       </ul>
 
@@ -212,7 +220,7 @@ export default class Stats extends AbstractSmartComponent {
     this._actualData.filtered = [...getFilteredData(this._filmsData, this._activeFilterType)];
 
     const genresCount = {};
-    this._filmsData.forEach((film) => {
+    this._actualData.filtered.forEach((film) => {
       film[`film_info`][`genre`].forEach((genre) => {
         genresCount[genre] = genresCount[genre] ? genresCount[genre] + 1 : 1;
       });
