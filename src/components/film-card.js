@@ -1,4 +1,4 @@
-import {getDurationFromMinutes} from '../utils/common';
+import {destructureObjectSmart, getDurationFromMinutes} from '../utils/common';
 import {getNodeFromTemplate} from '../utils/render';
 import AbstractComponent from './abstract-component';
 import {BOARD_PRESETS} from '../const';
@@ -14,19 +14,20 @@ const createButtonTemplate = (type, flag) => {
 const createFilmCardTemplate = (cardData) => {
   const {
     comments,
-    [`film_info`]: filmInfo,
-    [`user_details`]: userInfo
   } = cardData;
+
+  const filmInfo = destructureObjectSmart(cardData, `film_info`);
+  const userInfo = destructureObjectSmart(cardData, `user_details`);
 
   const {
     title,
-    [`age_rating`]: rating,
     release,
-    genre: genres,
     poster,
     description,
     runtime
   } = filmInfo;
+  const rating = destructureObjectSmart(filmInfo, `age_rating`, 0);
+  const genres = destructureObjectSmart(filmInfo, `genre`);
   const formattedDuration = getDurationFromMinutes(runtime);
 
   const descriptionPreview = description.length > BOARD_PRESETS.comments.trimmedCommentLength

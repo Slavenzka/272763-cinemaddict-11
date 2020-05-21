@@ -76,3 +76,7 @@ export const getUserRank = (watchedCount) => {
   }
   return status;
 };
+
+export const destructureObjectSmart = (object, propertyName, defaultValue) => {
+  return object[propertyName] === undefined ? defaultValue : object[propertyName];
+};

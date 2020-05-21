@@ -140,3 +140,5 @@ export const StatsFilterTypes = {
   MONTH: `month`,
   YEAR: `year`
 };
+
+export const DIAGRAM_BAR_HEIGHT = 50;

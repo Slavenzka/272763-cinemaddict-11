@@ -8,6 +8,7 @@ import {
 import AbstractSmartComponent from './abstract-smart-component';
 import {commentsModel} from '../main';
 import {encode} from 'he';
+import {uuid} from 'uuidv4';
 
 const createFilmDetailsTemplate = (data, comments, options) => {
   const {
@@ -225,7 +226,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     if (this._inputValue.length !== 0 && this._activeEmoji && evt.ctrlKey && evt.keyCode === KEY_CODES.enter) {
       evt.preventDefault();
       const newComment = {
-        id: commentsModel.getComments()[commentsModel.getComments().length - 1].id + 1,
+        id: uuid(),
         text: this._inputValue,
         name: getRandomArrayItem(NAMES),
         emoji: this._activeEmoji.type,

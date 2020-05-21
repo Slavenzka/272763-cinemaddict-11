@@ -2,53 +2,49 @@ import AbstractSmartComponent from './abstract-smart-component';
 import {filmsModel, userRank} from '../main';
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {StatsFilterTypes} from '../const';
+import {DIAGRAM_BAR_HEIGHT, StatsFilterTypes} from '../const';
 import moment from 'moment';
 
 const getFilteredData = (data, filterType) => {
   let filteredData;
 
   switch (filterType) {
-    case `today`:
+    case StatsFilterTypes.TODAY:
       filteredData = data.filter((film) => {
         const differenceInDays = moment().diff(film[`user_details`][`watching_date`], `days`);
-        return differenceInDays < 1;
+        return film[`user_details`][`already_watched`] && differenceInDays < 1;
       });
       break;
-    case `week`:
+    case StatsFilterTypes.WEEK:
       filteredData = data.filter((film) => {
         const differenceInWeeks = moment().diff(film[`user_details`][`watching_date`], `week`);
-        return differenceInWeeks < 1;
+        return film[`user_details`][`already_watched`] && differenceInWeeks < 1;
       });
       break;
-    case `month`:
+    case StatsFilterTypes.MONTH:
       filteredData = data.filter((film) => {
         const differenceInMonths = moment().diff(film[`user_details`][`watching_date`], `month`);
-        return differenceInMonths < 1;
+        return film[`user_details`][`already_watched`] && differenceInMonths < 1;
       });
       break;
-    case `year`:
+    case StatsFilterTypes.YEAR:
       filteredData = data.filter((film) => {
         const differenceInYears = moment().diff(film[`user_details`][`watching_date`], `years`);
-        return differenceInYears < 1;
+        return film[`user_details`][`already_watched`] && differenceInYears < 1;
       });
       break;
     default:
-      filteredData = [...data];
+      filteredData = data.filter((film) => film[`user_details`][`already_watched`]);
       break;
   }
 
-  // console.log(filteredData);
   return filteredData;
 };
 
 const renderDiagram = (data) => {
-  const BAR_HEIGHT = 50;
   const statisticCtx = document.querySelector(`.statistic__chart`);
 
-  // Обязательно рассчитайте высоту canvas, она зависит от количества элементов диаграммы
-  statisticCtx.height = BAR_HEIGHT * Object.keys(data).length;
-
+  statisticCtx.height = DIAGRAM_BAR_HEIGHT * Object.keys(data).length;
 
   return new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
@@ -171,7 +167,6 @@ const createStatsTemplate = (actualUserRank, activeFilterType, data) => {
 export default class Stats extends AbstractSmartComponent {
   constructor() {
     super();
-    this._userRank = null;
     this._filmsData = filmsModel.getFilms();
     this._actualData = {};
     this._activeFilterType = StatsFilterTypes.ALL;
@@ -182,16 +177,11 @@ export default class Stats extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createStatsTemplate(this._userRank, this._activeFilterType, this._actualData);
-  }
-
-  renderer() {
-    this._userRank = userRank.userRank;
-    this._getUpdatedData();
+    return createStatsTemplate(userRank.userRank, this._activeFilterType, this._actualData);
   }
 
   show() {
-    this.renderer();
+    this._getUpdatedData();
     this._addItemClickListeners();
     super.show();
     this.rerender();
@@ -223,8 +213,7 @@ export default class Stats extends AbstractSmartComponent {
   }
 
   rerender() {
-    this._userRank = userRank.userRank;
-    this.renderer();
+    this._getUpdatedData();
     super.rerender();
     renderDiagram(this._actualData.genres);
   }
