@@ -1,22 +1,27 @@
-import AbstractComponent from './abstract-component';
-import {SORT_TYPE} from '../const';
+import {sortType} from '../const';
+import AbstractSmartComponent from './abstract-smart-component';
 
-const createItemsSortTemplate = () => (
-  `<ul class="sort">
-    <li><a href="#" data-sort-type=${SORT_TYPE.DEFAULT} class="sort__button sort__button--active">Sort by default</a></li>
-    <li><a href="#" data-sort-type=${SORT_TYPE.DATE} class="sort__button">Sort by date</a></li>
-    <li><a href="#" data-sort-type=${SORT_TYPE.RATING} class="sort__button">Sort by rating</a></li>
-  </ul>`
-);
+const createItemsSortTemplate = (activeSortType) => {
+  const activeClass = `sort__button--active`;
 
-export default class Sort extends AbstractComponent {
+  return (
+    `<ul class="sort">
+      <li><a href="#" data-sort-type=${sortType.DEFAULT} class="sort__button ${activeSortType === sortType.DEFAULT ? activeClass : ``}">Sort by default</a></li>
+      <li><a href="#" data-sort-type=${sortType.DATE} class="sort__button ${activeSortType === sortType.DATE ? activeClass : ``}">Sort by date</a></li>
+      <li><a href="#" data-sort-type=${sortType.RATING} class="sort__button ${activeSortType === sortType.RATING ? activeClass : ``}">Sort by rating</a></li>
+    </ul>`
+  );
+};
+
+export default class Sort extends AbstractSmartComponent {
   constructor() {
     super();
-    this._sortType = SORT_TYPE.DEFAULT;
+    this._sortType = sortType.DEFAULT;
+    this._handleClickItem = null;
   }
 
   getTemplate() {
-    return createItemsSortTemplate();
+    return createItemsSortTemplate(this._sortType);
   }
 
   getSortType() {
@@ -24,6 +29,11 @@ export default class Sort extends AbstractComponent {
   }
 
   setSortTypeChangeHandler(handler) {
+    this._handleClickItem = handler;
+    this._applyClickHandler();
+  }
+
+  _applyClickHandler() {
     this.getElement().addEventListener(`click`, (evt) => {
       if (evt.target.tagName !== `A`) {
         return;
@@ -31,8 +41,18 @@ export default class Sort extends AbstractComponent {
 
       if (this._sortType !== evt.target.dataset.sortType) {
         this._sortType = evt.target.dataset.sortType;
-        handler(this._sortType);
+        this._handleClickItem(this._sortType);
+        this.rerender();
       }
     });
+  }
+
+  recoverListeners() {
+    this._applyClickHandler();
+  }
+
+  resetSorting() {
+    this._sortType = sortType.DEFAULT;
+    this.rerender();
   }
 }
