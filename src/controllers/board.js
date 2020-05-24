@@ -1,10 +1,10 @@
 import {render, renderSectionElement, renderSectionHeading} from '../utils/render';
 import ButtonMoreComponent from '../components/button-more';
-import {BOARD_PRESETS, SORT_TYPE} from '../const';
-import SortComponent from '../components/sort';
+import {BOARD_PRESETS, RENDER_POSITION, sortType} from '../const';
 import CardController from '../controllers/movie';
 import FilmsComponent from '../components/films';
 import {remove} from '../utils/render';
+import {modalController, userRank} from '../main';
 
 const {initialRenderedCardsQuantity} = BOARD_PRESETS;
 
@@ -31,13 +31,13 @@ const renderTopCommentedFilms = (cards, renderExtraCategory) => {
   renderExtraCategory(categoryData, `Most commented`);
 };
 
-const getSortedCards = (cards, sortType, to = cards.length) => {
+const getSortedCards = (cards, sortTypeActive, to = cards.length) => {
   let sortableCards = cards.slice();
-  switch (sortType) {
-    case SORT_TYPE.DATE:
+  switch (sortTypeActive) {
+    case sortType.DATE:
       sortableCards = sortableCards.sort((a, b) => a.date < b.date);
       break;
-    case SORT_TYPE.RATING:
+    case sortType.RATING:
       sortableCards = sortableCards.sort((a, b) => a.rating < b.rating);
       break;
     default:
@@ -47,7 +47,7 @@ const getSortedCards = (cards, sortType, to = cards.length) => {
 };
 
 export default class BoardController {
-  constructor(container, userProfile, filmsModel) {
+  constructor(container, filmsModel, sortComponent) {
     this._container = container;
     this._filmsModel = filmsModel;
     this._contentContainer = null;
@@ -56,26 +56,29 @@ export default class BoardController {
     this._shownCardControllers = [];
     this._shownExtraCardControllers = [];
     this._initialFilmsCount = initialRenderedCardsQuantity;
-    this._sortComponent = new SortComponent();
+    this._sortComponent = sortComponent;
     this._buttonMore = new ButtonMoreComponent();
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
     this._buttonMoreClickHandler = this._buttonMoreClickHandler.bind(this);
+    this._updateExtraCategories = this._updateExtraCategories.bind(this);
 
     this._cardsSortHandler = this._cardsSortHandler.bind(this);
-    this._sortComponent.setSortTypeChangeHandler((sortType) => {
+    this._sortComponent.setSortTypeChangeHandler((activeSortType) => {
       this._clearFilmsContainer();
-      this._cardsSortHandler(sortType);
+      this._cardsSortHandler(activeSortType);
     });
     this._filmsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   render() {
     const cards = this._filmsModel.getFilms();
-    render(this._container, this._sortComponent);
+    this._contentContainer = document.querySelector(`section.films`);
 
-    this._contentContainer = renderSectionElement(this._container, `films`);
+    render(this._container, this._sortComponent, RENDER_POSITION.BEFORENODE, this._contentContainer);
+
+    modalController.setCommentChangeHandler(this._updateExtraCategories);
 
     this._filmsContainer = new FilmsComponent();
     const filmsContainerElement = this._filmsContainer.getElement();
@@ -107,10 +110,10 @@ export default class BoardController {
     this._shownExtraCardControllers = this._shownExtraCardControllers.concat(newFilms);
   }
 
-  _cardsSortHandler(sortType) {
+  _cardsSortHandler(activeSortType) {
     this._initialFilmsCount = initialRenderedCardsQuantity;
 
-    this._shownCardControllers = renderFilmCards(getSortedCards(this._filmsModel.getFilms(), sortType, this._initialFilmsCount), this._onDataChange);
+    this._shownCardControllers = renderFilmCards(getSortedCards(this._filmsModel.getFilms(), activeSortType, this._initialFilmsCount), this._onDataChange);
   }
 
   _clearFilmsContainer() {
@@ -166,7 +169,7 @@ export default class BoardController {
     renderTopCommentedFilms(cards, renderExtraCategory);
   }
 
-  _onDataChange(oldData, newData, type = ``) {
+  _onDataChange(oldData, newData) {
     const isUpdated = this._filmsModel.updateFilm(oldData.id, newData);
     const updatedCardControllerIndex = this._shownCardControllers.findIndex((controller) => controller.getCardId() === isUpdated.id);
     const updatedExtraControllerIndex = this._shownExtraCardControllers.findIndex((controller) => controller.getCardId() === isUpdated.id);
@@ -174,16 +177,15 @@ export default class BoardController {
     if (isUpdated.status) {
       if (updatedCardControllerIndex !== -1 && updatedExtraControllerIndex === -1) {
         this._shownCardControllers[updatedCardControllerIndex].render(newData);
+        userRank.updateUserRank();
       } else if (updatedCardControllerIndex === -1 && updatedExtraControllerIndex !== -1) {
         this._shownExtraCardControllers[updatedExtraControllerIndex].render(newData);
+        userRank.updateUserRank();
       } else if (updatedCardControllerIndex !== -1 && updatedExtraControllerIndex !== -1) {
         this._shownCardControllers[updatedCardControllerIndex].render(newData);
         this._shownExtraCardControllers[updatedExtraControllerIndex].render(newData);
+        userRank.updateUserRank();
       }
-    }
-
-    if (type === `comment`) {
-      this._updateExtraCategories();
     }
   }
 

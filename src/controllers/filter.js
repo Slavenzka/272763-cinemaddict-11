@@ -8,7 +8,6 @@ export default class FilterController {
     this._container = container;
     this._filmsModel = filmsModel;
 
-    this._activeFilterType = FilterTypes.ALL;
     this._filterComponent = null;
 
     this._onDataChange = this._onDataChange.bind(this);
@@ -24,7 +23,6 @@ export default class FilterController {
       return {
         name: filterType,
         count: getFilmsByFilter(allFilms, filterType).length,
-        isActive: filterType === this._activeFilterType
       };
     });
     const oldComponent = this._filterComponent;

@@ -1,9 +1,11 @@
 export default class CommentsModel {
   constructor() {
     this._comments = [];
-    this._dataChangeHandlers = [];
+    this._deleteCommentHandler = null;
+    this._addCommentHandler = null;
 
     this.removeComment = this.removeComment.bind(this);
+    this.addComment = this.addComment.bind(this);
   }
 
   getComments() {
@@ -12,7 +14,6 @@ export default class CommentsModel {
 
   setComments(comments) {
     this._comments = Array.from(comments);
-    this._callHandlers(this._dataChangeHandlers);
   }
 
   removeComment(id) {
@@ -23,21 +24,21 @@ export default class CommentsModel {
     }
 
     this._comments = [].concat(this._comments.slice(0, index), this._comments.slice(index + 1));
-    this._callHandlers(this._dataChangeHandlers);
+    this._deleteCommentHandler();
 
     return true;
   }
 
-  addComment(film) {
-    this._comments = [].concat(this._comments, film);
-    this._callHandlers(this._dataChangeHandlers);
+  addComment(comment) {
+    this._comments = [].concat(this._comments, comment);
+    this._addCommentHandler(comment);
   }
 
-  setDataChangeHandler(handler) {
-    this._dataChangeHandlers.push(handler);
+  setDeleteCommentHandler(handler) {
+    this._deleteCommentHandler = handler;
   }
 
-  _callHandlers(handlers) {
-    handlers.forEach((handler) => handler());
+  setAddCommentHandler(handler) {
+    this._addCommentHandler = handler;
   }
 }

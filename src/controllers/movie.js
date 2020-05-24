@@ -32,7 +32,7 @@ export default class MovieController {
     });
 
     this.component.setWatchedButtonHandler(() => {
-      this._controlButtonClickHandler(`watched`);
+      this._controlButtonClickHandler(`already_watched`);
     });
 
     this.component.setFavoriteButtonHandler(() => {
@@ -54,22 +54,11 @@ export default class MovieController {
   }
 
   _controlButtonClickHandler(type) {
-    let controlName = ``;
-
-    switch (type) {
-      case `watchlist`:
-        controlName = `isInWatchlist`;
-        break;
-      case `watched`:
-        controlName = `isWatched`;
-        break;
-      case `favorite`:
-        controlName = `isFavorite`;
-        break;
-    }
+    const copyUserData = Object.assign({}, this._card[`user_details`]);
+    copyUserData[type] = !this._card[`user_details`][type];
 
     this._onDataChange(this._card, Object.assign({}, this._card, {
-      [controlName]: !this._card[controlName]
+      [`user_details`]: copyUserData
     }));
   }
 }

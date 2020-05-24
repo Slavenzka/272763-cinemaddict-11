@@ -12,17 +12,20 @@ export const BOARD_PRESETS = {
     trimmedCommentLength: 139,
   },
 };
-export const USER_RANK_PRESETS = {
-  novice: {
+export const userRankPresets = {
+  NOVICE: {
     min: 2,
-    max: 10
+    max: 10,
+    status: `Novice`
   },
-  fan: {
+  FAN: {
     min: 11,
-    max: 20
+    max: 20,
+    status: `Fan`
   },
-  buff: {
-    min: 21
+  BUFF: {
+    min: 21,
+    status: `Movie Buff`
   }
 };
 
@@ -107,10 +110,11 @@ export const emojis = {
 
 export const RENDER_POSITION = {
   BEFOREEND: `beforeend`,
-  AFTERBEGIN: `afterbegin`
+  AFTERBEGIN: `afterbegin`,
+  BEFORENODE: `beforenode`
 };
 
-export const SORT_TYPE = {
+export const sortType = {
   DATE: `date`,
   RATING: `rating`,
   DEFAULT: `default`
@@ -128,3 +132,13 @@ export const FilterTypes = {
   HISTORY: `history`,
   FAVORITES: `favorites`
 };
+
+export const StatsFilterTypes = {
+  ALL: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`
+};
+
+export const DIAGRAM_BAR_HEIGHT = 50;
