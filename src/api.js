@@ -30,13 +30,20 @@ class API {
     console.log(data);
     const headers = new Headers();
     headers.append(`Authorization`, this._authorization);
+    headers.append(`Content-Type`, `application/json`);
 
     return fetch(`https://11.ecmascript.pages.academy/cinemaddict/movies/${id}`, {
       method: `PUT`,
       body: JSON.stringify(data),
-      headers,
+      headers: new Headers({
+        "Authorization": this._authorization,
+        "Content-Type": `application/json`
+      }),
     })
-      .then((response) => response.json());
+      .then((response) => {
+        console.log(response);
+        return response.json();
+      });
   }
 }
 
