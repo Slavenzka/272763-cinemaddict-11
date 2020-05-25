@@ -1,12 +1,14 @@
 import FilmDetails from '../components/film-details';
 import {commentsModel, filmsModel} from '../main';
 import {remove} from '../utils/render';
+import {api} from '../main';
 
 export default class ModalController {
   constructor() {
     this._card = null;
     this.id = null;
     this._detailsComponent = null;
+    this._commentsList = null;
 
     this._onDataChange = null;
     this._onCommentChange = [];
@@ -29,26 +31,30 @@ export default class ModalController {
     this._onDataChange = onDataChange;
 
     this._card = filmsModel.getFilms().find((film) => film.id === this.id);
-    this._detailsComponent = new FilmDetails(this._card, this._getUpdatedCommentsList(), this.handleClickControl);
-    document.querySelector(`.main`)
-      .appendChild(this._detailsComponent.getElement());
+    this._getUpdatedCommentsList()
+      .then((commentsList) => {
+        this._commentsList = commentsList;
+        this._detailsComponent = new FilmDetails(this._card, commentsList, this.handleClickControl);
+        document.querySelector(`.main`)
+          .appendChild(this._detailsComponent.getElement());
 
-    this._detailsComponent.setSubmitHandler();
-    this._detailsComponent.setCloseOnClickHandler(this.closeModal);
-    this._detailsComponent.setCloseOnEscPressHandler(this.closeModal);
-    // SET COMMENTS MODEL HANDLERS
-    commentsModel.setDeleteCommentHandler(this.deleteCommentHandler);
-    commentsModel.setAddCommentHandler(this.addCommentHandler);
+        this._detailsComponent.setSubmitHandler();
+        this._detailsComponent.setCloseOnClickHandler(this.closeModal);
+        this._detailsComponent.setCloseOnEscPressHandler(this.closeModal);
+        // SET COMMENTS MODEL HANDLERS
+        commentsModel.setDeleteCommentHandler(this.deleteCommentHandler);
+        commentsModel.setAddCommentHandler(this.addCommentHandler);
+      });
   }
 
-  _updateModal() {
+  _updateModal(comments) {
     this._card = filmsModel.getFilms().find((film) => film.id === this.id);
-    this._detailsComponent.updateData(this._card, this._getUpdatedCommentsList());
+    this._detailsComponent.updateData(this._card, comments);
   }
 
   handleClickControl(type) {
     this._controlButtonClickHandler(type);
-    this._updateModal();
+    this._updateModal(this._commentsList);
   }
 
   closeModal() {
@@ -56,10 +62,11 @@ export default class ModalController {
   }
 
   _getUpdatedCommentsList() {
-    const allComments = commentsModel.getComments();
-    return allComments.filter((comment) => {
-      return this._card.comments.includes(comment.id);
-    });
+    // const allComments = commentsModel.getComments();
+    // return allComments.filter((comment) => {
+    //   return this._card.comments.includes(comment.id);
+    // });
+    return api.getComment(this._card.id);
   }
 
   deleteCommentHandler() {

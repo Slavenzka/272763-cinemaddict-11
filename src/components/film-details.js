@@ -10,7 +10,7 @@ import {commentsModel} from '../main';
 import {encode} from 'he';
 import {uuid} from 'uuidv4';
 
-const createFilmDetailsTemplate = (data, comments, options) => {
+const createFilmDetailsTemplate = (data, comments = [], options) => {
   const {
     [`film_info`]: filmInfo,
     [`user_details`]: userInfo
@@ -36,18 +36,20 @@ const createFilmDetailsTemplate = (data, comments, options) => {
   const releaseDate = getFullDate(dateObject);
   const formattedDuration = getDurationFromMinutes(runtime);
 
-  const commentsList = comments.map((comment) => {
-    const commentDate = getFullDateAndTime(comment.date);
+  console.log(comments);
+
+  const commentsList = comments.map(({author, comment, date: commentCreationDate, emotion, id}) => {
+    const commentDate = getFullDateAndTime(commentCreationDate);
     return (
       `
-        <li class="film-details__comment" data-comment-id="${comment.id}">
+        <li class="film-details__comment" data-comment-id="${id}">
           <span class="film-details__comment-emoji">
-            <img src="./images/emoji/${comment.emoji}.png" width="55" height="55" alt="emoji-${comment.emoji}">
+            <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
           </span>
           <div>
-            <p class="film-details__comment-text">${encode(comment.text)}</p>
+            <p class="film-details__comment-text">${encode(comment)}</p>
             <p class="film-details__comment-info">
-              <span class="film-details__comment-author">${comment.name}</span>
+              <span class="film-details__comment-author">${author}</span>
               <span class="film-details__comment-day">${commentDate}</span>
               <button class="film-details__comment-delete">Delete</button>
             </p>
@@ -66,7 +68,7 @@ const createFilmDetailsTemplate = (data, comments, options) => {
           </div>
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
-              <img class="film-details__poster-img" src="./images/posters/${poster}" alt=${title}>
+              <img class="film-details__poster-img" src="./${poster}" alt="${title}">
               ${rating >= 18 ? `<p class="film-details__age">18+</p>` : ``}
             </div>
             <div class="film-details__info">
@@ -227,9 +229,9 @@ export default class FilmDetails extends AbstractSmartComponent {
       evt.preventDefault();
       const newComment = {
         id: uuid(),
-        text: this._inputValue,
-        name: getRandomArrayItem(NAMES),
-        emoji: this._activeEmoji.type,
+        comment: this._inputValue,
+        author: getRandomArrayItem(NAMES),
+        emotion: this._activeEmoji.type,
         date: new Date()
       };
       this._addCommentHandler(newComment);

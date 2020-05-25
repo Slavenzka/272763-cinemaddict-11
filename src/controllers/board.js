@@ -150,6 +150,7 @@ export default class BoardController {
       this._renderFilms(filmsAdditionalCards);
 
       prevFilmsCount = this._initialFilmsCount;
+      this._addButtonMore();
     };
 
     next();

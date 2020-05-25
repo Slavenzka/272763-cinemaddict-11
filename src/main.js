@@ -1,51 +1,74 @@
-import UserRankClassComponent from './components/user-rank';
-import FooterCountComponent from './components/footer-count';
-import {render} from './utils/render';
-import {BOARD_PRESETS} from './const';
-import {generateFilms} from './mock/cards';
+import API from './api';
 import BoardController from './controllers/board';
-import FilmsModel from './models/films';
-import FilterController from './controllers/filter';
-import {generateFilmsComments} from './mock/comments';
 import CommentsModel from './models/comments';
-import ModalController from './controllers/modal';
-import Stats from './components/stats';
+import FilmsModel from './models/films';
 import FilmsPage from './components/films-page';
+import FilterController from './controllers/filter';
+import FooterCountComponent from './components/footer-count';
+import ModalController from './controllers/modal';
+import {render} from './utils/render';
+import Stats from './components/stats';
 import SortComponent from './components/sort';
+import UserRankClassComponent from './components/user-rank';
+import {generateRandomString} from './utils/common';
 
-const {totalCardsQuantity} = BOARD_PRESETS;
-
-const filmsData = generateFilms(totalCardsQuantity);
-export const filmsModel = new FilmsModel();
-filmsModel.setFilms(filmsData);
-
-const commentsData = generateFilmsComments();
-export const commentsModel = new CommentsModel();
-commentsModel.setComments(commentsData);
-
-export const modalController = new ModalController();
+const AUTHORIZATION = `Basic ${generateRandomString(15)}`;
 
 const mainElement = document.querySelector(`.main`);
-
 const headerElement = document.querySelector(`.header`);
-export const userRank = new UserRankClassComponent();
-render(headerElement, userRank);
-
 const footerCounterContainer = document.querySelector(`.footer__statistics`);
-const footerCounter = new FooterCountComponent(filmsData.length);
-render(footerCounterContainer, footerCounter);
 
-const filterController = new FilterController(mainElement, filmsModel);
-filterController.render();
+export const filmsModel = new FilmsModel();
+export const commentsModel = new CommentsModel();
 
+export const userRank = new UserRankClassComponent();
 export const filmsScreenWrapper = new FilmsPage();
-render(mainElement, filmsScreenWrapper);
-
 export const sortComponent = new SortComponent();
-
-const board = new BoardController(mainElement, filmsModel, sortComponent);
-board.render(filmsData);
-
 export const statsComponent = new Stats();
+
+export const modalController = new ModalController();
+const filterController = new FilterController(mainElement, filmsModel);
+const board = new BoardController(mainElement, filmsModel, sortComponent);
+
+render(headerElement, userRank);
+filterController.render();
+render(mainElement, filmsScreenWrapper);
 render(mainElement, statsComponent);
 statsComponent.hide();
+
+const loadingLabel = document.createElement(`DIV`);
+loadingLabel.innerText = `Loading...`;
+loadingLabel.style = `margin-top: 35px`;
+document.querySelector(`section.films`).appendChild(loadingLabel);
+
+
+export const api = new API(AUTHORIZATION);
+
+api.getTasks()
+  .then((films) => {
+    filmsModel.setFilms(films);
+
+    loadingLabel.remove();
+
+    const footerCounter = new FooterCountComponent(films.length);
+    render(footerCounterContainer, footerCounter);
+
+    board.render(films);
+  })
+  .catch(() => {
+    filmsModel.setFilms([]);
+
+    loadingLabel.remove();
+
+    const footerCounter = new FooterCountComponent([].length);
+    render(footerCounterContainer, footerCounter);
+
+    board.render([]);
+  });
+
+  // .then((films) => films.map((film) => api.getComment(film)))
+  // .then((comments) => Promise.all(comments))
+  // .then((response) => {
+  //   const allComments = response.reduce((accumulator, current) => accumulator.concat(current), []);
+  //   commentsModel.setComments(allComments);
+  // });

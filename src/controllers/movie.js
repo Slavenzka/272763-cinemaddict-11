@@ -1,7 +1,7 @@
 import FilmCardComponent from '../components/film-card';
 import {render} from '../utils/render';
 import {replace, remove} from '../utils/render';
-import {modalController} from '../main';
+import {api, modalController} from '../main';
 
 export default class MovieController {
   constructor(container, onDataChange) {
@@ -56,9 +56,15 @@ export default class MovieController {
   _controlButtonClickHandler(type) {
     const copyUserData = Object.assign({}, this._card[`user_details`]);
     copyUserData[type] = !this._card[`user_details`][type];
+    const updatedFilmData = Object.assign({}, this._card, {
+      [`user_details`]: copyUserData
+    });
 
     this._onDataChange(this._card, Object.assign({}, this._card, {
       [`user_details`]: copyUserData
     }));
+
+    api.updateFilm(this._card.id, updatedFilmData)
+      .then((response) => console.log(response));
   }
 }
