@@ -25,7 +25,6 @@ export const commentsModel = new CommentsModel();
 export const userRank = new UserRankClassComponent();
 export const filmsScreenWrapper = new FilmsPage();
 export const sortComponent = new SortComponent();
-export const statsComponent = new Stats();
 
 export const modalController = new ModalController();
 const filterController = new FilterController(mainElement, filmsModel);
@@ -33,6 +32,7 @@ const board = new BoardController(mainElement, filmsModel, sortComponent);
 
 render(headerElement, userRank);
 render(mainElement, filmsScreenWrapper);
+export const statsComponent = new Stats();
 render(mainElement, statsComponent);
 statsComponent.hide();
 

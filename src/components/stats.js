@@ -11,30 +11,30 @@ const getFilteredData = (data, filterType) => {
   switch (filterType) {
     case StatsFilterTypes.TODAY:
       filteredData = data.filter((film) => {
-        const differenceInDays = moment().diff(film[`user_details`][`watching_date`], `days`);
-        return film[`user_details`][`already_watched`] && differenceInDays < 1;
+        const differenceInDays = moment().diff(film.userDetails.watchingDate, `days`);
+        return film.userDetails.alreadyWatched && differenceInDays < 1;
       });
       break;
     case StatsFilterTypes.WEEK:
       filteredData = data.filter((film) => {
-        const differenceInWeeks = moment().diff(film[`user_details`][`watching_date`], `week`);
-        return film[`user_details`][`already_watched`] && differenceInWeeks < 1;
+        const differenceInWeeks = moment().diff(film.userDetails.watchingDate, `week`);
+        return film.userDetails.alreadyWatched && differenceInWeeks < 1;
       });
       break;
     case StatsFilterTypes.MONTH:
       filteredData = data.filter((film) => {
-        const differenceInMonths = moment().diff(film[`user_details`][`watching_date`], `month`);
-        return film[`user_details`][`already_watched`] && differenceInMonths < 1;
+        const differenceInMonths = moment().diff(film.userDetails.watchingDate, `month`);
+        return film.userDetails.alreadyWatched && differenceInMonths < 1;
       });
       break;
     case StatsFilterTypes.YEAR:
       filteredData = data.filter((film) => {
-        const differenceInYears = moment().diff(film[`user_details`][`watching_date`], `years`);
-        return film[`user_details`][`already_watched`] && differenceInYears < 1;
+        const differenceInYears = moment().diff(film.userDetails.watchingDate, `years`);
+        return film.userDetails.alreadyWatched && differenceInYears < 1;
       });
       break;
     default:
-      filteredData = data.filter((film) => film[`user_details`][`already_watched`]);
+      filteredData = data.filter((film) => film.userDetails.alreadyWatched);
       break;
   }
 
@@ -119,7 +119,7 @@ const createStatsTemplate = (actualUserRank, activeFilterType, data) => {
   const inputList = (Object.values(StatsFilterTypes)).map((item) => createStatsItemTemplate(item, item === activeFilterType)).join(`\n`);
   const watchedMoviesQuantity = data.filtered.length;
   const totalMoviesDuration = data.filtered.reduce((total, item) => {
-    total += item[`film_info`].runtime;
+    total += item.filmInfo.runtime;
     return total;
   }, 0);
   const hours = moment.duration(totalMoviesDuration, `minutes`).get(`hours`);
@@ -167,7 +167,7 @@ const createStatsTemplate = (actualUserRank, activeFilterType, data) => {
 export default class Stats extends AbstractSmartComponent {
   constructor() {
     super();
-    this._filmsData = filmsModel.getFilms();
+    this._filmsData = [];
     this._actualData = {};
     this._activeFilterType = StatsFilterTypes.ALL;
 
@@ -181,6 +181,7 @@ export default class Stats extends AbstractSmartComponent {
   }
 
   show() {
+    this._filmsData = filmsModel.getFilms();
     this._getUpdatedData();
     this._addItemClickListeners();
     super.show();
@@ -204,7 +205,7 @@ export default class Stats extends AbstractSmartComponent {
 
     const genresCount = {};
     this._actualData.filtered.forEach((film) => {
-      film[`film_info`][`genre`].forEach((genre) => {
+      film.filmInfo.genre.forEach((genre) => {
         genresCount[genre] = genresCount[genre] ? genresCount[genre] + 1 : 1;
       });
     });
