@@ -12,16 +12,17 @@ import {uuid} from 'uuidv4';
 
 const createFilmDetailsTemplate = (data, comments = [], options) => {
   const {
-    [`film_info`]: filmInfo,
-    [`user_details`]: userInfo
+    filmInfo,
+    userDetails
   } = data;
 
   const {
     title,
-    [`alternative_title`]: titleOriginal,
-    [`age_rating`]: rating,
+    alternativeTitle,
+    ageRating,
+    totalRating,
     release,
-    genre: genres,
+    genre,
     poster,
     description,
     runtime,
@@ -30,13 +31,11 @@ const createFilmDetailsTemplate = (data, comments = [], options) => {
     actors
   } = filmInfo;
 
-  const {date, [`release_country`]: country} = release;
+  const {date, releaseCountry} = release;
   const {activeEmoji} = options;
   const dateObject = new Date(date);
   const releaseDate = getFullDate(dateObject);
   const formattedDuration = getDurationFromMinutes(runtime);
-
-  console.log(comments);
 
   const commentsList = comments.map(({author, comment, date: commentCreationDate, emotion, id}) => {
     const commentDate = getFullDateAndTime(commentCreationDate);
@@ -69,16 +68,16 @@ const createFilmDetailsTemplate = (data, comments = [], options) => {
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
               <img class="film-details__poster-img" src="./${poster}" alt="${title}">
-              ${rating >= 18 ? `<p class="film-details__age">18+</p>` : ``}
+              ${ageRating >= 18 ? `<p class="film-details__age">18+</p>` : ``}
             </div>
             <div class="film-details__info">
               <div class="film-details__info-head">
                 <div class="film-details__title-wrap">
                   <h3 class="film-details__title">${title}</h3>
-                  <p class="film-details__title-original">Original: ${titleOriginal}</p>
+                  <p class="film-details__title-original">Original: ${alternativeTitle}</p>
                 </div>
                 <div class="film-details__rating">
-                  <p class="film-details__total-rating">${rating}</p>
+                  <p class="film-details__total-rating">${totalRating}</p>
                 </div>
               </div>
               <table class="film-details__table">
@@ -104,12 +103,12 @@ const createFilmDetailsTemplate = (data, comments = [], options) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
-                  <td class="film-details__cell">${country}</td>
+                  <td class="film-details__cell">${releaseCountry}</td>
                 </tr>
                 <tr class="film-details__row">
-                  <td class="film-details__term">${genres.length > 1 ? `Genres` : `Genre`}</td>
+                  <td class="film-details__term">${genre.length > 1 ? `Genres` : `Genre`}</td>
                   <td class="film-details__cell">
-                    ${genres.map((genre) => (`<span class="film-details__genre">${genre}</span>`)).join(``)}
+                    ${genre.map((genreItem) => (`<span class="film-details__genre">${genreItem}</span>`)).join(``)}
                 </tr>
               </table>
               <p class="film-details__film-description">
@@ -118,12 +117,12 @@ const createFilmDetailsTemplate = (data, comments = [], options) => {
             </div>
           </div>
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${userInfo[`watchlist`] ? `checked` : ``}>
-            <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">${userInfo[`watchlist`] ? `In watchlist already` : `Add to watchlist`}</label>
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${userInfo[`already_watched`] ? `checked` : ``}>
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${userDetails.watchlist ? `checked` : ``}>
+            <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">${userDetails.watchlist ? `In watchlist already` : `Add to watchlist`}</label>
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${userDetails.alreadyWatched ? `checked` : ``}>
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${userInfo[`favorite`] ? `checked` : ``}>
-            <label for="favorite" class="film-details__control-label film-details__control-label--favorite">${userInfo[`favorite`] ? `Added to favorites` : `Add to favorites`}</label>
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${userDetails.favorite ? `checked` : ``}>
+            <label for="favorite" class="film-details__control-label film-details__control-label--favorite">${userDetails.favorite ? `Added to favorites` : `Add to favorites`}</label>
           </section>
         </div>
         <div class="form-details__bottom-container">
@@ -288,7 +287,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   _setWatchedButtonHandler() {
     this.getElement().querySelector(`#watched`)
       .addEventListener(`change`, () => {
-        this._controlButtonClickHandler(`already_watched`);
+        this._controlButtonClickHandler(`alreadyWatched`);
         this.rerender();
       });
   }

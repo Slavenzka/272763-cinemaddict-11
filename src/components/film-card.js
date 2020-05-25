@@ -14,38 +14,37 @@ const createButtonTemplate = (type, flag) => {
 const createFilmCardTemplate = (cardData) => {
   const {
     comments,
+    filmInfo,
+    userDetails
   } = cardData;
-
-  const filmInfo = destructureObjectSmart(cardData, `film_info`);
-  const userInfo = destructureObjectSmart(cardData, `user_details`);
 
   const {
     title,
     release,
     poster,
     description,
-    runtime
+    runtime,
+    totalRating,
+    genre
   } = filmInfo;
-  const rating = destructureObjectSmart(filmInfo, `age_rating`, 0);
-  const genres = destructureObjectSmart(filmInfo, `genre`);
   const formattedDuration = getDurationFromMinutes(runtime);
 
   const descriptionPreview = description.length > BOARD_PRESETS.comments.trimmedCommentLength
     ? description.slice(0, BOARD_PRESETS.comments.trimmedCommentLength) + `&#8230;`
     : description;
 
-  const watchlistButton = createButtonTemplate(`add-to-watchlist`, userInfo[`watchlist`]);
-  const watchedButton = createButtonTemplate(`mark-as-watched`, userInfo[`already_watched`]);
-  const favoriteButton = createButtonTemplate(`favorite`, userInfo[`favorite`]);
+  const watchlistButton = createButtonTemplate(`add-to-watchlist`, userDetails.watchlist);
+  const watchedButton = createButtonTemplate(`mark-as-watched`, userDetails.alreadyWatched);
+  const favoriteButton = createButtonTemplate(`favorite`, userDetails.favorite);
 
   return (
     `<article class="film-card">
       <h3 class="film-card__title">${title}</h3>
-      <p class="film-card__rating">${rating}</p>
+      <p class="film-card__rating">${totalRating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${(new Date(release.date)).getFullYear()}</span>
         <span class="film-card__duration">${formattedDuration}</span>
-        <span class="film-card__genre">${genres[0]}</span>
+        <span class="film-card__genre">${genre[0]}</span>
       </p>
       <img src="./${poster}" alt="${title}" class="film-card__poster">
       <p class="film-card__description">${descriptionPreview}</p>

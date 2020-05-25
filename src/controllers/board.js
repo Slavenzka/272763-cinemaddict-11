@@ -74,6 +74,7 @@ export default class BoardController {
 
   render() {
     const cards = this._filmsModel.getFilms();
+    console.log(cards);
     this._contentContainer = document.querySelector(`section.films`);
 
     render(this._container, this._sortComponent, RENDER_POSITION.BEFORENODE, this._contentContainer);

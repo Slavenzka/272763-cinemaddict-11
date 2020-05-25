@@ -32,7 +32,7 @@ export default class MovieController {
     });
 
     this.component.setWatchedButtonHandler(() => {
-      this._controlButtonClickHandler(`already_watched`);
+      this._controlButtonClickHandler(`alreadyWatched`);
     });
 
     this.component.setFavoriteButtonHandler(() => {
@@ -54,14 +54,14 @@ export default class MovieController {
   }
 
   _controlButtonClickHandler(type) {
-    const copyUserData = Object.assign({}, this._card[`user_details`]);
-    copyUserData[type] = !this._card[`user_details`][type];
+    const copyUserData = Object.assign({}, this._card.userDetails);
+    copyUserData[type] = !this._card.userDetails[type];
     const updatedFilmData = Object.assign({}, this._card, {
-      [`user_details`]: copyUserData
+      userDetails: copyUserData
     });
 
     this._onDataChange(this._card, Object.assign({}, this._card, {
-      [`user_details`]: copyUserData
+      userDetails: copyUserData
     }));
 
     api.updateFilm(this._card.id, updatedFilmData)

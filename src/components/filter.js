@@ -5,7 +5,7 @@ import AbstractSmartComponent from './abstract-smart-component';
 const createFilterMarkup = ({name, count}, index, activeIndex) => {
   const type = name.split(` `)[0].toLowerCase();
   const isItemActive = activeIndex === index ? `main-navigation__item--active` : ``;
-  const itemCount = count && type !== `all` ? `<span class="main-navigation__item-count">${count}</span>` : ``;
+  const itemCount = type !== `all` ? `<span class="main-navigation__item-count">${count}</span>` : ``;
   const processedName = name === `all` ? `All movies` : capitalizeFirstLetter(name);
   return (
     `

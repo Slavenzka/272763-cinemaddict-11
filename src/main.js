@@ -11,6 +11,7 @@ import Stats from './components/stats';
 import SortComponent from './components/sort';
 import UserRankClassComponent from './components/user-rank';
 import {generateRandomString} from './utils/common';
+import FilmAdapter from './adapters/filmAdapter';
 
 const AUTHORIZATION = `Basic ${generateRandomString(15)}`;
 
@@ -31,7 +32,6 @@ const filterController = new FilterController(mainElement, filmsModel);
 const board = new BoardController(mainElement, filmsModel, sortComponent);
 
 render(headerElement, userRank);
-filterController.render();
 render(mainElement, filmsScreenWrapper);
 render(mainElement, statsComponent);
 statsComponent.hide();
@@ -46,14 +46,14 @@ export const api = new API(AUTHORIZATION);
 
 api.getTasks()
   .then((films) => {
-    filmsModel.setFilms(films);
+    filmsModel.setFilms(FilmAdapter.parseFilms(films));
 
     loadingLabel.remove();
 
     const footerCounter = new FooterCountComponent(films.length);
     render(footerCounterContainer, footerCounter);
 
-    board.render(films);
+    board.render();
   })
   .catch(() => {
     filmsModel.setFilms([]);
@@ -63,7 +63,8 @@ api.getTasks()
     const footerCounter = new FooterCountComponent([].length);
     render(footerCounterContainer, footerCounter);
 
-    board.render([]);
+    filterController.render();
+    board.render();
   });
 
   // .then((films) => films.map((film) => api.getComment(film)))
