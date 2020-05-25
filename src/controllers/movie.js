@@ -64,7 +64,37 @@ export default class MovieController {
       userDetails: copyUserData
     }));
 
-    api.updateFilm(this._card.id, updatedFilmData)
+    api.updateFilm(this._card.id, this._getServerFormattedData(updatedFilmData))
       .then((response) => console.log(response));
+  }
+
+  _getServerFormattedData() {
+    return {
+      id: this._card.id,
+      comments: this._card.comments,
+      [`film_info`]: {
+        title: this._card.filmInfo.title,
+        [`alternative_title`]: this._card.filmInfo.alternativeTitle,
+        [`total_rating`]: this._card.filmInfo.totalRating,
+        poster: this._card.filmInfo.poster,
+        [`age_rating`]: this._card.filmInfo.ageRating,
+        director: this._card.director,
+        writers: this._card.filmInfo.writers,
+        actors: this._card.filmInfo.actors,
+        release: {
+          date: this._card.filmInfo.release.date,
+          [`release_country`]: this._card.filmInfo.release.releaseCountry
+        },
+        runtime: this._card.filmInfo.runtime,
+        genre: this._card.filmInfo.genre,
+        description: this._card.filmInfo.description
+      },
+      [`user_details`]: {
+        watchlist: this._card.userDetails.watchlist,
+        [`already_watched`]: this._card.userDetails.alreadyWatched,
+        [`watching_date`]: this._card.userDetails.watchingDate,
+        favorite: this._card.userDetails.favorite
+      }
+    };
   }
 }
