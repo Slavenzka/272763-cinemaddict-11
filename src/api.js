@@ -3,7 +3,7 @@ class API {
     this._authorization = authorization;
   }
 
-  getTasks() {
+  getFilms() {
     const headers = new Headers();
     headers.append(`Authorization`, this._authorization);
 

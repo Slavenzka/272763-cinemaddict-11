@@ -44,11 +44,13 @@ document.querySelector(`section.films`).appendChild(loadingLabel);
 
 export const api = new API(AUTHORIZATION);
 
-api.getTasks()
+api.getFilms()
   .then((films) => {
     filmsModel.setFilms(FilmAdapter.parseFilms(films));
 
     loadingLabel.remove();
+
+    userRank.updateUserRank();
 
     const footerCounter = new FooterCountComponent(films.length);
     render(footerCounterContainer, footerCounter);

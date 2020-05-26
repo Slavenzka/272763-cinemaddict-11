@@ -20,10 +20,10 @@ export default class FilmAdapter {
       description: data[`film_info`].description || ``
     };
     this.userDetails = {
-      watchlist: Boolean(data[`user_details`].watchlist),
-      alreadyWatched: Boolean(data[`user_details`][`already_watched`]),
+      watchlist: data[`user_details`].watchlist,
+      alreadyWatched: data[`user_details`][`already_watched`],
       watchingDate: data[`user_details`][`watching_date`],
-      favorite: Boolean(data.favorite),
+      favorite: data[`user_details`].favorite,
     };
   }
 

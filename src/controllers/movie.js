@@ -2,6 +2,8 @@ import FilmCardComponent from '../components/film-card';
 import {render} from '../utils/render';
 import {replace, remove} from '../utils/render';
 import {api, modalController} from '../main';
+import FilmAdapter from '../adapters/filmAdapter';
+import moment from 'moment';
 
 export default class MovieController {
   constructor(container, onDataChange) {
@@ -27,15 +29,18 @@ export default class MovieController {
       this.component.setCardHandler(() => this._renderModal(this._card));
     }
 
-    this.component.setWatchlistButtonHandler(() => {
+    this.component.setWatchlistButtonHandler((evt) => {
+      evt.preventDefault();
       this._controlButtonClickHandler(`watchlist`);
     });
 
-    this.component.setWatchedButtonHandler(() => {
+    this.component.setWatchedButtonHandler((evt) => {
+      evt.preventDefault();
       this._controlButtonClickHandler(`alreadyWatched`);
     });
 
-    this.component.setFavoriteButtonHandler(() => {
+    this.component.setFavoriteButtonHandler((evt) => {
+      evt.preventDefault();
       this._controlButtonClickHandler(`favorite`);
     });
   }
@@ -53,19 +58,28 @@ export default class MovieController {
     this._modalController.render(this._controlButtonClickHandler, this._onDataChange, card.id);
   }
 
-  _controlButtonClickHandler(type) {
+  _controlButtonClickHandler(type, callback) {
     const copyUserData = Object.assign({}, this._card.userDetails);
     copyUserData[type] = !this._card.userDetails[type];
+
+    if (type === `alreadyWatched` && copyUserData[type]) {
+      copyUserData.watchingDate = moment().format();
+    }
+
     const updatedFilmData = Object.assign({}, this._card, {
       userDetails: copyUserData
     });
+
     api.updateFilm(this._card.id, this._getServerFormattedData(updatedFilmData))
-      .then((response) => console.log(response));
+      .then((response) => {
+        const formattedResponse = FilmAdapter.parseFilm(response);
 
-    this._onDataChange(this._card, Object.assign({}, this._card, {
-      userDetails: copyUserData
-    }));
+        this._onDataChange(this._card, Object.assign({}, this._card, {
+          userDetails: formattedResponse.userDetails
+        }));
 
+        callback();
+      });
   }
 
   _getServerFormattedData(data) {
@@ -78,7 +92,7 @@ export default class MovieController {
         [`total_rating`]: data.filmInfo.totalRating,
         poster: data.filmInfo.poster,
         [`age_rating`]: data.filmInfo.ageRating,
-        director: data.director,
+        director: data.filmInfo.director,
         writers: data.filmInfo.writers,
         actors: data.filmInfo.actors,
         release: {

@@ -202,6 +202,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     if (newComments) {
       this._commentsData = newComments;
     }
+    this.rerender();
   }
 
   setSubmitHandler() {

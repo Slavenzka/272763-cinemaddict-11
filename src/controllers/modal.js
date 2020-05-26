@@ -53,8 +53,7 @@ export default class ModalController {
   }
 
   handleClickControl(type) {
-    this._controlButtonClickHandler(type);
-    this._updateModal(this._commentsList);
+    this._controlButtonClickHandler(type, () => this._updateModal(this._commentsList));
   }
 
   closeModal() {
@@ -62,10 +61,6 @@ export default class ModalController {
   }
 
   _getUpdatedCommentsList() {
-    // const allComments = commentsModel.getComments();
-    // return allComments.filter((comment) => {
-    //   return this._card.comments.includes(comment.id);
-    // });
     return api.getComment(this._card.id);
   }
 
