@@ -1,4 +1,4 @@
-import {destructureObjectSmart, getDurationFromMinutes} from '../utils/common';
+import {getDurationFromMinutes} from '../utils/common';
 import {getNodeFromTemplate} from '../utils/render';
 import AbstractComponent from './abstract-component';
 import {BOARD_PRESETS} from '../const';
