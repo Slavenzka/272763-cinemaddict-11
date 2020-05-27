@@ -80,3 +80,14 @@ export const getUserRank = (watchedCount) => {
 export const destructureObjectSmart = (object, propertyName, defaultValue) => {
   return object[propertyName] === undefined ? defaultValue : object[propertyName];
 };
+
+export const generateRandomString = (requiredLength) => {
+  const chars = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789=?!`;
+  return new Array(requiredLength)
+    .fill(``)
+    .map(() => {
+      let charIndex = Math.floor(Math.random() * chars.length);
+      return chars[charIndex];
+    })
+    .join(``);
+};

@@ -26,7 +26,7 @@ export default class UserRank extends AbstractSmartComponent {
 
   _setUserRankData() {
     this._filmsData = filmsModel.getFilms();
-    const watchedCounter = this._filmsData.filter((film) => film[`user_details`][`already_watched`]).length;
+    const watchedCounter = this._filmsData.filter((film) => film.userDetails.alreadyWatched).length;
     this.userRank = getUserRank(watchedCounter);
   }
 
