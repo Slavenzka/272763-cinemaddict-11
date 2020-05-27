@@ -81,14 +81,20 @@ export default class ModalController {
   }
 
   addCommentHandler(newComment) {
+    this._detailsComponent.disableForm();
     api.addComment(this._card.id, newComment)
       .then((response) => {
         const formattedMovie = FilmAdapter.parseFilm(response[`movie`]);
 
         this._onDataChange(this._card, Object.assign({}, this._card, formattedMovie));
 
+        this._detailsComponent.resetCommentData();
         this._updateModal(response.comments);
         this.callCommentChangeHandlers();
+      })
+      .catch((error) => {
+        console.log(error);
+        this._detailsComponent.enableForm();
       });
   }
 
