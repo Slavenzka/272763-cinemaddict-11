@@ -65,22 +65,25 @@ export default class ModalController {
     return api.getComment(this._card.id);
   }
 
-  deleteCommentHandler() {
-    const newComments = this._getUpdatedCommentsList().map((comment) => comment.id);
-    this._onDataChange(this._card, Object.assign({}, this._card, {
-      comments: newComments
-    }));
+  deleteCommentHandler(commentID) {
+    api.deleteComment(commentID)
+      .then(() => {
+        return this._getUpdatedCommentsList();
+      })
+      .then((newComments) => {
+        this._onDataChange(this._card, Object.assign({}, this._card, {
+          comments: newComments
+        }));
 
-    this._updateModal();
-    this.callCommentChangeHandlers();
+        this._updateModal(newComments);
+        this.callCommentChangeHandlers();
+      });
   }
 
   addCommentHandler(newComment) {
-    // const newComments = [].concat(this._card.comments, newComment.id);
-    //
     api.addComment(this._card.id, newComment)
       .then((response) => {
-        const formattedMovie = FilmAdapter.parseFilm(response.movie);
+        const formattedMovie = FilmAdapter.parseFilm(response[`movie`]);
 
         this._onDataChange(this._card, Object.assign({}, this._card, formattedMovie));
 

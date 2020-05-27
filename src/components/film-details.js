@@ -8,7 +8,6 @@ import AbstractSmartComponent from './abstract-smart-component';
 import {commentsModel} from '../main';
 import {encode} from 'he';
 import moment from 'moment';
-import api from '../api';
 
 const createFilmDetailsTemplate = (data, comments = [], options) => {
   const {
@@ -264,12 +263,8 @@ export default class FilmDetails extends AbstractSmartComponent {
         if (evt.target.tagName === `BUTTON`) {
           evt.preventDefault();
           const commentID = evt.currentTarget.dataset.commentId;
-          api.deleteComment(commentID)
-            .then((response) => {
-              console.log(response);
-              this._deleteCommentHandler(commentID);
-              this.rerender();
-            });
+          this._deleteCommentHandler(commentID);
+          this.rerender();
         }
       });
     });
