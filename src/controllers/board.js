@@ -35,10 +35,10 @@ const getSortedCards = (cards, sortTypeActive, to = cards.length) => {
   let sortableCards = cards.slice();
   switch (sortTypeActive) {
     case sortType.DATE:
-      sortableCards = sortableCards.sort((a, b) => a.date < b.date);
+      sortableCards = sortableCards.sort((a, b) => a.filmInfo.release.date < b.filmInfo.release.date);
       break;
     case sortType.RATING:
-      sortableCards = sortableCards.sort((a, b) => a.rating < b.rating);
+      sortableCards = sortableCards.sort((a, b) => a.filmInfo.totalRating < b.filmInfo.totalRating);
       break;
     default:
       sortableCards = cards;
@@ -150,6 +150,7 @@ export default class BoardController {
       this._renderFilms(filmsAdditionalCards);
 
       prevFilmsCount = this._initialFilmsCount;
+      this._addButtonMore();
     };
 
     next();

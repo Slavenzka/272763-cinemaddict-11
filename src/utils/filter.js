@@ -5,15 +5,15 @@ export const getAllFilms = (films) => {
 };
 
 export const getWatchlistFilms = (films) => {
-  return films.filter((film) => film[`user_details`][`watchlist`]);
+  return films.filter((film) => film.userDetails.watchlist);
 };
 
 export const getHistoryFilms = (films) => {
-  return films.filter((film) => film[`user_details`][`already_watched`]);
+  return films.filter((film) => film.userDetails.alreadyWatched);
 };
 
 export const getFavoriteFilms = (films) => {
-  return films.filter((film) => film[`user_details`][`favorite`]);
+  return films.filter((film) => film.userDetails.favorite);
 };
 
 export const getFilmsByFilter = (films, filterType) => {
