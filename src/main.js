@@ -69,10 +69,3 @@ api.getFilms()
     filterController.render();
     board.render();
   });
-
-  // .then((films) => films.map((film) => api.getComment(film)))
-  // .then((comments) => Promise.all(comments))
-  // .then((response) => {
-  //   const allComments = response.reduce((accumulator, current) => accumulator.concat(current), []);
-  //   commentsModel.setComments(allComments);
-  // });

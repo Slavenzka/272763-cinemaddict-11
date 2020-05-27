@@ -1,14 +1,13 @@
-import {KEY_CODES, NAMES} from '../const';
+import {KEY_CODES} from '../const';
 import {
   getDurationFromMinutes,
   getFullDate,
   getFullDateAndTime,
-  getRandomArrayItem
 } from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
 import {commentsModel} from '../main';
 import {encode} from 'he';
-import {uuid} from 'uuidv4';
+import moment from 'moment';
 
 const createFilmDetailsTemplate = (data, comments = [], options) => {
   const {
@@ -228,11 +227,9 @@ export default class FilmDetails extends AbstractSmartComponent {
     if (this._inputValue.length !== 0 && this._activeEmoji && evt.ctrlKey && evt.keyCode === KEY_CODES.enter) {
       evt.preventDefault();
       const newComment = {
-        id: uuid(),
         comment: this._inputValue,
-        author: getRandomArrayItem(NAMES),
         emotion: this._activeEmoji.type,
-        date: new Date()
+        date: moment().format()
       };
       this._addCommentHandler(newComment);
       this._resetCommentData();

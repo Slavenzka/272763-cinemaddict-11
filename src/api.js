@@ -3,7 +3,7 @@ const Method = {
   POST: `POST`,
   PUT: `PUT`,
   DELETE: `DELETE`
-}
+};
 
 class API {
   constructor(endpoint, authorization) {
@@ -20,11 +20,13 @@ class API {
   }
 
   getFilms() {
-    return this._load({url: `movies`});
+    return this._load({url: `movies`})
+      .then((response) => response.json());
   }
 
   getComment(filmID) {
-    return this._load({url: `comments/${filmID}`});
+    return this._load({url: `comments/${filmID}`})
+      .then((response) => response.json());
   }
 
   updateFilm(id, data) {
@@ -37,7 +39,24 @@ class API {
       method: Method.PUT,
       body: JSON.stringify(this._getServerFormattedData(data)),
       headers
-    });
+    })
+      .then((response) => response.json());
+  }
+
+  addComment(filmID, newComment) {
+    const headers = new Headers();
+    headers.append(`Authorization`, this._authorization);
+    headers.append(`Content-Type`, `application/json`);
+
+    return this._load({
+      url: `comments/${filmID}`,
+      method: Method.POST,
+      headers,
+      body: JSON.stringify(newComment)
+    })
+      .then((response) => {
+        return response.json();
+      });
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
@@ -45,7 +64,6 @@ class API {
 
     return fetch(`${this._endpoint}/${url}`, {method, body, headers})
       .then(this.checkStatus)
-      .then((response) => response.json())
       .catch((err) => {
         throw err;
       });

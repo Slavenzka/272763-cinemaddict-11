@@ -2,6 +2,7 @@ import FilmDetails from '../components/film-details';
 import {commentsModel, filmsModel} from '../main';
 import {remove} from '../utils/render';
 import {api} from '../main';
+import FilmAdapter from '../adapters/filmAdapter';
 
 export default class ModalController {
   constructor() {
@@ -75,14 +76,17 @@ export default class ModalController {
   }
 
   addCommentHandler(newComment) {
-    const newComments = [].concat(this._card.comments, newComment.id);
+    // const newComments = [].concat(this._card.comments, newComment.id);
+    //
+    api.addComment(this._card.id, newComment)
+      .then((response) => {
+        const formattedMovie = FilmAdapter.parseFilm(response.movie);
 
-    this._onDataChange(this._card, Object.assign({}, this._card, {
-      comments: newComments
-    }));
+        this._onDataChange(this._card, Object.assign({}, this._card, formattedMovie));
 
-    this._updateModal();
-    this.callCommentChangeHandlers();
+        this._updateModal(response.comments);
+        this.callCommentChangeHandlers();
+      });
   }
 
   setCommentChangeHandler(handler) {
