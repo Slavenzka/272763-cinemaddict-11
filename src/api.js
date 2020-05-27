@@ -1,5 +1,13 @@
+const Method = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+}
+
 class API {
-  constructor(authorization) {
+  constructor(endpoint, authorization) {
+    this._endpoint = endpoint;
     this._authorization = authorization;
   }
 
@@ -12,25 +20,11 @@ class API {
   }
 
   getFilms() {
-    const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
-
-    return fetch(`https://11.ecmascript.pages.academy/cinemaddict/movies`, {headers})
-      .then(this.checkStatus)
-      .then((response) => response.json())
-      .then((data) => data);
+    return this._load({url: `movies`});
   }
 
   getComment(filmID) {
-    const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
-
-    return fetch(`https://11.ecmascript.pages.academy/cinemaddict/comments/${filmID}`, {headers})
-      .then(this.checkStatus)
-      .then((response) => response.json())
-      .then((data) => {
-        return data;
-      });
+    return this._load({url: `comments/${filmID}`});
   }
 
   updateFilm(id, data) {
@@ -38,16 +32,23 @@ class API {
     headers.append(`Authorization`, this._authorization);
     headers.append(`Content-Type`, `application/json`);
 
-    return fetch(`https://11.ecmascript.pages.academy/cinemaddict/movies/${id}`, {
-      method: `PUT`,
+    return this._load({
+      url: `movies/${id}`,
+      method: Method.PUT,
       body: JSON.stringify(this._getServerFormattedData(data)),
-      headers: new Headers({
-        "Authorization": this._authorization,
-        "Content-Type": `application/json`
-      }),
-    })
+      headers
+    });
+  }
+
+  _load({url, method = Method.GET, body = null, headers = new Headers()}) {
+    headers.append(`Authorization`, this._authorization);
+
+    return fetch(`${this._endpoint}/${url}`, {method, body, headers})
       .then(this.checkStatus)
-      .then((response) => response.json());
+      .then((response) => response.json())
+      .catch((err) => {
+        throw err;
+      });
   }
 
   _getServerFormattedData(data) {
