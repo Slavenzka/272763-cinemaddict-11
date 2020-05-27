@@ -8,8 +8,8 @@ export default class CommentsModel {
     this.addComment = this.addComment.bind(this);
   }
 
-  removeComment(id) {
-    this._deleteCommentHandler(id);
+  removeComment(id, callbackOnError) {
+    this._deleteCommentHandler(id, callbackOnError);
   }
 
   addComment(comment) {

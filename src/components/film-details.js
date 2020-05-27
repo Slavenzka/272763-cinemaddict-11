@@ -290,9 +290,10 @@ export default class FilmDetails extends AbstractSmartComponent {
       comment.addEventListener(`click`, (evt) => {
         if (evt.target.tagName === `BUTTON`) {
           evt.preventDefault();
+          evt.target.disabled = true;
+          evt.target.innerText = `Deleting...`;
           const commentID = evt.currentTarget.dataset.commentId;
-          this._deleteCommentHandler(commentID);
-          this.rerender();
+          this._deleteCommentHandler(commentID, () => this._setCommentStateToError(comment, evt.target));
         }
       });
     });
@@ -300,6 +301,16 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._setWatchlistButtonHandler();
     this._setWatchedButtonHandler();
     this._setFavoriteButtonHandler();
+  }
+
+  _setCommentStateToError(commentItem, button) {
+    commentItem.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      commentItem.style.animation = ``;
+      button.innerText = `Delete`;
+      button.disabled = false;
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _setWatchlistButtonHandler() {

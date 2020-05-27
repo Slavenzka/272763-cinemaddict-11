@@ -65,7 +65,7 @@ export default class ModalController {
     return api.getComment(this._card.id);
   }
 
-  deleteCommentHandler(commentID) {
+  deleteCommentHandler(commentID, errorCallback) {
     api.deleteComment(commentID)
       .then(() => {
         return this._getUpdatedCommentsList();
@@ -77,6 +77,12 @@ export default class ModalController {
 
         this._updateModal(newComments);
         this.callCommentChangeHandlers();
+      })
+      .catch((error) => {
+        if (errorCallback) {
+          errorCallback();
+        }
+        throw new Error(error);
       });
   }
 
@@ -93,8 +99,8 @@ export default class ModalController {
         this.callCommentChangeHandlers();
       })
       .catch((error) => {
-        console.log(error);
         this._detailsComponent.enableForm();
+        throw new Error(error);
       });
   }
 
