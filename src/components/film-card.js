@@ -44,7 +44,7 @@ const createFilmCardTemplate = (cardData) => {
       <p class="film-card__info">
         <span class="film-card__year">${(new Date(release.date)).getFullYear()}</span>
         <span class="film-card__duration">${formattedDuration}</span>
-        <span class="film-card__genre">${genre[0]}</span>
+        <span class="film-card__genre">${genre[0] || ``}</span>
       </p>
       <img src="./${poster}" alt="${title}" class="film-card__poster">
       <p class="film-card__description">${descriptionPreview}</p>

@@ -5,6 +5,7 @@ import CardController from '../controllers/movie';
 import FilmsComponent from '../components/films';
 import {remove} from '../utils/render';
 import {modalController, userRank} from '../main';
+import {shuffleArray} from '../utils/common';
 
 const {initialRenderedCardsQuantity} = BOARD_PRESETS;
 
@@ -18,16 +19,38 @@ const renderFilmCards = (cards, onDataChange, cardsContainer) => {
 };
 
 const renderTopRatedFilms = (cards, renderExtraCategory) => {
-  const categoryData = [...cards]
-    .sort((a, b) => a.rating < b.rating)
-    .slice(0, BOARD_PRESETS.extraListCardsQuantity);
+  const sortedData = [...cards].sort((a, b) => +a[`filmInfo`].totalRating < +b[`filmInfo`].totalRating);
+
+  if (sortedData[0][`rating`] === 0) {
+    return;
+  }
+
+  let categoryData;
+
+  if (sortedData[0][`filmInfo`].totalRating === sortedData[sortedData.length - 1][`filmInfo`].totalRating) {
+    categoryData = shuffleArray(sortedData).slice(0, BOARD_PRESETS.extraListCardsQuantity);
+  } else {
+    categoryData = sortedData.slice(0, BOARD_PRESETS.extraListCardsQuantity);
+  }
+
   renderExtraCategory(categoryData, `Top rated`);
 };
 
 const renderTopCommentedFilms = (cards, renderExtraCategory) => {
-  const categoryData = [...cards]
-    .sort((a, b) => a.comments.length < b.comments.length)
-    .slice(0, BOARD_PRESETS.extraListCardsQuantity);
+  const sortedData = [...cards].sort((a, b) => a.comments.length < b.comments.length);
+
+  if (sortedData[0][`comments`].length === 0) {
+    return;
+  }
+
+  let categoryData;
+
+  if (sortedData[0][`comments`].length === sortedData[sortedData.length - 1][`comments`].length) {
+    categoryData = shuffleArray(sortedData).slice(0, BOARD_PRESETS.extraListCardsQuantity);
+  } else {
+    categoryData = sortedData.slice(0, BOARD_PRESETS.extraListCardsQuantity);
+  }
+
   renderExtraCategory(categoryData, `Most commented`);
 };
 
