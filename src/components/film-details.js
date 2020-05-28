@@ -1,4 +1,4 @@
-import {KeyCodes} from '../const';
+import {DeleteButtonLabels, KeyCodes} from '../const';
 import {
   getDurationFromMinutes,
   getFullDate,
@@ -291,7 +291,7 @@ export default class FilmDetails extends AbstractSmartComponent {
         if (evt.target.tagName === `BUTTON`) {
           evt.preventDefault();
           evt.target.disabled = true;
-          evt.target.innerText = `Deleting...`;
+          evt.target.innerText = DeleteButtonLabels.FETCHING;
           const commentID = evt.currentTarget.dataset.commentId;
           this._deleteCommentHandler(commentID, () => this._setCommentStateToError(comment, evt.target));
         }
@@ -308,7 +308,7 @@ export default class FilmDetails extends AbstractSmartComponent {
 
     setTimeout(() => {
       commentItem.style.animation = ``;
-      button.innerText = `Delete`;
+      button.innerText = DeleteButtonLabels.REGULAR;
       button.disabled = false;
     }, SHAKE_ANIMATION_TIMEOUT);
   }

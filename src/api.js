@@ -1,8 +1,15 @@
-const Method = {
+const Methods = {
   GET: `GET`,
   POST: `POST`,
   PUT: `PUT`,
   DELETE: `DELETE`
+};
+
+const Statuses = {
+  VALID: {
+    min: 200,
+    max: 300
+  }
 };
 
 class API {
@@ -12,7 +19,7 @@ class API {
   }
 
   checkStatus(response) {
-    if (response.status >= 200 && response.status < 300) {
+    if (response.status >= Statuses.VALID.min && response.status < Statuses.VALID.max) {
       return response;
     } else {
       throw new Error(`${response.status}: ${response.statusText}`);
@@ -36,7 +43,7 @@ class API {
 
     return this._load({
       url: `movies/${id}`,
-      method: Method.PUT,
+      method: Methods.PUT,
       body: JSON.stringify(this._getServerFormattedData(data)),
       headers
     })
@@ -50,7 +57,7 @@ class API {
 
     return this._load({
       url: `comments/${filmID}`,
-      method: Method.POST,
+      method: Methods.POST,
       headers,
       body: JSON.stringify(newComment)
     })
@@ -60,10 +67,10 @@ class API {
   }
 
   deleteComment(id) {
-    return this._load({url: `comments/${id}`, method: Method.DELETE});
+    return this._load({url: `comments/${id}`, method: Methods.DELETE});
   }
 
-  _load({url, method = Method.GET, body = null, headers = new Headers()}) {
+  _load({url, method = Methods.GET, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
 
     return fetch(`${this._endpoint}/${url}`, {method, body, headers})

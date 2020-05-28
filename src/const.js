@@ -57,4 +57,9 @@ export const StatsFilterTypes = {
   YEAR: `year`
 };
 
+export const DeleteButtonLabels = {
+  REGULAR: `Delete`,
+  FETCHING: `Deleting...`
+}
+
 export const DIAGRAM_BAR_HEIGHT = 50;

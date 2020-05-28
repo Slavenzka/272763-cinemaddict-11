@@ -13,7 +13,7 @@ import UserRankClassComponent from './components/user-rank';
 import {generateRandomString} from './utils/common';
 import FilmAdapter from './adapters/filmAdapter';
 
-const ENDPOINT = `https://11.ecmascript.pages.academy/cinemaddict`;
+const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 const AUTHORIZATION = `Basic ${generateRandomString(15)}`;
 
 const mainElement = document.querySelector(`.main`);
@@ -43,7 +43,7 @@ loadingLabel.style = `margin-top: 35px`;
 document.querySelector(`section.films`).appendChild(loadingLabel);
 
 
-export const api = new API(ENDPOINT, AUTHORIZATION);
+export const api = new API(END_POINT, AUTHORIZATION);
 
 api.getFilms()
   .then((films) => {
