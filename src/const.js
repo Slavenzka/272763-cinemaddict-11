@@ -60,6 +60,6 @@ export const StatsFilterTypes = {
 export const DeleteButtonLabels = {
   REGULAR: `Delete`,
   FETCHING: `Deleting...`
-}
+};
 
 export const DIAGRAM_BAR_HEIGHT = 50;
