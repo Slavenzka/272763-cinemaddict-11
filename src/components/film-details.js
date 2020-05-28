@@ -1,4 +1,4 @@
-import {KEY_CODES} from '../const';
+import {KeyCodes} from '../const';
 import {
   getDurationFromMinutes,
   getFullDate,
@@ -254,7 +254,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   _setPostCommentHandler(evt) {
-    if (this._inputValue.length !== 0 && this._activeEmoji && evt.ctrlKey && evt.keyCode === KEY_CODES.enter) {
+    if (this._inputValue.length !== 0 && this._activeEmoji && (evt.ctrlKey || evt.metaKey) && evt.keyCode === KeyCodes.enter) {
       evt.preventDefault();
       const newComment = {
         comment: this._inputValue,

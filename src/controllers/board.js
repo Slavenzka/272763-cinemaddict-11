@@ -1,13 +1,13 @@
 import {render, renderSectionElement, renderSectionHeading} from '../utils/render';
 import ButtonMoreComponent from '../components/button-more';
-import {BOARD_PRESETS, RENDER_POSITION, sortType} from '../const';
+import {BoardPresets, RenderPosition, SortType} from '../const';
 import CardController from '../controllers/movie';
 import FilmsComponent from '../components/films';
 import {remove} from '../utils/render';
 import {modalController, userRank} from '../main';
 import {shuffleArray} from '../utils/common';
 
-const {initialRenderedCardsQuantity} = BOARD_PRESETS;
+const {INITIAL_RENDERED_CARDS_QUANTITY, EXTRA_LIST_CARDS_QUANTITY} = BoardPresets;
 
 const renderFilmCards = (cards, onDataChange, cardsContainer) => {
   const container = cardsContainer || document.querySelector(`.films-list__container`);
@@ -28,9 +28,9 @@ const renderTopRatedFilms = (cards, renderExtraCategory) => {
   let categoryData;
 
   if (sortedData[0][`filmInfo`].totalRating === sortedData[sortedData.length - 1][`filmInfo`].totalRating) {
-    categoryData = shuffleArray(sortedData).slice(0, BOARD_PRESETS.extraListCardsQuantity);
+    categoryData = shuffleArray(sortedData).slice(0, EXTRA_LIST_CARDS_QUANTITY);
   } else {
-    categoryData = sortedData.slice(0, BOARD_PRESETS.extraListCardsQuantity);
+    categoryData = sortedData.slice(0, EXTRA_LIST_CARDS_QUANTITY);
   }
 
   renderExtraCategory(categoryData, `Top rated`);
@@ -46,9 +46,9 @@ const renderTopCommentedFilms = (cards, renderExtraCategory) => {
   let categoryData;
 
   if (sortedData[0][`comments`].length === sortedData[sortedData.length - 1][`comments`].length) {
-    categoryData = shuffleArray(sortedData).slice(0, BOARD_PRESETS.extraListCardsQuantity);
+    categoryData = shuffleArray(sortedData).slice(0, EXTRA_LIST_CARDS_QUANTITY);
   } else {
-    categoryData = sortedData.slice(0, BOARD_PRESETS.extraListCardsQuantity);
+    categoryData = sortedData.slice(0, EXTRA_LIST_CARDS_QUANTITY);
   }
 
   renderExtraCategory(categoryData, `Most commented`);
@@ -57,10 +57,10 @@ const renderTopCommentedFilms = (cards, renderExtraCategory) => {
 const getSortedCards = (cards, sortTypeActive, to = cards.length) => {
   let sortableCards = cards.slice();
   switch (sortTypeActive) {
-    case sortType.DATE:
+    case SortType.DATE:
       sortableCards = sortableCards.sort((a, b) => a.filmInfo.release.date < b.filmInfo.release.date);
       break;
-    case sortType.RATING:
+    case SortType.RATING:
       sortableCards = sortableCards.sort((a, b) => a.filmInfo.totalRating < b.filmInfo.totalRating);
       break;
     default:
@@ -78,7 +78,7 @@ export default class BoardController {
 
     this._shownCardControllers = [];
     this._shownExtraCardControllers = [];
-    this._initialFilmsCount = initialRenderedCardsQuantity;
+    this._initialFilmsCount = INITIAL_RENDERED_CARDS_QUANTITY;
     this._sortComponent = sortComponent;
     this._buttonMore = new ButtonMoreComponent();
 
@@ -99,7 +99,7 @@ export default class BoardController {
     const cards = this._filmsModel.getFilms();
     this._contentContainer = document.querySelector(`section.films`);
 
-    render(this._container, this._sortComponent, RENDER_POSITION.BEFORENODE, this._contentContainer);
+    render(this._container, this._sortComponent, RenderPosition.BEFORENODE, this._contentContainer);
 
     modalController.setCommentChangeHandler(this._updateExtraCategories);
 
@@ -134,7 +134,7 @@ export default class BoardController {
   }
 
   _cardsSortHandler(activeSortType) {
-    this._initialFilmsCount = initialRenderedCardsQuantity;
+    this._initialFilmsCount = INITIAL_RENDERED_CARDS_QUANTITY;
 
     this._shownCardControllers = renderFilmCards(getSortedCards(this._filmsModel.getFilms(), activeSortType, this._initialFilmsCount), this._onDataChange);
   }
@@ -167,7 +167,7 @@ export default class BoardController {
     let prevFilmsCount = this._initialFilmsCount;
 
     const next = () => {
-      this._initialFilmsCount += BOARD_PRESETS.additionalCardsQuantity;
+      this._initialFilmsCount += BoardPresets.ADDITIONAL_CARDS_QUANTITY;
 
       const filmsAdditionalCards = actualCardsState.slice(prevFilmsCount, this._initialFilmsCount);
       this._renderFilms(filmsAdditionalCards);
@@ -226,6 +226,6 @@ export default class BoardController {
   }
 
   _onFilterChange() {
-    this._updateCards(initialRenderedCardsQuantity);
+    this._updateCards(INITIAL_RENDERED_CARDS_QUANTITY);
   }
 }
