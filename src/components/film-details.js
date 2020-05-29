@@ -107,11 +107,11 @@ const createFilmDetailsTemplate = (data, comments = [], options) => {
                   <td class="film-details__term">Country</td>
                   <td class="film-details__cell">${releaseCountry}</td>
                 </tr>
-                <tr class="film-details__row">
+                ${genre.length > 0 && `<tr class="film-details__row">
                   <td class="film-details__term">${genre.length > 1 ? `Genres` : `Genre`}</td>
                   <td class="film-details__cell">
                     ${genre.map((genreItem) => (`<span class="film-details__genre">${genreItem}</span>`)).join(``)}
-                </tr>
+                </tr>`}
               </table>
               <p class="film-details__film-description">
                 ${description}

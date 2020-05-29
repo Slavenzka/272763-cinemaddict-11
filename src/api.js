@@ -33,7 +33,10 @@ class API {
 
   getComment(filmID) {
     return this._load({url: `comments/${filmID}`})
-      .then((response) => response.json());
+      .then((response) => response.json())
+      .then((response) => {
+        return response;
+      });
   }
 
   updateFilm(id, data) {
