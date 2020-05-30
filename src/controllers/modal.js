@@ -1,7 +1,7 @@
 import FilmDetails from '../components/film-details';
-import {commentsModel, filmsModel} from '../main';
+import {apiWithProvider, commentsModel, filmsModel} from '../main';
 import {remove} from '../utils/render';
-import {api} from '../main';
+import FilmAdapter from '../adapters/filmAdapter';
 
 export default class ModalController {
   constructor() {
@@ -61,28 +61,46 @@ export default class ModalController {
   }
 
   _getUpdatedCommentsList() {
-    return api.getComment(this._card.id);
+    return apiWithProvider.getComment(this._card.id);
   }
 
-  deleteCommentHandler() {
-    const newComments = this._getUpdatedCommentsList().map((comment) => comment.id);
-    this._onDataChange(this._card, Object.assign({}, this._card, {
-      comments: newComments
-    }));
+  deleteCommentHandler(commentID, errorCallback) {
+    apiWithProvider.deleteComment(commentID)
+      .then(() => {
+        return this._getUpdatedCommentsList();
+      })
+      .then((newComments) => {
+        this._onDataChange(this._card, Object.assign({}, this._card, {
+          comments: newComments
+        }));
 
-    this._updateModal();
-    this.callCommentChangeHandlers();
+        this._updateModal(newComments);
+        this.callCommentChangeHandlers();
+      })
+      .catch((error) => {
+        if (errorCallback) {
+          errorCallback();
+        }
+        throw new Error(error);
+      });
   }
 
   addCommentHandler(newComment) {
-    const newComments = [].concat(this._card.comments, newComment.id);
+    this._detailsComponent.disableForm();
+    apiWithProvider.addComment(this._card.id, newComment)
+      .then((response) => {
+        const formattedMovie = FilmAdapter.parseFilm(response[`movie`]);
 
-    this._onDataChange(this._card, Object.assign({}, this._card, {
-      comments: newComments
-    }));
+        this._onDataChange(this._card, Object.assign({}, formattedMovie));
 
-    this._updateModal();
-    this.callCommentChangeHandlers();
+        this._detailsComponent.resetCommentData();
+        this._updateModal(response.comments);
+        this.callCommentChangeHandlers();
+      })
+      .catch((error) => {
+        this._detailsComponent.enableForm();
+        throw new Error(error);
+      });
   }
 
   setCommentChangeHandler(handler) {

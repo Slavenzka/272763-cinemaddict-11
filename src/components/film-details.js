@@ -1,14 +1,16 @@
-import {KEY_CODES, NAMES} from '../const';
+import {DeleteButtonLabels, KeyCodes} from '../const';
 import {
   getDurationFromMinutes,
   getFullDate,
   getFullDateAndTime,
-  getRandomArrayItem
 } from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
 import {commentsModel} from '../main';
 import {encode} from 'he';
-import {uuid} from 'uuidv4';
+import moment from 'moment';
+import {getNodeFromTemplate} from '../utils/render';
+
+const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const createFilmDetailsTemplate = (data, comments = [], options) => {
   const {
@@ -32,7 +34,7 @@ const createFilmDetailsTemplate = (data, comments = [], options) => {
   } = filmInfo;
 
   const {date, releaseCountry} = release;
-  const {activeEmoji} = options;
+  const {inputValue, activeEmoji} = options;
   const dateObject = new Date(date);
   const releaseDate = getFullDate(dateObject);
   const formattedDuration = getDurationFromMinutes(runtime);
@@ -105,11 +107,11 @@ const createFilmDetailsTemplate = (data, comments = [], options) => {
                   <td class="film-details__term">Country</td>
                   <td class="film-details__cell">${releaseCountry}</td>
                 </tr>
-                <tr class="film-details__row">
+                ${genre.length > 0 && `<tr class="film-details__row">
                   <td class="film-details__term">${genre.length > 1 ? `Genres` : `Genre`}</td>
                   <td class="film-details__cell">
                     ${genre.map((genreItem) => (`<span class="film-details__genre">${genreItem}</span>`)).join(``)}
-                </tr>
+                </tr>`}
               </table>
               <p class="film-details__film-description">
                 ${description}
@@ -134,7 +136,7 @@ const createFilmDetailsTemplate = (data, comments = [], options) => {
             <div class="film-details__new-comment">
               <div for="add-emoji" class="film-details__add-emoji-label">${activeEmoji && activeEmoji.image ? activeEmoji.image.outerHTML : ``}</div>
               <label class="film-details__comment-label">
-                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${inputValue}</textarea>
               </label>
               <div class="film-details__emoji-list">
                 <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
@@ -169,6 +171,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._commentsData = commentsData;
     this._inputValue = ``;
     this._activeEmoji = {};
+    this._textarea = null;
 
     this._closeHandler = null;
     this._subscribeOnEvents();
@@ -180,6 +183,14 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._handleEscPress = this._handleEscPress.bind(this);
   }
 
+  getElement() {
+    if (!this._element) {
+      this._element = getNodeFromTemplate(this.getTemplate());
+      this._textarea = this._element.querySelector(`textarea.film-details__comment-input`);
+    }
+    return this._element;
+  }
+
   getTemplate() {
     return createFilmDetailsTemplate(this._filmData, this._commentsData, {
       inputValue: this._inputValue,
@@ -189,6 +200,7 @@ export default class FilmDetails extends AbstractSmartComponent {
 
   recoverListeners() {
     this._subscribeOnEvents();
+    this.setSubmitHandler();
     this.setCloseOnClickHandler(this._closeHandler);
   }
 
@@ -224,19 +236,32 @@ export default class FilmDetails extends AbstractSmartComponent {
     document.addEventListener(`keydown`, this._handleEscPress);
   }
 
+  disableForm() {
+    this._textarea.disabled = true;
+    this._textarea.style = `box-shadow: none`;
+    document.removeEventListener(`keydown`, this._setPostCommentHandler);
+  }
+
+  enableForm() {
+    this._textarea.disabled = false;
+    this.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this.getElement().style.animation = ``;
+      this._textarea.style = `box-shadow: 0 0 20px 0 red`;
+    }, SHAKE_ANIMATION_TIMEOUT);
+    document.addEventListener(`keydown`, this._setPostCommentHandler);
+  }
+
   _setPostCommentHandler(evt) {
-    if (this._inputValue.length !== 0 && this._activeEmoji && evt.ctrlKey && evt.keyCode === KEY_CODES.enter) {
+    if (this._inputValue.length !== 0 && this._activeEmoji && (evt.ctrlKey || evt.metaKey) && evt.keyCode === KeyCodes.enter) {
       evt.preventDefault();
       const newComment = {
-        id: uuid(),
         comment: this._inputValue,
-        author: getRandomArrayItem(NAMES),
         emotion: this._activeEmoji.type,
-        date: new Date()
+        date: moment().format()
       };
       this._addCommentHandler(newComment);
-      this._resetCommentData();
-      this.rerender();
     }
   }
 
@@ -265,9 +290,10 @@ export default class FilmDetails extends AbstractSmartComponent {
       comment.addEventListener(`click`, (evt) => {
         if (evt.target.tagName === `BUTTON`) {
           evt.preventDefault();
+          evt.target.disabled = true;
+          evt.target.innerText = DeleteButtonLabels.FETCHING;
           const commentID = evt.currentTarget.dataset.commentId;
-          this._deleteCommentHandler(commentID);
-          this.rerender();
+          this._deleteCommentHandler(commentID, () => this._setCommentStateToError(comment, evt.target));
         }
       });
     });
@@ -275,6 +301,16 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._setWatchlistButtonHandler();
     this._setWatchedButtonHandler();
     this._setFavoriteButtonHandler();
+  }
+
+  _setCommentStateToError(commentItem, button) {
+    commentItem.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      commentItem.style.animation = ``;
+      button.innerText = DeleteButtonLabels.REGULAR;
+      button.disabled = false;
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _setWatchlistButtonHandler() {
@@ -301,7 +337,7 @@ export default class FilmDetails extends AbstractSmartComponent {
       });
   }
 
-  _resetCommentData() {
+  resetCommentData() {
     this._inputValue = ``;
     this._activeEmoji = {};
   }

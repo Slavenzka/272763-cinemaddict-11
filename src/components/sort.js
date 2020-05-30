@@ -1,4 +1,4 @@
-import {sortType} from '../const';
+import {SortType} from '../const';
 import AbstractSmartComponent from './abstract-smart-component';
 
 const createItemsSortTemplate = (activeSortType) => {
@@ -6,9 +6,9 @@ const createItemsSortTemplate = (activeSortType) => {
 
   return (
     `<ul class="sort">
-      <li><a href="#" data-sort-type=${sortType.DEFAULT} class="sort__button ${activeSortType === sortType.DEFAULT ? activeClass : ``}">Sort by default</a></li>
-      <li><a href="#" data-sort-type=${sortType.DATE} class="sort__button ${activeSortType === sortType.DATE ? activeClass : ``}">Sort by date</a></li>
-      <li><a href="#" data-sort-type=${sortType.RATING} class="sort__button ${activeSortType === sortType.RATING ? activeClass : ``}">Sort by rating</a></li>
+      <li><a href="#" data-sort-type=${SortType.DEFAULT} class="sort__button ${activeSortType === SortType.DEFAULT ? activeClass : ``}">Sort by default</a></li>
+      <li><a href="#" data-sort-type=${SortType.DATE} class="sort__button ${activeSortType === SortType.DATE ? activeClass : ``}">Sort by date</a></li>
+      <li><a href="#" data-sort-type=${SortType.RATING} class="sort__button ${activeSortType === SortType.RATING ? activeClass : ``}">Sort by rating</a></li>
     </ul>`
   );
 };
@@ -16,7 +16,7 @@ const createItemsSortTemplate = (activeSortType) => {
 export default class Sort extends AbstractSmartComponent {
   constructor() {
     super();
-    this._sortType = sortType.DEFAULT;
+    this._sortType = SortType.DEFAULT;
     this._handleClickItem = null;
   }
 
@@ -52,7 +52,7 @@ export default class Sort extends AbstractSmartComponent {
   }
 
   resetSorting() {
-    this._sortType = sortType.DEFAULT;
+    this._sortType = SortType.DEFAULT;
     this.rerender();
   }
 }
