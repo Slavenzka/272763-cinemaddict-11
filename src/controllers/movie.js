@@ -1,7 +1,7 @@
 import FilmCardComponent from '../components/film-card';
 import {render} from '../utils/render';
 import {replace, remove} from '../utils/render';
-import {api, modalController} from '../main';
+import {apiWithProvider, modalController} from '../main';
 import FilmAdapter from '../adapters/filmAdapter';
 import moment from 'moment';
 
@@ -70,7 +70,7 @@ export default class MovieController {
       userDetails: copyUserData
     });
 
-    api.updateFilm(this._card.id, this._getServerFormattedData(updatedFilmData))
+    apiWithProvider.updateFilm(this._card.id, updatedFilmData)
       .then((response) => {
         const formattedResponse = FilmAdapter.parseFilm(response);
 
@@ -78,37 +78,9 @@ export default class MovieController {
           userDetails: formattedResponse.userDetails
         }));
 
-        callback();
+        if (callback) {
+          callback();
+        }
       });
-  }
-
-  _getServerFormattedData(data) {
-    return {
-      id: data.id,
-      comments: data.comments,
-      [`film_info`]: {
-        title: data.filmInfo.title,
-        [`alternative_title`]: data.filmInfo.alternativeTitle,
-        [`total_rating`]: data.filmInfo.totalRating,
-        poster: data.filmInfo.poster,
-        [`age_rating`]: data.filmInfo.ageRating,
-        director: data.filmInfo.director,
-        writers: data.filmInfo.writers,
-        actors: data.filmInfo.actors,
-        release: {
-          date: data.filmInfo.release.date,
-          [`release_country`]: data.filmInfo.release.releaseCountry
-        },
-        runtime: data.filmInfo.runtime,
-        genre: data.filmInfo.genre,
-        description: data.filmInfo.description
-      },
-      [`user_details`]: {
-        watchlist: data.userDetails.watchlist,
-        [`already_watched`]: data.userDetails.alreadyWatched,
-        [`watching_date`]: data.userDetails.watchingDate,
-        favorite: data.userDetails.favorite
-      }
-    };
   }
 }

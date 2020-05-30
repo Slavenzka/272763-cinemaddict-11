@@ -1,4 +1,4 @@
-import {RENDER_POSITION} from '../const';
+import {RenderPosition} from '../const';
 
 export const renderSectionElement = (container, className, type = `section`) => {
   const sectionElement = document.createElement(type);
@@ -21,7 +21,7 @@ export const getNodeFromTemplate = (template) => {
   return node.firstChild;
 };
 
-export const render = (container, component, position = RENDER_POSITION.BEFOREEND, referenceNode) => {
+export const render = (container, component, position = RenderPosition.BEFOREEND, referenceNode) => {
   switch (position) {
     case `afterbegin`:
       container.prepend(component.getElement());
