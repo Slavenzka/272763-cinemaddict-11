@@ -88,11 +88,9 @@ export default class ModalController {
 
   addCommentHandler(newComment) {
     this._detailsComponent.disableForm();
-    console.log(this._card.id);
     api.addComment(this._card.id, newComment)
       .then((response) => {
         const formattedMovie = FilmAdapter.parseFilm(response[`movie`]);
-        console.log(response);
 
         this._onDataChange(this._card, Object.assign({}, formattedMovie));
 
