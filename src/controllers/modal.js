@@ -1,7 +1,6 @@
 import FilmDetails from '../components/film-details';
-import {commentsModel, filmsModel} from '../main';
+import {apiWithProvider, commentsModel, filmsModel} from '../main';
 import {remove} from '../utils/render';
-import {api} from '../main';
 import FilmAdapter from '../adapters/filmAdapter';
 
 export default class ModalController {
@@ -62,11 +61,11 @@ export default class ModalController {
   }
 
   _getUpdatedCommentsList() {
-    return api.getComment(this._card.id);
+    return apiWithProvider.getComment(this._card.id);
   }
 
   deleteCommentHandler(commentID, errorCallback) {
-    api.deleteComment(commentID)
+    apiWithProvider.deleteComment(commentID)
       .then(() => {
         return this._getUpdatedCommentsList();
       })
@@ -88,7 +87,7 @@ export default class ModalController {
 
   addCommentHandler(newComment) {
     this._detailsComponent.disableForm();
-    api.addComment(this._card.id, newComment)
+    apiWithProvider.addComment(this._card.id, newComment)
       .then((response) => {
         const formattedMovie = FilmAdapter.parseFilm(response[`movie`]);
 

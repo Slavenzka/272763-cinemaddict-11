@@ -1,17 +1,18 @@
-import API from './api';
+import API from './api/index';
 import BoardController from './controllers/board';
 import CommentsModel from './models/comments';
+import FilmAdapter from './adapters/filmAdapter';
 import FilmsModel from './models/films';
 import FilmsPage from './components/films-page';
 import FilterController from './controllers/filter';
 import FooterCountComponent from './components/footer-count';
+import {generateRandomString} from './utils/common';
 import ModalController from './controllers/modal';
+import Provider from './api/provider';
 import {render} from './utils/render';
 import Stats from './components/stats';
 import SortComponent from './components/sort';
 import UserRankClassComponent from './components/user-rank';
-import {generateRandomString} from './utils/common';
-import FilmAdapter from './adapters/filmAdapter';
 
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 const AUTHORIZATION = `Basic ${generateRandomString(15)}`;
@@ -28,6 +29,8 @@ export const filmsScreenWrapper = new FilmsPage();
 export const sortComponent = new SortComponent();
 export const statsComponent = new Stats();
 
+const api = new API(END_POINT, AUTHORIZATION);
+export const apiWithProvider = new Provider(api);
 export const modalController = new ModalController();
 const filterController = new FilterController(mainElement, filmsModel);
 const board = new BoardController(mainElement, filmsModel, sortComponent);
@@ -42,10 +45,7 @@ loadingLabel.innerText = `Loading...`;
 loadingLabel.style = `margin-top: 35px`;
 document.querySelector(`section.films`).appendChild(loadingLabel);
 
-
-export const api = new API(END_POINT, AUTHORIZATION);
-
-api.getFilms()
+apiWithProvider.getFilms()
   .then((films) => {
     filmsModel.setFilms(FilmAdapter.parseFilms(films));
 

@@ -1,7 +1,7 @@
 import FilmCardComponent from '../components/film-card';
 import {render} from '../utils/render';
 import {replace, remove} from '../utils/render';
-import {api, modalController} from '../main';
+import {apiWithProvider, modalController} from '../main';
 import FilmAdapter from '../adapters/filmAdapter';
 import moment from 'moment';
 
@@ -70,7 +70,7 @@ export default class MovieController {
       userDetails: copyUserData
     });
 
-    api.updateFilm(this._card.id, updatedFilmData)
+    apiWithProvider.updateFilm(this._card.id, updatedFilmData)
       .then((response) => {
         const formattedResponse = FilmAdapter.parseFilm(response);
 
