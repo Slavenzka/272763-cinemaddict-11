@@ -7,6 +7,7 @@ export default class FilterController {
   constructor(container, filmsModel) {
     this._container = container;
     this._filmsModel = filmsModel;
+    this.activeIndex = 0;
 
     this._filterComponent = null;
 
@@ -27,7 +28,7 @@ export default class FilterController {
       };
     });
     const oldComponent = this._filterComponent;
-    this._filterComponent = new FilterComponent(filters);
+    this._filterComponent = new FilterComponent(filters, this.activeIndex);
     this._filterComponent.setFilterChangeHandler(this._onFilterChange);
 
     if (oldComponent) {

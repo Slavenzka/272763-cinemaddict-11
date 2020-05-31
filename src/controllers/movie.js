@@ -45,10 +45,6 @@ export default class MovieController {
     });
   }
 
-  getCardId() {
-    return this._card.id;
-  }
-
   destroy() {
     remove(this.component);
   }

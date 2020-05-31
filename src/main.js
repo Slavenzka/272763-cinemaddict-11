@@ -32,7 +32,7 @@ export const statsComponent = new Stats();
 const api = new API(END_POINT, AUTHORIZATION);
 export const apiWithProvider = new Provider(api);
 export const modalController = new ModalController();
-const filterController = new FilterController(mainElement, filmsModel);
+export const filterController = new FilterController(mainElement, filmsModel);
 const board = new BoardController(mainElement, filmsModel, sortComponent);
 
 render(headerElement, userRank);
@@ -56,6 +56,7 @@ apiWithProvider.getFilms()
     const footerCounter = new FooterCountComponent(films.length);
     render(footerCounterContainer, footerCounter);
 
+    filterController.render();
     board.render();
   })
   .catch(() => {

@@ -1,6 +1,7 @@
 import {capitalizeFirstLetter} from '../utils/common';
 import {filmsScreenWrapper, sortComponent, statsComponent} from '../main';
 import AbstractSmartComponent from './abstract-smart-component';
+import {filterController} from '../main';
 
 const createFilterMarkup = ({name, count}, index, activeIndex) => {
   const type = name.split(` `)[0].toLowerCase();
@@ -28,15 +29,15 @@ const createFilterTemplate = (filters, activeItemIndex) => {
 };
 
 export default class FilterComponent extends AbstractSmartComponent {
-  constructor(filters) {
+  constructor(filters, activeIndex) {
     super();
     this._filters = filters;
-    this._activeItemIndex = 0;
+    this.activeItemIndex = activeIndex || 0;
     this._handleClickItem = null;
   }
 
   getTemplate() {
-    return createFilterTemplate(this._filters, this._activeItemIndex);
+    return createFilterTemplate(this._filters, this.activeItemIndex);
   }
 
   setFilterChangeHandler(handler) {
@@ -58,23 +59,28 @@ export default class FilterComponent extends AbstractSmartComponent {
           filmsScreenWrapper.hide();
           sortComponent.hide();
           this._activeItemIndex = +evt.target.dataset.itemCount;
-          this.rerender();
+          filterController.activeIndex = +evt.target.dataset.itemCount;
+          filterController.render();
         } else {
           statsComponent.hide();
           filmsScreenWrapper.show();
           sortComponent.show();
           sortComponent.resetSorting();
           this._activeItemIndex = +evt.target.dataset.itemCount;
-          this.rerender();
           this._handleClickItem(filterName);
+          filterController.activeIndex = +evt.target.dataset.itemCount;
+          filterController.render();
         }
-      }
-      if (evt.target.tagName === `SPAN` && this._activeItemIndex !== +evt.target.parentElement.dataset.itemCount) {
+      } else if (evt.target.tagName === `SPAN` && this._activeItemIndex !== +evt.target.parentElement.dataset.itemCount) {
         const filterName = evt.target.parentElement.getAttribute(`href`).slice(1);
         this._activeItemIndex = +evt.target.parentElement.dataset.itemCount;
+        statsComponent.hide();
+        filmsScreenWrapper.show();
+        sortComponent.show();
         sortComponent.resetSorting();
-        this.rerender();
         this._handleClickItem(filterName);
+        filterController.activeIndex = +evt.target.parentElement.dataset.itemCount;
+        filterController.render();
       }
     });
   }

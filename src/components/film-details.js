@@ -317,7 +317,6 @@ export default class FilmDetails extends AbstractSmartComponent {
     this.getElement().querySelector(`#watchlist`)
       .addEventListener(`change`, () => {
         this._controlButtonClickHandler(`watchlist`);
-        this.rerender();
       });
   }
 
@@ -325,7 +324,6 @@ export default class FilmDetails extends AbstractSmartComponent {
     this.getElement().querySelector(`#watched`)
       .addEventListener(`change`, () => {
         this._controlButtonClickHandler(`alreadyWatched`);
-        this.rerender();
       });
   }
 
@@ -333,7 +331,6 @@ export default class FilmDetails extends AbstractSmartComponent {
     this.getElement().querySelector(`#favorite`)
       .addEventListener(`change`, () => {
         this._controlButtonClickHandler(`favorite`);
-        this.rerender();
       });
   }
 

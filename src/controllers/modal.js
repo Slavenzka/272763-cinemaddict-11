@@ -34,14 +34,13 @@ export default class ModalController {
     this._getUpdatedCommentsList()
       .then((commentsList) => {
         this._commentsList = commentsList;
-        this._detailsComponent = new FilmDetails(this._card, commentsList, this.handleClickControl);
+        this._detailsComponent = new FilmDetails(this._card, commentsList, this._controlButtonClickHandler);
         document.querySelector(`.main`)
           .appendChild(this._detailsComponent.getElement());
 
         this._detailsComponent.setSubmitHandler();
         this._detailsComponent.setCloseOnClickHandler(this.closeModal);
         this._detailsComponent.setCloseOnEscPressHandler(this.closeModal);
-        // SET COMMENTS MODEL HANDLERS
         commentsModel.setDeleteCommentHandler(this.deleteCommentHandler);
         commentsModel.setAddCommentHandler(this.addCommentHandler);
       });

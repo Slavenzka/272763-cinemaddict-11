@@ -181,9 +181,10 @@ export default class Stats extends AbstractSmartComponent {
   }
 
   show() {
-    this._filmsData = filmsModel.getFilms();
+    this._filmsData = filmsModel.getFilmsAll();
     this._getUpdatedData();
     this._addItemClickListeners();
+    this._activeFilterType = StatsFilterTypes.ALL;
     super.show();
     this.rerender();
   }

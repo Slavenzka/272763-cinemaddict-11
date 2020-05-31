@@ -55,7 +55,6 @@ class API {
 
   addComment(filmID, newComment) {
     const headers = new Headers();
-    // headers.append(`Authorization`, this._authorization);
     headers.append(`Content-Type`, `application/json`);
 
     return this._load({

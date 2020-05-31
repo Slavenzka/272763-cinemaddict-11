@@ -42,19 +42,6 @@ export default class FilmsModel {
     };
   }
 
-  removeComment(id) {
-    const index = this._films.indexOf((film) => film.id === id);
-
-    if (index === -1) {
-      return false;
-    }
-
-    this._films = [].concat(this._films.slice(0, index), this._films.slice(index + 1));
-    this._callHandlers(this._dataChangeHandlers);
-
-    return true;
-  }
-
   addComment(film) {
     this._films = [].concat(this._films, film);
     this._callHandlers(this._dataChangeHandlers);
