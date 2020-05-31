@@ -4,9 +4,11 @@ import {BoardPresets, RenderPosition, SortType} from '../const';
 import CardController from '../controllers/movie';
 import FilmsComponent from '../components/films';
 import {remove} from '../utils/render';
-import {modalController, userRank} from '../main';
 import {shuffleArray} from '../utils/common';
 import NoData from '../components/no-data-message';
+import userRank from '../components/user-rank';
+import modalController from '../controllers/modal';
+import filmsModel from '../models/films';
 
 const {INITIAL_RENDERED_CARDS_QUANTITY, EXTRA_LIST_CARDS_QUANTITY} = BoardPresets;
 
@@ -200,7 +202,7 @@ export default class BoardController {
 
     if (isUpdated.status) {
       this._updateCards(this._initialFilmsCount);
-      userRank.updateUserRank();
+      userRank.updateUserRank(filmsModel);
       this._removeExtraCategories();
       this._renderExtraCategories();
     }

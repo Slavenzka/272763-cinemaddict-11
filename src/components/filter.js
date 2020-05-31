@@ -1,7 +1,9 @@
 import {capitalizeFirstLetter} from '../utils/common';
-import {filmsScreenWrapper, sortComponent, statsComponent} from '../main';
 import AbstractSmartComponent from './abstract-smart-component';
-import {filterController} from '../main';
+import filmsScreenWrapper from './films-page';
+import sortComponent from './sort';
+import statsComponent from './stats';
+import filterController from '../controllers/filter';
 
 const createFilterMarkup = ({name, count}, index, activeIndex) => {
   const type = name.split(` `)[0].toLowerCase();
@@ -29,11 +31,12 @@ const createFilterTemplate = (filters, activeItemIndex) => {
 };
 
 export default class FilterComponent extends AbstractSmartComponent {
-  constructor(filters, activeIndex) {
+  constructor(filters, activeIndex, filmsModel) {
     super();
     this._filters = filters;
     this.activeItemIndex = activeIndex || 0;
     this._handleClickItem = null;
+    this._filmsModel = filmsModel;
   }
 
   getTemplate() {
@@ -55,7 +58,7 @@ export default class FilterComponent extends AbstractSmartComponent {
         const filterName = evt.target.getAttribute(`href`).slice(1);
 
         if (filterName === `stats`) {
-          statsComponent.show();
+          statsComponent.show(this._filmsModel);
           filmsScreenWrapper.hide();
           sortComponent.hide();
           this._activeItemIndex = +evt.target.dataset.itemCount;

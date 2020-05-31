@@ -1,9 +1,9 @@
 import AbstractSmartComponent from './abstract-smart-component';
-import {filmsModel, userRank} from '../main';
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {DIAGRAM_BAR_HEIGHT, StatsFilterTypes} from '../const';
 import moment from 'moment';
+import userRank from '../components/user-rank';
 
 const getFilteredData = (data, filterType) => {
   let filteredData;
@@ -164,7 +164,7 @@ const createStatsTemplate = (actualUserRank, activeFilterType, data) => {
   );
 };
 
-export default class Stats extends AbstractSmartComponent {
+class Stats extends AbstractSmartComponent {
   constructor() {
     super();
     this._filmsData = [];
@@ -180,7 +180,7 @@ export default class Stats extends AbstractSmartComponent {
     return createStatsTemplate(userRank.userRank, this._activeFilterType, this._actualData);
   }
 
-  show() {
+  show(filmsModel) {
     this._filmsData = filmsModel.getFilmsAll();
     this._getUpdatedData();
     this._addItemClickListeners();
@@ -224,3 +224,6 @@ export default class Stats extends AbstractSmartComponent {
     this._addItemClickListeners();
   }
 }
+
+const statsComponent = new Stats();
+export default statsComponent;

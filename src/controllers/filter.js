@@ -2,9 +2,10 @@ import {FilterTypes, RenderPosition} from '../const';
 import {render, replace} from '../utils/render';
 import FilterComponent from '../components/filter';
 import {getFilmsByFilter} from '../utils/filter';
+import filmsModel from '../models/films';
 
-export default class FilterController {
-  constructor(container, filmsModel) {
+class FilterController {
+  constructor(container) {
     this._container = container;
     this._filmsModel = filmsModel;
     this.activeIndex = 0;
@@ -28,7 +29,7 @@ export default class FilterController {
       };
     });
     const oldComponent = this._filterComponent;
-    this._filterComponent = new FilterComponent(filters, this.activeIndex);
+    this._filterComponent = new FilterComponent(filters, this.activeIndex, filmsModel);
     this._filterComponent.setFilterChangeHandler(this._onFilterChange);
 
     if (oldComponent) {
@@ -46,3 +47,8 @@ export default class FilterController {
     this.render();
   }
 }
+
+const mainElement = document.querySelector(`.main`);
+const filterController = new FilterController(mainElement, filmsModel);
+
+export default filterController;

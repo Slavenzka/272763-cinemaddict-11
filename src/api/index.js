@@ -1,3 +1,5 @@
+import {generateRandomString} from '../utils/common';
+
 const Methods = {
   GET: `GET`,
   POST: `POST`,
@@ -11,6 +13,9 @@ const Statuses = {
     max: 300
   }
 };
+
+const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
+const AUTHORIZATION = `Basic ${generateRandomString(15)}`;
 
 class API {
   constructor(endpoint, authorization) {
@@ -41,7 +46,6 @@ class API {
 
   updateFilm(id, data) {
     const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
     headers.append(`Content-Type`, `application/json`);
 
     return this._load({
@@ -113,4 +117,5 @@ class API {
   }
 }
 
-export default API;
+const api = new API(END_POINT, AUTHORIZATION);
+export default api;

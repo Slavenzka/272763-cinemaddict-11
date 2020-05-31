@@ -1,38 +1,19 @@
-import API from './api/index';
 import BoardController from './controllers/board';
-import CommentsModel from './models/comments';
 import FilmAdapter from './adapters/filmAdapter';
-import FilmsModel from './models/films';
-import FilmsPage from './components/films-page';
-import FilterController from './controllers/filter';
 import FooterCountComponent from './components/footer-count';
-import {generateRandomString} from './utils/common';
-import ModalController from './controllers/modal';
-import Provider from './api/provider';
 import {render} from './utils/render';
-import Stats from './components/stats';
-import SortComponent from './components/sort';
-import UserRankClassComponent from './components/user-rank';
-
-const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
-const AUTHORIZATION = `Basic ${generateRandomString(15)}`;
+import sortComponent from './components/sort';
+import userRank from './components/user-rank';
+import filmsModel from './models/films';
+import filmsScreenWrapper from './components/films-page';
+import statsComponent from './components/stats';
+import apiWithProvider from './api/provider';
+import filterController from './controllers/filter';
 
 const mainElement = document.querySelector(`.main`);
 const headerElement = document.querySelector(`.header`);
 const footerCounterContainer = document.querySelector(`.footer__statistics`);
 
-export const filmsModel = new FilmsModel();
-export const commentsModel = new CommentsModel();
-
-export const userRank = new UserRankClassComponent();
-export const filmsScreenWrapper = new FilmsPage();
-export const sortComponent = new SortComponent();
-export const statsComponent = new Stats();
-
-const api = new API(END_POINT, AUTHORIZATION);
-export const apiWithProvider = new Provider(api);
-export const modalController = new ModalController();
-export const filterController = new FilterController(mainElement, filmsModel);
 const board = new BoardController(mainElement, filmsModel, sortComponent);
 
 render(headerElement, userRank);
@@ -51,7 +32,7 @@ apiWithProvider.getFilms()
 
     loadingLabel.remove();
 
-    userRank.updateUserRank();
+    userRank.updateUserRank(filmsModel);
 
     const footerCounter = new FooterCountComponent(films.length);
     render(footerCounterContainer, footerCounter);

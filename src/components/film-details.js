@@ -5,7 +5,6 @@ import {
   getFullDateAndTime,
 } from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
-import {commentsModel} from '../main';
 import {encode} from 'he';
 import moment from 'moment';
 import {getNodeFromTemplate} from '../utils/render';
@@ -165,19 +164,20 @@ const createFilmDetailsTemplate = (data, comments = [], options) => {
 };
 
 export default class FilmDetails extends AbstractSmartComponent {
-  constructor(filmData, commentsData, controlButtonHandler) {
+  constructor(filmData, commentsData, controlButtonHandler, commentsModel) {
     super();
     this._filmData = filmData;
     this._commentsData = commentsData;
     this._inputValue = ``;
     this._activeEmoji = {};
     this._textarea = null;
+    this._commentsModel = commentsModel;
 
     this._closeHandler = null;
     this._subscribeOnEvents();
     this._controlButtonClickHandler = controlButtonHandler;
-    this._deleteCommentHandler = commentsModel.removeComment;
-    this._addCommentHandler = commentsModel.addComment;
+    this._deleteCommentHandler = this._commentsModel.removeComment;
+    this._addCommentHandler = this._commentsModel.addComment;
 
     this._setPostCommentHandler = this._setPostCommentHandler.bind(this);
     this._handleEscPress = this._handleEscPress.bind(this);

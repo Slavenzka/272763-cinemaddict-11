@@ -4,8 +4,11 @@ const createFilmsPageTemplate = () => (
   `<section class="films"></section>`
 );
 
-export default class FilmsPage extends AbstractComponent {
+class FilmsPage extends AbstractComponent {
   getTemplate() {
     return createFilmsPageTemplate();
   }
 }
+
+const filmsScreenWrapper = new FilmsPage();
+export default filmsScreenWrapper;

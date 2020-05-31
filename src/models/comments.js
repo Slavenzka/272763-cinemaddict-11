@@ -1,4 +1,4 @@
-export default class CommentsModel {
+class CommentsModel {
   constructor() {
     this._comments = [];
     this._deleteCommentHandler = null;
@@ -25,3 +25,6 @@ export default class CommentsModel {
     this._addCommentHandler = handler;
   }
 }
+
+const commentsModel = new CommentsModel();
+export default commentsModel;

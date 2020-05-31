@@ -1,9 +1,11 @@
 import FilmDetails from '../components/film-details';
-import {apiWithProvider, commentsModel, filmsModel} from '../main';
 import {remove} from '../utils/render';
 import FilmAdapter from '../adapters/filmAdapter';
+import filmsModel from '../models/films';
+import commentsModel from '../models/comments';
+import apiWithProvider from '../api/provider';
 
-export default class ModalController {
+class ModalController {
   constructor() {
     this._card = null;
     this.id = null;
@@ -34,7 +36,7 @@ export default class ModalController {
     this._getUpdatedCommentsList()
       .then((commentsList) => {
         this._commentsList = commentsList;
-        this._detailsComponent = new FilmDetails(this._card, commentsList, this._controlButtonClickHandler);
+        this._detailsComponent = new FilmDetails(this._card, commentsList, this.handleClickControl, commentsModel);
         document.querySelector(`.main`)
           .appendChild(this._detailsComponent.getElement());
 
@@ -47,7 +49,7 @@ export default class ModalController {
   }
 
   _updateModal(comments) {
-    this._card = filmsModel.getFilms().find((film) => film.id === this.id);
+    this._card = filmsModel.getFilmsAll().find((film) => film.id === this.id);
     this._detailsComponent.updateData(this._card, comments);
   }
 
@@ -110,3 +112,6 @@ export default class ModalController {
     this._onCommentChange.forEach((handler) => handler());
   }
 }
+
+const modalController = new ModalController();
+export default modalController;

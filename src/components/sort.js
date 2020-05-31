@@ -13,7 +13,7 @@ const createItemsSortTemplate = (activeSortType) => {
   );
 };
 
-export default class Sort extends AbstractSmartComponent {
+class Sort extends AbstractSmartComponent {
   constructor() {
     super();
     this._sortType = SortType.DEFAULT;
@@ -56,3 +56,6 @@ export default class Sort extends AbstractSmartComponent {
     this.rerender();
   }
 }
+
+const sortComponent = new Sort();
+export default sortComponent;

@@ -1,7 +1,7 @@
 import {FilterTypes} from '../const';
 import {getFilmsByFilter} from '../utils/filter';
 
-export default class FilmsModel {
+class FilmsModel {
   constructor() {
     this._films = [];
     this._activeFilterType = FilterTypes.ALL;
@@ -64,3 +64,6 @@ export default class FilmsModel {
     handlers.forEach((handler) => handler());
   }
 }
+
+const filmsModel = new FilmsModel();
+export default filmsModel;

@@ -1,6 +1,8 @@
-export default class Provider {
-  constructor(api) {
-    this._api = api;
+import api from './index';
+
+class Provider {
+  constructor(apiComponent) {
+    this._api = apiComponent;
   }
 
   getFilms() {
@@ -23,3 +25,6 @@ export default class Provider {
     return this._api.deleteComment(id);
   }
 }
+
+const apiWithProvider = new Provider(api);
+export default apiWithProvider;

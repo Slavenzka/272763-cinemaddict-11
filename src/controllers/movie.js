@@ -1,9 +1,10 @@
 import FilmCardComponent from '../components/film-card';
 import {render} from '../utils/render';
 import {replace, remove} from '../utils/render';
-import {apiWithProvider, modalController} from '../main';
 import FilmAdapter from '../adapters/filmAdapter';
 import moment from 'moment';
+import modalController from '../controllers/modal';
+import apiWithProvider from '../api/provider';
 
 export default class MovieController {
   constructor(container, onDataChange) {
@@ -73,6 +74,8 @@ export default class MovieController {
         this._onDataChange(this._card, Object.assign({}, this._card, {
           userDetails: formattedResponse.userDetails
         }));
+
+        this._card = formattedResponse;
 
         if (callback) {
           callback();
