@@ -1,7 +1,7 @@
 import {render, renderSectionElement, renderSectionHeading} from '../utils/render';
 import ButtonMoreComponent from '../components/button-more';
 import {BoardPresets, RenderPosition, SortType} from '../const';
-import CardController from '../controllers/movie';
+import MovieController from '../controllers/movie';
 import FilmsComponent from '../components/films';
 import {remove} from '../utils/render';
 import {shuffleArray} from '../utils/common';
@@ -14,7 +14,7 @@ const {INITIAL_RENDERED_CARDS_QUANTITY, EXTRA_LIST_CARDS_QUANTITY} = BoardPreset
 const renderFilmCards = (cards, onDataChange, cardsContainer) => {
   const container = cardsContainer || document.querySelector(`.films-list__container`);
   return cards.map((card) => {
-    const filmCardController = new CardController(container, onDataChange);
+    const filmCardController = new MovieController(container, onDataChange);
     filmCardController.render(card);
     return filmCardController;
   });

@@ -58,7 +58,14 @@ class ModalController {
   }
 
   closeModal() {
+    this.id = null;
+    this._card = null;
     remove(this._detailsComponent);
+  }
+
+  updateHandlers(controlButtonClickHandler, onDataChange) {
+    this._controlButtonClickHandler = controlButtonClickHandler;
+    this._onDataChange = onDataChange;
   }
 
   _getUpdatedCommentsList() {
@@ -71,8 +78,10 @@ class ModalController {
         return this._getUpdatedCommentsList();
       })
       .then((newComments) => {
+        this._commentsList = newComments;
+        const formattedNewComments = newComments.map((comment) => comment.id);
         this._onDataChange(this._card, Object.assign({}, this._card, {
-          comments: newComments
+          comments: formattedNewComments
         }));
 
         this._updateModal(newComments);

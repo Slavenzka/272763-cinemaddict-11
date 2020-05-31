@@ -12,7 +12,7 @@ export default class MovieController {
     this.component = null;
     this._card = null;
     this._onDataChange = onDataChange;
-    this._modalController = null;
+    this._modalController = modalController;
 
     this._controlButtonClickHandler = this._controlButtonClickHandler.bind(this);
   }
@@ -22,12 +22,16 @@ export default class MovieController {
     this.component = new FilmCardComponent(card);
     this._card = card;
 
+    if (this._modalController.id === this._card.id) {
+      this._modalController.updateHandlers(this._controlButtonClickHandler, this._onDataChange);
+    }
+
     if (oldCardComponent) {
       replace(this.component, oldCardComponent);
-      this.component.setCardHandler(() => this._renderModal(this._card));
+      this.component.setCardHandler(() => this._renderModal(this._card.id));
     } else {
       render(this._container, this.component);
-      this.component.setCardHandler(() => this._renderModal(this._card));
+      this.component.setCardHandler(() => this._renderModal(this._card.id));
     }
 
     this.component.setWatchlistButtonHandler((evt) => {
@@ -48,11 +52,11 @@ export default class MovieController {
 
   destroy() {
     remove(this.component);
+    this._modalController = null;
   }
 
-  _renderModal(card) {
-    this._modalController = modalController;
-    this._modalController.render(this._controlButtonClickHandler, this._onDataChange, card.id);
+  _renderModal(id) {
+    this._modalController.render((type, callback) => this._controlButtonClickHandler(type, callback), this._onDataChange, id);
   }
 
   _controlButtonClickHandler(type, callback) {
@@ -74,8 +78,6 @@ export default class MovieController {
         this._onDataChange(this._card, Object.assign({}, this._card, {
           userDetails: formattedResponse.userDetails
         }));
-
-        this._card = formattedResponse;
 
         if (callback) {
           callback();
