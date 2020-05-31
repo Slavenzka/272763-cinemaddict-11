@@ -14,7 +14,7 @@ class UserRank extends AbstractSmartComponent {
   constructor() {
     super();
     this._filmsData = null;
-    this.userRank = null;
+    this.userRank = ``;
   }
 
   getTemplate() {
