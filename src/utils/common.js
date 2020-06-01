@@ -1,5 +1,5 @@
 import moment from 'moment';
-import {UserRankPresets} from '../const';
+import {CHARS, UserRankPresets} from '../const';
 
 export const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
 
@@ -36,7 +36,7 @@ export const getUserRank = (watchedCount) => {
 };
 
 export const generateRandomString = (requiredLength) => {
-  const chars = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789=?!`;
+  const chars = CHARS;
   return new Array(requiredLength)
     .fill(``)
     .map(() => {

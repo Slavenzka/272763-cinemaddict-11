@@ -14,12 +14,12 @@ const mainElement = document.querySelector(`.main`);
 const headerElement = document.querySelector(`.header`);
 const footerCounterContainer = document.querySelector(`.footer__statistics`);
 
-const board = new BoardController(mainElement, filmsModel, sortComponent);
-
 render(headerElement, userRank);
 render(mainElement, filmsScreenWrapper);
 render(mainElement, statsComponent);
 statsComponent.hide();
+
+const board = new BoardController(mainElement, filmsModel, sortComponent);
 
 const loadingLabel = document.createElement(`DIV`);
 loadingLabel.innerText = `Loading...`;

@@ -11,6 +11,7 @@ class ModalController {
     this.id = null;
     this._detailsComponent = null;
     this._commentsList = null;
+    this._mainElement = document.querySelector(`.main`);
 
     this._onDataChange = null;
     this._onCommentChange = [];
@@ -37,8 +38,7 @@ class ModalController {
       .then((commentsList) => {
         this._commentsList = commentsList;
         this._detailsComponent = new FilmDetails(this._card, commentsList, this.handleClickControl, commentsModel);
-        document.querySelector(`.main`)
-          .appendChild(this._detailsComponent.getElement());
+        this._mainElement.appendChild(this._detailsComponent.getElement());
 
         this._detailsComponent.setSubmitHandler();
         this._detailsComponent.setCloseOnClickHandler(this.closeModal);

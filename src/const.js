@@ -39,7 +39,7 @@ export const SortType = {
 };
 
 export const KeyCodes = {
-  enter: 13,
+  ENTER: 13,
 };
 
 export const FilterTypes = {
@@ -63,3 +63,5 @@ export const DeleteButtonLabels = {
 };
 
 export const DIAGRAM_BAR_HEIGHT = 50;
+
+export const CHARS = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789=?!`;

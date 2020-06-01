@@ -254,7 +254,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   _setPostCommentHandler(evt) {
-    if (this._inputValue.length !== 0 && this._activeEmoji && (evt.ctrlKey || evt.metaKey) && evt.keyCode === KeyCodes.enter) {
+    if (this._inputValue.length !== 0 && Object.values(this._activeEmoji).length > 0 && (evt.ctrlKey || evt.metaKey) && evt.keyCode === KeyCodes.ENTER) {
       evt.preventDefault();
       const newComment = {
         comment: this._inputValue,
@@ -272,7 +272,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     const commentItems = [...element.querySelectorAll(`.film-details__comment`)];
 
     inputComment.addEventListener(`input`, (evt) => {
-      this._inputValue = evt.target.value;
+      this._inputValue = evt.target.value.trim();
       inputComment.value = this._inputValue;
     });
 

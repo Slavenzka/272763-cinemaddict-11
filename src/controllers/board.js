@@ -75,7 +75,7 @@ export default class BoardController {
   constructor(container, filmsModel, sortComponent) {
     this._container = container;
     this._filmsModel = filmsModel;
-    this._contentContainer = null;
+    this._contentContainer = document.querySelector(`section.films`);
     this._filmsContainer = null;
 
     this._shownCardControllers = [];
@@ -101,7 +101,6 @@ export default class BoardController {
 
   render() {
     const cards = this._filmsModel.getFilms();
-    this._contentContainer = document.querySelector(`section.films`);
 
     render(this._container, this._sortComponent, RenderPosition.BEFORENODE, this._contentContainer);
 
